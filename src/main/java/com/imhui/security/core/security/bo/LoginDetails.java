@@ -1,4 +1,4 @@
-package com.imhui.security.security;
+package com.imhui.security.core.security.bo;
 
 import java.io.Serializable;
 

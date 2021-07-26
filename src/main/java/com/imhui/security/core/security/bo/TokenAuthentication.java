@@ -1,4 +1,4 @@
-package com.imhui.security.security;
+package com.imhui.security.core.security.bo;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

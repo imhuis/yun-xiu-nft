@@ -1,4 +1,4 @@
-package com.imhui.security.core;
+package com.imhui.security.core.security;
 
 import com.imhui.security.repository.UserDao;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;

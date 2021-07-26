@@ -2,19 +2,15 @@ package com.imhui.security.filter;
 
 import com.google.common.base.Strings;
 import com.imhui.security.common.constant.SecurityConstants;
-import com.imhui.security.security.TokenAuthentication;
-import org.apache.commons.lang3.StringUtils;
+import com.imhui.security.core.security.bo.TokenAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -34,20 +30,21 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String requestTokenInServlet = request.getParameter(SecurityConstants.TOKEN_HEADER);
-        if (Strings.isNullOrEmpty(requestTokenInServlet)){
-            chain.doFilter(request, response);
-            return;
-        }
+//        String requestTokenInServlet = request.getParameter(SecurityConstants.TOKEN_PARAMETER);
+//        if (Strings.isNullOrEmpty(requestTokenInServlet)){
+//
+//        }
         // start Authentication
-
-        String requestToken = requestTokenInServlet.toLowerCase().trim();
-        logger.info("[TokenAuthenticationFilter] request token: {}", requestToken);
         try {
-            TokenAuthentication tokenAuthentication = new TokenAuthentication(requestToken);
-            Authentication authResult = getAuthenticationManager().authenticate(tokenAuthentication);
+            TokenAuthentication authRequest = this.convert(request);
+            if (authRequest == null){
+                chain.doFilter(request, response);
+                return;
+            }
+            logger.info("[TokenAuthenticationFilter] request token: {}", authRequest.getCredentials());
+            Authentication authResult = this.getAuthenticationManager().authenticate(authRequest);
             SecurityContextHolder.getContext().setAuthentication(authResult);
-
+            this.onSuccessfulAuthentication(request, response, authResult);
         }catch (AuthenticationException e){
             SecurityContextHolder.clearContext();
             this.onUnsuccessfulAuthentication(request, response, e);
@@ -60,5 +57,24 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
         }
 
         chain.doFilter(request, response);
+    }
+
+    private TokenAuthentication convert(HttpServletRequest request){
+        String headerTokenInServlet = request.getHeader(SecurityConstants.TOKEN_HEADER);
+        String requestToken = headerTokenInServlet;
+        if (Strings.isNullOrEmpty(requestToken)){
+            return null;
+        }else {
+            // 读取参数
+            String requestTokenInServlet = request.getParameter(SecurityConstants.TOKEN_PARAMETER);
+            requestToken = requestTokenInServlet;
+            if (Strings.isNullOrEmpty(requestToken)){
+                return null;
+            }
+        }
+
+        TokenAuthentication tokenAuthentication = new TokenAuthentication(requestToken.toLowerCase().trim());
+        return tokenAuthentication;
+
     }
 }

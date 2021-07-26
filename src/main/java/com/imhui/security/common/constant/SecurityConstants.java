@@ -6,4 +6,6 @@ public interface SecurityConstants {
 
     String TOKEN_HEADER = "Authorization";
 
+    String TOKEN_PARAMETER = "Authorization";
+
 }
