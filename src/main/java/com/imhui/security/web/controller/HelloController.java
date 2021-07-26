@@ -1,4 +1,4 @@
-package com.imhui.security.controller;
+package com.imhui.security.web.controller;
 
 import com.imhui.security.common.base.ResponseResult;
 import com.imhui.security.common.base.ResponseUtil;
@@ -12,5 +12,10 @@ public class HelloController {
     @RequestMapping("/public/hello")
     public ResponseResult<String> hello(){
         return ResponseUtil.success("Hello World!");
+    }
+
+    @RequestMapping("/demo/hello")
+    public ResponseResult<String> hi(){
+        return ResponseUtil.success("Hi World!");
     }
 }

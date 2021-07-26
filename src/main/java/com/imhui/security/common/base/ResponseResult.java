@@ -36,6 +36,9 @@ public class ResponseResult<T> implements Serializable {
 
     private String timestamp;
 
+    public ResponseResult() {
+    }
+
     public ResponseResult(Integer code, String message) {
         this.code = code;
         this.message = message;

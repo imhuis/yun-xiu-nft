@@ -1,7 +1,13 @@
 package com.imhui.security.common.base;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imhui.security.common.enums.ResponseCodeEnum;
 import org.springframework.http.HttpStatus;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.IOException;
 
 /**
  * @author: zyixh
@@ -110,5 +116,32 @@ public class ResponseUtil {
     private static <T> ResponseResult<T> build(ResponseCodeEnum codeEnum, T data){
         ResponseResult<T> result = new ResponseResult(codeEnum, data);
         return result;
+    }
+
+    public static void out(HttpServletResponse response, ResponseResult responseResult) {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+        try {
+            response.getWriter().write(new ObjectMapper().writeValueAsString(responseResult));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }catch (Exception e){
+
+        }
+    }
+
+    public static void out(HttpServletRequest request, HttpServletResponse response, BufferedInputStream in) {
+        response.setContentType(request.getContentType());
+        try {
+            response.getOutputStream().write(in.readAllBytes());
+            response.getWriter().flush();
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }catch (Exception e){
+
+        }finally {
+
+        }
     }
 }

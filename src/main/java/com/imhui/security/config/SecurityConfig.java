@@ -1,6 +1,7 @@
 package com.imhui.security.config;
 
 import com.imhui.security.filter.ImageCodeValidateFilter;
+import com.imhui.security.filter.TokenAuthenticationFilter;
 import com.imhui.security.handler.CustomizeAccessDeniedHandler;
 import com.imhui.security.handler.CustomizeAuthenticationEntryPoint;
 import com.imhui.security.handler.CustomizeAuthenticationFailureHandler;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,10 +19,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import org.springframework.security.web.firewall.HttpFirewall;
@@ -35,16 +39,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private ImageCodeValidateFilter imageCodeValidateFilter;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        super.configure(auth);
-        auth.inMemoryAuthentication().passwordEncoder(passwordEncoder())
-                .withUser("admin").password(passwordEncoder().encode("123456")).authorities("ADMIN")
-                .and()
-                .withUser("user").password(passwordEncoder().encode("123456")).authorities("USER");
+    @Autowired
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    private AuthenticationEntryPoint authenticationEntryPoint;
+
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        return daoAuthenticationProvider;
     }
 
     @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        super.configure(auth);
+//        auth.inMemoryAuthentication().passwordEncoder(passwordEncoder())
+//                .withUser("admin").password(passwordEncoder().encode("123456")).authorities("ADMIN")
+//                .and()
+//                .withUser("user").password(passwordEncoder().encode("123456")).authorities("USER");
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+    }
+
+    @Override
+    @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
@@ -79,13 +98,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/public/**").permitAll()
+                .antMatchers("/system/**").hasIpAddress("127.0.0.0/16")
 
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login")
-                .successHandler(new CustomizeAuthenticationSuccessHandler())
+                .successHandler(authenticationSuccessHandler)
                 .failureHandler(new CustomizeAuthenticationFailureHandler())
                 .permitAll()
                 .and()
@@ -95,7 +115,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 .disable()
                 .exceptionHandling()
-                .authenticationEntryPoint(new CustomizeAuthenticationEntryPoint())
+                .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(new CustomizeAccessDeniedHandler())
                 .and()
                 .sessionManagement()
@@ -103,6 +123,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .expiredSessionStrategy()
         ;
         http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilter(new TokenAuthenticationFilter(authenticationManagerBean(),authenticationEntryPoint));
     }
 
     @Bean

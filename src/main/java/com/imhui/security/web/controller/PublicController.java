@@ -1,4 +1,4 @@
-package com.imhui.security.controller;
+package com.imhui.security.web.controller;
 
 import org.springframework.stereotype.Controller;
 
