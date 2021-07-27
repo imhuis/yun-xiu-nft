@@ -1,5 +1,6 @@
 package com.imhui.security.config;
 
+import com.imhui.security.core.security.provider.TokenAuthenticationProvider;
 import com.imhui.security.filter.ImageCodeValidateFilter;
 import com.imhui.security.filter.TokenAuthenticationFilter;
 import com.imhui.security.handler.CustomizeAccessDeniedHandler;
@@ -43,6 +44,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Autowired
+    private TokenAuthenticationProvider tokenAuthenticationProvider;
+
+    @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
 
     public AuthenticationProvider authenticationProvider(){
@@ -60,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .and()
 //                .withUser("user").password(passwordEncoder().encode("123456")).authorities("USER");
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.authenticationProvider(tokenAuthenticationProvider);
     }
 
     @Override

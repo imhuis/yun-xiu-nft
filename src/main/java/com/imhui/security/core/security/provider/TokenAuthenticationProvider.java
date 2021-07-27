@@ -32,8 +32,6 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
             throw new BadCredentialsException("Token is Invalid");
         }
 
-
-
         return null;
     }
 

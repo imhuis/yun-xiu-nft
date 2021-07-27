@@ -52,6 +52,7 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
         SecurityUser securityUser = new SecurityUser();
 //        securityUser.setUsername(user.get());
 //        securityUser.setSessionId(user.getDetails());
+
 //        redisTemplate.opsForHash().putAll(newToken, BeanUtil.beanToMap(securityUser));
 
         // 缓存保存token信息
@@ -61,9 +62,9 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
         redisTemplate.expire(newToken, expires);
 
         ResponseResult<TokenInfo> responseResult = new ResponseResult();
+        responseResult.setMessage("Login success");
         TokenInfo tokenInfo = new TokenInfo(newToken, expires.getSeconds());
 //        tokenInfo.setToken(request.getSession().getId());
-
         responseResult.setData(tokenInfo);
         ResponseUtil.out(response, responseResult);
     }

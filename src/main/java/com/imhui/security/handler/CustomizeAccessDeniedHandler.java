@@ -14,6 +14,8 @@ public class CustomizeAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
         ResponseResult responseResult = new ResponseResult();
         responseResult.setSuccess(false).setMessage("access denied");
         ResponseUtil.out(response, responseResult);
