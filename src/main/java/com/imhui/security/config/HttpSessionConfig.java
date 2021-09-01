@@ -8,6 +8,11 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 //@Configuration
 //@EnableRedisHttpSession
 public class HttpSessionConfig implements BeanClassLoaderAware {

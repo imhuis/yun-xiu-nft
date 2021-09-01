@@ -7,6 +7,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 @MappedSuperclass
 public class BaseEntity implements Serializable {
 

@@ -5,6 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 public class BeanUtil {
 
     public Map<String, Object> beanToMap(Object o){

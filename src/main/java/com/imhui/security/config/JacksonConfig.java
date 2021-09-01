@@ -9,6 +9,11 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 @Configuration
 public class JacksonConfig {
 

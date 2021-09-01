@@ -10,6 +10,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 @Component
 public class AuditorAwareImpl implements AuditorAware<Long> {
 

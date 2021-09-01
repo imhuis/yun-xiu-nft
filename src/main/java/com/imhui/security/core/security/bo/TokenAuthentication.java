@@ -5,6 +5,11 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 public class TokenAuthentication implements Authentication {
 
     private String token;

@@ -22,6 +22,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 @Component
 public class ImageCodeValidateFilter extends OncePerRequestFilter {
 

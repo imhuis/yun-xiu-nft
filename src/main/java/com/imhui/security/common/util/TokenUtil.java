@@ -7,6 +7,11 @@ import org.apache.commons.lang3.SystemUtils;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 public class TokenUtil {
 
 

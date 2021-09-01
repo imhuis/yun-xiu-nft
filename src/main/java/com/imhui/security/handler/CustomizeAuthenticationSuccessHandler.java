@@ -30,6 +30,11 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 @Component
 public class CustomizeAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 

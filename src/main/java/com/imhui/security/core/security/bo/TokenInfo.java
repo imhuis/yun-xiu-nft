@@ -2,6 +2,11 @@ package com.imhui.security.core.security.bo;
 
 import java.io.Serializable;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 public class TokenInfo implements Serializable {
 
     private String token;

@@ -11,6 +11,11 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import java.util.Date;
 import java.util.Optional;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 public class JwtUtil {
 
     public static String create(String user, Date expire){

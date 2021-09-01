@@ -6,6 +6,11 @@ import javax.persistence.Entity
 import javax.persistence.Table
 import javax.validation.constraints.Email
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 @Entity
 @Table(name = "s_user")
 class User : BaseEntity(), Serializable {

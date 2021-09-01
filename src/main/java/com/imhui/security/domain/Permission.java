@@ -5,6 +5,5 @@ package com.imhui.security.domain;
  * @date: 2021/9/1
  * @description:
  */
-public class SystemUser {
-
+public class Permission {
 }

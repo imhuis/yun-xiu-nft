@@ -5,6 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
+/**
+ * @author: imhuis
+ * @date: 2021/9/1
+ * @description:
+ */
 public interface UserDao extends JpaRepository<User,Long> {
 
     Optional<User> findUserById(Long id);

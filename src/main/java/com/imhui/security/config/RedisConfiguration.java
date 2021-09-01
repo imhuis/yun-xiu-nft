@@ -15,6 +15,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 @Configuration
 public class RedisConfiguration {
 

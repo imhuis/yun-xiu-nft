@@ -1,10 +1,8 @@
 package com.imhui.security.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imhui.security.common.base.ResponseResult;
 import com.imhui.security.common.base.ResponseUtil;
 import com.imhui.security.common.exception.CaptchaValidateException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -15,6 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 @Component
 public class CustomizeAuthenticationFailureHandler implements AuthenticationFailureHandler {
 

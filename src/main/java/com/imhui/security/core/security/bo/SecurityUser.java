@@ -5,6 +5,11 @@ import org.springframework.security.core.GrantedAuthority;
 import java.io.Serializable;
 import java.util.Set;
 
+/**
+ * @author: imhuis
+ * @date: 2020/1/28
+ * @description:
+ */
 public class SecurityUser implements Serializable {
 
     private String userId;
