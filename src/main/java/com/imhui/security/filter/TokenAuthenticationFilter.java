@@ -11,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+//@Component
 public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
@@ -36,6 +38,7 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
 //        }
         // start Authentication
         try {
+            logger.info("start token authentication");
             TokenAuthentication authRequest = this.convert(request);
             if (authRequest == null){
                 chain.doFilter(request, response);
@@ -61,15 +64,15 @@ public class TokenAuthenticationFilter extends BasicAuthenticationFilter {
 
     private TokenAuthentication convert(HttpServletRequest request){
         String headerTokenInServlet = request.getHeader(SecurityConstants.TOKEN_HEADER);
-        String requestToken = headerTokenInServlet;
-        if (Strings.isNullOrEmpty(requestToken)){
-            return null;
+        String requestToken;
+        if (!Strings.isNullOrEmpty(headerTokenInServlet)){
+            requestToken = headerTokenInServlet;
         }else {
-            // 读取参数
             String requestTokenInServlet = request.getParameter(SecurityConstants.TOKEN_PARAMETER);
-            requestToken = requestTokenInServlet;
-            if (Strings.isNullOrEmpty(requestToken)){
+            if (Strings.isNullOrEmpty(requestTokenInServlet)){
                 return null;
+            }else {
+                requestToken = requestTokenInServlet;
             }
         }
 

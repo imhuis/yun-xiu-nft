@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .and()
 //                .withUser("user").password(passwordEncoder().encode("123456")).authorities("USER");
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-        auth.authenticationProvider(tokenAuthenticationProvider);
+//        auth.authenticationProvider(tokenAuthenticationProvider);
     }
 
     @Override
@@ -128,7 +128,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .expiredSessionStrategy()
         ;
         http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilter(new TokenAuthenticationFilter(authenticationManagerBean(),authenticationEntryPoint));
+        // 自定义Token认证
+//        http.addFilter(new TokenAuthenticationFilter(authenticationManagerBean(),authenticationEntryPoint));
     }
 
     @Bean

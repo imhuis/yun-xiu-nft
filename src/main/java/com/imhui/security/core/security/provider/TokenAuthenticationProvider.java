@@ -28,11 +28,12 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         // redis鉴权
 //        String a = redisTemplate.opsForValue().get(token);
         Boolean tokenIsExist = redisTemplate.hasKey(token);
+        // 存在当前token 则刷新redis过期时间
         if (!tokenIsExist){
             throw new BadCredentialsException("Token is Invalid");
         }
 
-        return null;
+        return new TokenAuthentication(token);
     }
 
     @Override
