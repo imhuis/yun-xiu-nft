@@ -8,7 +8,7 @@
         <version>2.5.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.imhui</groupId>
+    <groupId>com.tencent</groupId>
     <artifactId>security</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>security-server</name>
@@ -164,7 +164,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.imhui.security.SecurityServerApplication</mainClass>
+                    <mainClass>com.tencent.security.SecurityServerApplication</mainClass>
                     <layers>
                         <enabled>true</enabled>
                     </layers>
@@ -189,7 +189,7 @@
                         <image>imhui.org/imhuis/${project.artifactId}</image>
                     </to>
                     <container>
-                        <mainClass>com.imhui.security.SecurityServerApplication</mainClass>
+                        <mainClass>com.tencent.security.SecurityServerApplication</mainClass>
                         <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                     </container>
 
