@@ -31,6 +31,7 @@ public class RedisConfiguration {
 //        redisClusterConnection.addClusterNode(new RedisNode("redis3",26379));
 //        redisClusterConnection.setMaxRedirects(3);
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        redisStandaloneConfiguration.setHostName("192.168.1.33");
 
         ClusterTopologyRefreshOptions clusterTopologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
                 .enablePeriodicRefresh(Duration.ofSeconds(60))

@@ -23,4 +23,9 @@ public class UserDaoTest {
         newUser.setPassword(passwordEncoder.encode("123456"));
         userDao.save(newUser);
     }
+
+    @Test
+    public void test(){
+        System.out.println(passwordEncoder.encode("df8a0a1b-2db5-4ae8-b517-373c15e71483"));
+    }
 }
