@@ -8,6 +8,11 @@ import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author: imhuis
+ * @date: 2021/9/1
+ * @description:
+ */
 //@Service
 public class OauthClientDetailsService implements ClientDetailsService {
 

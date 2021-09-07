@@ -1,7 +1,6 @@
 package com.tencent.security.core.security.oauth;
 
-
-import com.tencent.security.core.security.oauth.provider.OauthClientDetailsService;
+import com.tencent.security.handler.CustomizeAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,12 +22,20 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 import javax.sql.DataSource;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author: imhuis
+ * @date: 2021/9/1
+ * @description:
+ */
 @Configuration
 @EnableAuthorizationServer
-public class OAuthAuthorizationConfig extends AuthorizationServerConfigurerAdapter {
+public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private RedisConnectionFactory redisConnectionFactory;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -37,7 +44,10 @@ public class OAuthAuthorizationConfig extends AuthorizationServerConfigurerAdapt
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
+    private CustomizeAuthenticationEntryPoint authenticationEntryPoint;
+
+    @Autowired
+    private OAuth2WebResponseExceptionTranslator oAuth2WebResponseExceptionTranslator;
 
     private final String OAUTH_TOKEN_PREFIX = "app:oauth:";
 
@@ -47,10 +57,11 @@ public class OAuthAuthorizationConfig extends AuthorizationServerConfigurerAdapt
         endpoints
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService)
-                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
+                .allowedTokenEndpointRequestMethods(HttpMethod.POST)
                 .pathMapping("/oauth/token", "/app/oauth/token")
                 .tokenServices(tokenServices())
                 .tokenStore(redisTokenStore())
+                .exceptionTranslator(oAuth2WebResponseExceptionTranslator)
         ;
     }
 
@@ -59,7 +70,8 @@ public class OAuthAuthorizationConfig extends AuthorizationServerConfigurerAdapt
         security
                 .tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()")
-                .allowFormAuthenticationForClients();
+//                .allowFormAuthenticationForClients()
+                .authenticationEntryPoint(authenticationEntryPoint);
     }
 
     @Override
@@ -67,6 +79,7 @@ public class OAuthAuthorizationConfig extends AuthorizationServerConfigurerAdapt
         clients.withClientDetails(new JdbcClientDetailsService(dataSource));
     }
 
+    @Bean
     public DefaultTokenServices tokenServices(){
         DefaultTokenServices tokenServices = new DefaultTokenServices();
         tokenServices.setTokenStore(redisTokenStore());

@@ -28,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        logger.info(s);
+        logger.info("UserDetails [loadUserByUsername]: {}", s);
         // 邮箱
         if (new EmailValidator().isValid(s, null)){
             return userDao.findUserByEmail(s)

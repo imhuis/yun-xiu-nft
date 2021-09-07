@@ -21,7 +21,6 @@ import java.io.IOException;
 @Controller
 public class LoginController {
 
-
     @RequestMapping(value = "/public/captcha.png",method = RequestMethod.GET)
     public void imageCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 定义图形验证码的长、宽、验证码字符数、干扰线宽度

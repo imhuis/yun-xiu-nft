@@ -4,6 +4,7 @@ import com.tencent.security.common.base.ResponseResult;
 import com.tencent.security.common.base.ResponseUtil;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import java.io.IOException;
  * @date: 2020/1/28
  * @description:
  */
+@Component
 public class CustomizeAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
@@ -22,6 +24,7 @@ public class CustomizeAccessDeniedHandler implements AccessDeniedHandler {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
         ResponseResult responseResult = new ResponseResult();
+        responseResult.setCode(403);
         responseResult.setSuccess(false).setMessage("access denied");
         ResponseUtil.out(response, responseResult);
     }

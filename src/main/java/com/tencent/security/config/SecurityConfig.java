@@ -51,6 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;
 
+    @Autowired
+    private CustomizeAccessDeniedHandler accessDeniedHandler;
+
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -123,13 +126,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(new CustomizeAccessDeniedHandler())
+                .accessDeniedHandler(accessDeniedHandler)
                 .and()
                 .sessionManagement()
                 .maximumSessions(2)
 //                .expiredSessionStrategy()
         ;
-        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class);
         // 自定义Token认证
 //        http.addFilter(new TokenAuthenticationFilter(authenticationManagerBean(),authenticationEntryPoint));
     }
