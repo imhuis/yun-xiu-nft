@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.tencent</groupId>
-    <artifactId>security</artifactId>
+    <artifactId>nft</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>security-server</name>
+    <name>nft-server</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -22,10 +22,10 @@
         <maven.test.skip>true</maven.test.skip>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-consul-discovery</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -64,6 +64,13 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.2.0</version>
         </dependency>
 
         <dependency>
@@ -170,7 +177,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.tencent.security.SecurityServerApplication</mainClass>
+                    <mainClass>com.tencent.nft.security.SecurityServerApplication</mainClass>
                     <layers>
                         <enabled>true</enabled>
                     </layers>
@@ -195,7 +202,7 @@
                         <image>imhui.org/imhuis/${project.artifactId}</image>
                     </to>
                     <container>
-                        <mainClass>com.tencent.security.SecurityServerApplication</mainClass>
+                        <mainClass>com.tencent.nft.security.SecurityServerApplication</mainClass>
                         <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                     </container>
 

@@ -8,3 +8,15 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+mybatis:
+  type-aliases-package: com.tencent.nft.domain
+  configuration:
+    map-underscore-to-camel-case: true
+      # 控制台打印sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/**/*.xml
+  #  config-location: classpath:mybatis-config.xml

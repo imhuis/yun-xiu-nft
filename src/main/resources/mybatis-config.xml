@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="true"/>
+        <setting name="multipleResultSetsEnabled" value="true"/>
+        <setting name="autoMappingBehavior" value="PARTIAL"/>
+        <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
+        <setting name="defaultExecutorType" value="SIMPLE"/>
+        <setting name="defaultStatementTimeout" value="25000"/>
+        <setting name="defaultFetchSize" value="100"/>
+        <setting name="safeRowBoundsEnabled" value="false"/>
+        <setting name="localCacheScope" value="SESSION"/>
+        <setting name="jdbcTypeForNull" value="OTHER"/>
+        <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
+        <!-- 开启驼峰命名转换 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="cacheEnabled" value="true"/>
+        <!-- 使用别名替换列名，默认是true -->
+        <setting name="useColumnLabel" value="true"/>
+        <!-- 解决，查询返回结果含null没有对应字段值问题 -->
+        <setting name="callSettersOnNulls" value="true"/>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <!-- default enum type handler -->
+
+    </settings>
+
+    <!-- 这个属性不支持多路径 不支持通配 -->
+    <typeAliases>
+
+    </typeAliases>
+    <typeHandlers>
+        <!--        <typeHandler handler="com.tencent.tusi.core.ibatis.handler.InvoiceTypeHandler" javaType="com.tencent.tusi.common.enums.InvoiceType" jdbcType="TINYINT"/>-->
+    </typeHandlers>
+
+    <!-- 分页插件 -->
+
+    <!--        <plugin interceptor="com.tencent.tusi.core.page.PagePluginForMysql">-->
+    <!--            <property name="dialect" value="mysql" />-->
+    <!--            <property name="pageSqlId" value=".*ListPage.*" />-->
+    <!--        </plugin>-->
+<!--    <plugins>-->
+<!--    </plugins>-->
+
+</configuration>
