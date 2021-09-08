@@ -1,6 +1,6 @@
 package com.tencent.nft.security.repository.oauth;
 
-import com.tencent.nft.domain.security.oauth.OauthClientDetails;
+import com.tencent.nft.entity.security.oauth.OauthClientDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 

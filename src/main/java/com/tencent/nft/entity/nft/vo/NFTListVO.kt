@@ -1,11 +1,18 @@
-package com.tencent.nft.web.vo;
+package com.tencent.nft.entity.nft.vo
 
-import java.io.Serializable;
+import com.tencent.nft.entity.nft.NFTInfo
+import java.io.Serializable
 
-public class NFTListVO implements Serializable {
+/**
+ * @author: imhuis
+ * @date: 2021/9/1
+ * @description: NFT列表展示VO
+ */
+class NFTListVO : NFTInfo(), Serializable {
 
+    // 销售总额
+    var totalSales: Long? = null
 
-    private Long totalSales;
-    private Long totalAmount;
-
+    // 销售总量
+    var totalAmount = 0
 }

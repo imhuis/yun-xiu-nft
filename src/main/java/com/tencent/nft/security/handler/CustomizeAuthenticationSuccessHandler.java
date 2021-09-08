@@ -5,7 +5,7 @@ import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.util.TokenUtil;
 import com.tencent.nft.security.bo.TokenInfo;
-import com.tencent.nft.domain.security.SecurityUser;
+import com.tencent.nft.entity.security.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;

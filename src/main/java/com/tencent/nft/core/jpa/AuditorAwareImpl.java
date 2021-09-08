@@ -1,6 +1,6 @@
 package com.tencent.nft.core.jpa;
 
-import com.tencent.nft.domain.security.User;
+import com.tencent.nft.entity.security.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.AuditorAware;

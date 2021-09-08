@@ -1,4 +1,4 @@
-package com.tencent.nft.domain.security.oauth;
+package com.tencent.nft.entity.security.oauth;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.provider.ClientDetails;

@@ -1,18 +1,21 @@
-package com.tencent.nft.domain.nft;
+package com.tencent.nft.entity.nft
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.io.Serializable
+import java.time.LocalDateTime
 
 /**
  * @author: imhuis
  * @date: 2021/9/1
  * @description: 子NFT
  */
-public class SubNFT extends SuperNFT implements Serializable {
+class SubNFT : SuperNFT(), Serializable {
 
     // 区块链地址
-    private String address;
+    var address: String? = null
+
+    // 售出时间
+    var soldTime: LocalDateTime? = null
 
     // 子NFT创建时间
-    private LocalDateTime nftCreateTime;
+    override var nftCreateTime: LocalDateTime? = null
 }

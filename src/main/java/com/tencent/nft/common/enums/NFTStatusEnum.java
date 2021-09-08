@@ -2,19 +2,18 @@ package com.tencent.nft.common.enums;
 
 /**
  * @author: imhuis
- * @date: 2021/9/1
- * @description: NFT媒体类型枚举
+ * @date: 2021/9/9
+ * @description:
  */
-public enum NFTTypeEnum implements ICommonEnum {
+public enum NFTStatusEnum implements ICommonEnum {
 
-    PICTURE(1, "picture"),
-    VIDEO(2, "video"),
-    AUDIO(3, "audio");
+    WAITING(0, "待发行"),
+    PROCESSING(1, "发行中");
 
     final int code;
     final String value;
 
-    NFTTypeEnum(int code, String value) {
+    NFTStatusEnum(int code, String value) {
         this.code = code;
         this.value = value;
     }

@@ -1,6 +1,6 @@
 package com.tencent.nft.security.repository;
 
-import com.tencent.nft.domain.security.User;
+import com.tencent.nft.entity.security.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -46,7 +46,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User with username " + s + "was not found"));
     }
 
-    private User createSpringSecurityUser(String login, com.tencent.nft.domain.security.User user){
+    private User createSpringSecurityUser(String login, com.tencent.nft.entity.security.User user){
 //        if (false){
 //            throw new UserNotActivatedException("");
 //        }

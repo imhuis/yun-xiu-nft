@@ -1,6 +1,6 @@
 package com.tencent.nft.security;
 
-import com.tencent.nft.domain.security.User;
+import com.tencent.nft.entity.security.User;
 import com.tencent.nft.security.repository.UserDao;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

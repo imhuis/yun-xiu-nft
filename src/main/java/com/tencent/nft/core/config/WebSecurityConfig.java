@@ -33,7 +33,7 @@ import org.springframework.security.web.firewall.HttpFirewall;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;

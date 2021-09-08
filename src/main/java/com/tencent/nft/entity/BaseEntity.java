@@ -1,4 +1,4 @@
-package com.tencent.nft.domain;
+package com.tencent.nft.entity;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

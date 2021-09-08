@@ -1,6 +1,6 @@
-package com.tencent.nft.domain.security
+package com.tencent.nft.entity.security
 
-import com.tencent.nft.domain.BaseEntity
+import com.tencent.nft.entity.BaseEntity
 import java.io.Serializable
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -10,7 +10,7 @@ import javax.validation.constraints.Email
 /**
  * @author: imhuis
  * @date: 2020/1/28
- * @description:
+ * @description: 用户表 s_user
  */
 @Entity
 @Table(name = "s_user")

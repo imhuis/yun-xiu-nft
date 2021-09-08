@@ -1,4 +1,4 @@
-package com.tencent.nft.domain.security
+package com.tencent.nft.entity.security
 
 import org.springframework.security.core.GrantedAuthority
 import java.io.Serializable
