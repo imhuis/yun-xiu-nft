@@ -51,4 +51,5 @@
             <if test="nftCreateTime != null">#{nftCreateTime},</if>
         </trim>
     </insert>
+
 </mapper>

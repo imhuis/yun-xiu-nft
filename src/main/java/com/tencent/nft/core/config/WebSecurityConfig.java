@@ -39,9 +39,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    private ImageCodeValidateFilter imageCodeValidateFilter;
-
-    @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Autowired
@@ -106,7 +103,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/public/**").permitAll()
+                .antMatchers("/**").permitAll()
                 .antMatchers("/system/**").hasIpAddress("127.0.0.0/16")
 
                 .anyRequest()

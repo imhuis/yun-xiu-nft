@@ -13,7 +13,7 @@ spring:
     property-naming-strategy: SNAKE_CASE
 
 mybatis:
-  type-aliases-package: com.tencent.nft.domain
+  type-aliases-package: com.tencent.nft.entity
   configuration:
     map-underscore-to-camel-case: true
       # 控制台打印sql

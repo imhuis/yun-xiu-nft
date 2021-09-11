@@ -27,7 +27,7 @@ import java.util.Objects;
  * @date: 2020/1/28
  * @description:
  */
-@Component
+//@Component
 public class ImageCodeValidateFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageCodeValidateFilter.class);

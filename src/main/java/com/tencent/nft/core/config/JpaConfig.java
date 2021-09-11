@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @description:
  */
 @Configuration
-@EnableJpaRepositories(basePackages = "com.tencent.nft.security.repository")
+@EnableJpaRepositories(basePackages = {"com.tencent.nft.security.repository"})
 @EnableJpaAuditing
 @EnableTransactionManagement
 public class JpaConfig {

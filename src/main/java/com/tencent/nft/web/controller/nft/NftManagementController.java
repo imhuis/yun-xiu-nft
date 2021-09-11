@@ -23,7 +23,8 @@ import java.util.stream.Collectors;
  * @date: 2021/9/1
  * @description:
  */
-@Controller("/admin/nft")
+@RestController
+@RequestMapping("/admin/nft")
 public class NftManagementController {
 
     @Autowired
@@ -39,7 +40,7 @@ public class NftManagementController {
     public ResponseResult nftList(@RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
                                   @RequestParam(value = "per_page",required = false, defaultValue = "20") Integer size,
                                   @RequestParam(value = "nft_status",required = false) Integer nftStatus,
-                                  @RequestBody NFTListQueryDTO nftListQueryDTO){
+                                  @RequestBody(required = false) NFTListQueryDTO nftListQueryDTO){
 
         PageBean nftListVOList = INFTManagementService.listNFT(page, size, nftStatus, nftListQueryDTO);
         return ResponseUtil.success(nftListVOList);

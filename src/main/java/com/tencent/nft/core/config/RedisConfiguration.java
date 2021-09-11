@@ -5,6 +5,8 @@ import io.lettuce.core.SocketOptions;
 import io.lettuce.core.cluster.ClusterClientOptions;
 import io.lettuce.core.cluster.ClusterTopologyRefreshOptions;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -22,6 +24,9 @@ import java.time.Duration;
 @Configuration
 public class RedisConfiguration {
 
+    @Autowired
+    private RedisProperties redisProperties;
+
     @Bean(destroyMethod = "destroy")
     public LettuceConnectionFactory lettuceConnectionFactory(){
 //        RedisClusterConfiguration redisClusterConnection = new RedisClusterConfiguration();
@@ -30,7 +35,7 @@ public class RedisConfiguration {
 //        redisClusterConnection.addClusterNode(new RedisNode("redis3",26379));
 //        redisClusterConnection.setMaxRedirects(3);
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName("192.168.1.33");
+        redisStandaloneConfiguration.setHostName(redisProperties.getHost());
 
         ClusterTopologyRefreshOptions clusterTopologyRefreshOptions = ClusterTopologyRefreshOptions.builder()
                 .enablePeriodicRefresh(Duration.ofSeconds(60))

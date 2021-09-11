@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * @author: imhuis
  * @date: 2021/9/8
- * @description: https://www.cnblogs.com/legend_sun/p/12098981.html 通用枚举类
+ * @description:
  */
 public interface ICommonEnum {
 
