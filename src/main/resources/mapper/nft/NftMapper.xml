@@ -18,7 +18,7 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="sub_id" jdbcType="VARCHAR" property="nftId"/>
         <result column="super_id" jdbcType="VARCHAR" property="superNFTId"/>
-<!--        <result column="nft_status" jdbcType="INTEGER" property="nftStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>-->
+        <result column="sale_status" jdbcType="INTEGER" property="saleStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
 <!--        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>-->
     </resultMap>
     <sql id="SuperNFT_Column_List">
@@ -29,7 +29,7 @@
         reserve_start_time, reserve_end_time, sell_start_time, sell_end_time, reservation
     </sql>
     <sql id="SubNFT_Column_List">
-        id, sub_id, super_id, nft_status, address, sold_time
+        id, sub_id, super_id, sale_status, address, sold_time
     </sql>
 
     <select id="selectSuperNFTByNftId" resultMap="SuperNFTResultMap">
@@ -97,7 +97,7 @@
         where nft_id = #{nftId}
     </select>
 
-    <select id="selectSubNFTList" resultType="com.tencent.nft.entity.nft.SubNFT">
+    <select id="selectSubNFTList" resultMap="SubNFTResultMap">
         select
         <include refid="SubNFT_Column_List"/>
         from t_sub_nft

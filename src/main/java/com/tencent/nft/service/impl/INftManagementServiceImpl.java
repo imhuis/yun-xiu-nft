@@ -12,6 +12,7 @@ import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
 import com.tencent.nft.entity.nft.vo.NFTDetailsVO;
+import com.tencent.nft.entity.nft.vo.SubNFTVO;
 import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.service.INftManagementService;
 import com.tencent.nft.entity.nft.vo.NFTListVO;
@@ -59,7 +60,6 @@ public class INftManagementServiceImpl implements INftManagementService {
     public PageBean<List<SuperNFT>> listNFT(Integer page, Integer size, Integer nftStatus, NftListQueryDTO nftListQueryDTO) {
 //        PageRowBounds rowBounds = new PageRowBounds(page, size);
         if (nftListQueryDTO == null){
-            System.out.println("null");
             nftListQueryDTO = new NftListQueryDTO();
         }
         PageHelper.startPage(page, size);
@@ -72,7 +72,6 @@ public class INftManagementServiceImpl implements INftManagementService {
             }
         });
         PageInfo pageInfo = new PageInfo(superNFTList);
-        pageInfo.getPages();
 
         PageBean<List<SuperNFT>> pageBean = new PageBean<>();
         pageBean.setPages(pageInfo.getPages());
@@ -85,24 +84,36 @@ public class INftManagementServiceImpl implements INftManagementService {
     @Override
     public PageBean listSubNFT(Integer page, Integer size, String parentNftId, SubNFTQueryDTO subNFTQueryDTO) {
         if (subNFTQueryDTO == null){
-            System.out.println("null");
             subNFTQueryDTO = new SubNFTQueryDTO();
         }
+        Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(parentNftId);
+        Optional<NFTInfo> nftInfoOptional = nftMapper.selectNFTInfoByNftId(parentNftId);
+
         PageHelper.startPage(page, size);
+        List<SubNFT> subNFTList = nftMapper.selectSubNFTList(parentNftId, subNFTQueryDTO);
+        List<SubNFTVO> subNFTVOList = Lists.newArrayList();
 
-        List<SubNFT> superNFTList = nftMapper.selectSubNFTList(parentNftId, subNFTQueryDTO);
-        superNFTList.stream().map(subNFT -> {
-            subNFT.setIssuer("aaa");
-            return null;
-        });
+        BeanUtils.copyProperties(subNFTList, subNFTVOList);
+//        System.arraycopy(subNFTList, 0 , subNFTVOList, 0, subNFTList.size());
 
-        PageInfo pageInfo = new PageInfo(superNFTList);
-        pageInfo.getPages();
+        subNFTVOList.stream().forEach(subNFTVO -> nftInfoOptional.ifPresent(nftInfo -> {
+            SuperNFT s = superNFTOptional.get();
+            subNFTVO.setNftName(s.getNftName());
+            subNFTVO.setNftType(s.getNftType());
+            subNFTVO.setIssuer(s.getIssuer());
 
-        PageBean<List<SubNFT>> pageBean = new PageBean<>();
+            subNFTVO.setUnitPrice(nftInfo.getUnitPrice());
+            subNFTVO.setReserveStartTime(nftInfo.getReserveStartTime());
+            subNFTVO.setSellStartTime(nftInfo.getSellStartTime());
+        }));
+
+
+        PageInfo pageInfo = new PageInfo(subNFTList);
+
+        PageBean<List<SubNFTVO>> pageBean = new PageBean<>();
         pageBean.setPages(pageInfo.getPages());
         pageBean.setSize(pageInfo.getSize());
-        pageBean.setData(superNFTList);
+        pageBean.setData(subNFTVOList);
 
         return pageBean;
     }

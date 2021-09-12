@@ -3,20 +3,18 @@ package com.tencent.nft.common.enums;
 /**
  * @author: imhuis
  * @date: 2021/9/9
- * @description:
+ * @description: NFT出售状态
  */
-public enum NFTStatusEnum implements ICommonEnum {
+public enum NFTSaleStatusEnum implements ICommonEnum {
 
-    WAITING(0, "待发行"),
-    RESERVEING(11, "预售中"),
-    PROCESSING(12, "发行中"),
-    SOLDOUT(21, "已售罄"),
-    OffShelf(3, "已下架");
+    NotSold(0, "未出售"),
+    Sold(1, "已出售"),
+    OFFShelf(3, "已下架");
 
     final int code;
     final String value;
 
-    NFTStatusEnum(int code, String value) {
+    NFTSaleStatusEnum(int code, String value) {
         this.code = code;
         this.value = value;
     }

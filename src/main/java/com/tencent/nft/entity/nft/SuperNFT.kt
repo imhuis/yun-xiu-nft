@@ -19,7 +19,7 @@ open class SuperNFT : BaseEntity(), Serializable {
     // NFT名称
     var nftName: String? = null
 
-    // NFT状态 (多表共同属性)
+    // NFT状态 (父NFT状态)
     var nftStatus: NFTStatusEnum? = null
 
     // NFT类型（1-图片 2-视频 3-音频）

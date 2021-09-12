@@ -1,5 +1,7 @@
 package com.tencent.nft.entity.nft
 
+import com.tencent.nft.common.enums.NFTSaleStatusEnum
+import com.tencent.nft.common.enums.NFTStatusEnum
 import java.io.Serializable
 import java.time.LocalDateTime
 
@@ -8,11 +10,14 @@ import java.time.LocalDateTime
  * @date: 2021/9/1
  * @description: 子NFT
  */
-class SubNFT : SuperNFT(), Serializable {
+open class SubNFT : SuperNFT(), Serializable {
 
     override var nftId: String?= null
 
     var superNFTId: String?= null
+
+    // NFT出售状态状态 (子属性 )
+    var saleStatus: NFTSaleStatusEnum? = null
 
     // 区块链地址
     var address: String? = null
