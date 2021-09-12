@@ -7,6 +7,9 @@ package com.tencent.nft.common.exception;
  */
 public class CustomizeException extends RuntimeException {
 
+    public CustomizeException() {
+    }
+
     public CustomizeException(String message) {
         super(message);
     }

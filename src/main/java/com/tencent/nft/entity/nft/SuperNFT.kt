@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 open class SuperNFT : BaseEntity(), Serializable {
 
     // NFT编号
-    var nftId: String? = null
+    open var nftId: String? = null
 
     // NFT名称
     var nftName: String? = null

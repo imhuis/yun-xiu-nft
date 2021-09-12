@@ -10,6 +10,10 @@ import java.time.LocalDateTime
  */
 class SubNFT : SuperNFT(), Serializable {
 
+    override var nftId: String?= null
+
+    var superNFTId: String?= null
+
     // 区块链地址
     var address: String? = null
 

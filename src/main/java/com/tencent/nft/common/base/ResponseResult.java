@@ -31,7 +31,7 @@ public class ResponseResult<T> implements Serializable {
     /**
      * 返回对象
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
     private String timestamp;

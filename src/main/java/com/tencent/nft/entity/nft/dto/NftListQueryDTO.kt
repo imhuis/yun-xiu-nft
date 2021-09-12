@@ -7,7 +7,7 @@ import java.io.Serializable
  * @date: 2021/9/9
  * @description:
  */
-open class NFTListQueryDTO : Serializable {
+open class NftListQueryDTO : Serializable {
 
     var nftId: String? = null
     var nftName: String? = null

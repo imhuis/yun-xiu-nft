@@ -1,4 +1,14 @@
 spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://42.192.12.13:3306/nft?serverTimezone=Asia/Shanghai
+    username: root
+    password: AhBcosDb_1!$
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 20
+      max-lifetime: 60000
   jpa:
     show-sql: true
     hibernate:

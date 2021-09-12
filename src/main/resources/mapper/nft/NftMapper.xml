@@ -4,11 +4,42 @@
     <resultMap id="BaseResultMap" type="com.tencent.nft.entity.nft.NFTInfo">
         <id column="id" jdbcType="BIGINT" property="id"/>
     </resultMap>
+    <resultMap id="SuperNFTResultMap" type="com.tencent.nft.entity.nft.SuperNFT">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="nft_status" jdbcType="INTEGER" property="nftStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
+        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
+    </resultMap>
+    <resultMap id="NFTInfoResultMap" type="com.tencent.nft.entity.nft.NFTInfo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="nft_status" jdbcType="INTEGER" property="nftStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
+        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
+    </resultMap>
+    <resultMap id="SubNFTResultMap" type="com.tencent.nft.entity.nft.SubNFT">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="sub_id" jdbcType="VARCHAR" property="nftId"/>
+        <result column="super_id" jdbcType="VARCHAR" property="superNFTId"/>
+<!--        <result column="nft_status" jdbcType="INTEGER" property="nftStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>-->
+<!--        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>-->
+    </resultMap>
     <sql id="SuperNFT_Column_List">
         id, nft_id, nft_name, nft_status, nft_type, issuer, introduce, unit_price, circulation, nft_create_time
     </sql>
+    <sql id="NFTInfo_Column_List">
+        id, nft_id, nft_name, nft_status, unit_price, circulation,
+        reserve_start_time, reserve_end_time, sell_start_time, sell_end_time, reservation
+    </sql>
+    <sql id="SubNFT_Column_List">
+        id, sub_id, super_id, nft_status, address, sold_time
+    </sql>
 
-    <select id="selectSuperNFTList" resultType="com.tencent.nft.entity.nft.SuperNFT">
+    <select id="selectSuperNFTByNftId" resultMap="SuperNFTResultMap">
+        select
+        <include refid="SuperNFT_Column_List"/>
+        from t_super_nft
+        where nft_id = #{nftId}
+    </select>
+
+    <select id="selectSuperNFTList" resultMap="SuperNFTResultMap">
         select
         <include refid="SuperNFT_Column_List"/>
         from t_super_nft
@@ -51,5 +82,36 @@
             <if test="nftCreateTime != null">#{nftCreateTime},</if>
         </trim>
     </insert>
+
+    <delete id="deleteSuperNFT">
+        delete from
+        t_super_nft
+        where nft_id = #{nftId}
+    </delete>
+
+
+    <select id="selectNFTInfoByNftId" resultMap="NFTInfoResultMap">
+        select
+        <include refid="NFTInfo_Column_List"/>
+        from t_nft_info
+        where nft_id = #{nftId}
+    </select>
+
+    <select id="selectSubNFTList" resultType="com.tencent.nft.entity.nft.SubNFT">
+        select
+        <include refid="SubNFT_Column_List"/>
+        from t_sub_nft
+        <where>
+            <if test="superId != null">
+                and super_id = #{superId}
+            </if>
+            <if test="subNFTQueryDTO.id != null">
+                and sub_id = #{subNFTQueryDTO.id}
+            </if>
+            <if test="subNFTQueryDTO.nftStatus != null">
+                and nft_status = #{subNFTQueryDTO.nftStatus}
+            </if>
+        </where>
+    </select>
 
 </mapper>

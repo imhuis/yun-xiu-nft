@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank
  * @date: 2021/9/1
  * @description: 新增NFT controller接收实体
  */
-class NFTCreateDTO : Serializable {
+class NftCreateDTO : Serializable {
 
     // NFT名称
     @NotBlank(message = "NFT名称不能为空")

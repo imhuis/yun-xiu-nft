@@ -12,17 +12,18 @@ open class NFTInfo : SuperNFT(), Serializable {
     var circulation = 0
 
     // 预约开始时间
-    var reserveStartTime: LocalDateTime? = null
+    open var reserveStartTime: LocalDateTime? = null
 
     // 预约结束时间
-    var reserveEndTime: LocalDateTime? = null
+    open var reserveEndTime: LocalDateTime? = null
 
     // 开售开始时间
-    var sellStartTime: LocalDateTime? = null
+    open var sellStartTime: LocalDateTime? = null
 
     // 开售结束时间
-    var sellEndTime: LocalDateTime? = null
+    open var sellEndTime: LocalDateTime? = null
 
+    // 预约人数
     var reservation = 0
 
 }
