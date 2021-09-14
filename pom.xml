@@ -102,6 +102,11 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
+        <!--lombok引入，省去get，set-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
         <!-- tools -->
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
