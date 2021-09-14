@@ -1,6 +1,7 @@
 package com.tencent.nft.service.impl;
 
-import com.feedget.vo.ImageVO;
+
+import com.tencent.nft.entity.nft.vo.ImageVO;
 import com.tencent.nft.service.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
