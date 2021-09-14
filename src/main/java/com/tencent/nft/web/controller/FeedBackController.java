@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -33,13 +34,21 @@ public class FeedBackController {
      * 并且进行分页
      * 每页数据15条
      * */
-    @GetMapping("/getAllFeedBack")
-    public PageInfo<FeedBack> getAllPerson(Model model, @RequestParam(defaultValue = "1",value = "pageNum") Integer pageNum){
-        PageHelper.startPage(pageNum,15);
-        List<FeedBack> list = feedService.getAllFeedBack();
+    @PostMapping("/getAllFeedBack")
+    public SysResult getAllFeedBack
+    (Model model, @RequestParam(value = "pageNum",required = false, defaultValue = "1") Integer pageNum,
+     @RequestParam(value = "pageSize",required = false, defaultValue = "20") Integer pagesize,
+     @RequestParam(value = "date", required = false)  String date) throws ParseException {
+        PageHelper.startPage(pageNum,pagesize);
+        List<FeedBack> list = null;
+        try {
+            list = feedService.getAll(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         PageInfo<FeedBack> pageInfo = new PageInfo<FeedBack>(list);
         model.addAttribute("pageInfo",pageInfo);
-        return pageInfo;
+        return SysResult.success(pageInfo);
     }
 
 

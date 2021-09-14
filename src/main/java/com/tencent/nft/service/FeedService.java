@@ -4,6 +4,7 @@ package com.tencent.nft.service;
 
 import com.tencent.nft.common.base.FeedBack;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface FeedService {
@@ -13,7 +14,7 @@ public interface FeedService {
 
     boolean deleteById(Integer id);
 
-    List<FeedBack> getAllFeedBack();
+    List<FeedBack> getAll(String date) throws ParseException;
 
     Object getById(Integer id);
 }

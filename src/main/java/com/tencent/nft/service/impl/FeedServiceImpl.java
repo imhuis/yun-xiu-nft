@@ -2,12 +2,15 @@ package com.tencent.nft.service.impl;
 
 
 
+import com.github.pagehelper.util.StringUtil;
 import com.tencent.nft.common.base.FeedBack;
 import com.tencent.nft.mapper.FeedMapper;
 import com.tencent.nft.service.FeedService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -46,8 +49,14 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public List<FeedBack> getAllFeedBack() {
-        return feedMapper.getAllFeedBack();
+    public List<FeedBack> getAll(String date) throws ParseException {
+        FeedBack feedBack=new FeedBack();
+        if(!StringUtil.isEmpty(date)){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            feedBack.setDate(sdf.parse(date));
+        }
+
+        return feedMapper.getAll(feedBack);
     }
 
     @Override

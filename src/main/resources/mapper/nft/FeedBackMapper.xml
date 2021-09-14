@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.tencent.nft.mapper.FeedMapper">
+    
+    <insert id="insert" parameterType="com.tencent.nft.common.base.FeedBack">
+        INSERT into feedback (name,phone,date,picture,message) value (#{name},#{phone},now(),#{picture},#{message})
+    </insert>
+
+    <select id="getAll" parameterType="com.tencent.nft.common.base.FeedBack" resultType="com.tencent.nft.common.base.FeedBack">
+        select * from feedback
+        <where>
+        <if test="date != null">
+            and date = #{date}
+        </if>
+        </where>
+
+    </select>
+    
+    <select id="getByDate" resultType="com.tencent.nft.common.base.FeedBack">
+        select * FROM feedback where date = #{A}
+    </select>
+
+    <delete id="deleteById" parameterType="com.tencent.nft.common.base.FeedBack">
+        DELETE from feedback where id = #{id}
+    </delete>
+
+    <select id="getById" resultType="com.tencent.nft.common.base.FeedBack">
+        select * from feedback where id =#{id}
+    </select>
+
+</mapper>

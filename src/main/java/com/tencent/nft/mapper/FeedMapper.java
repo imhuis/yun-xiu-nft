@@ -21,7 +21,7 @@ public interface FeedMapper {
     //根据id删除
     int deleteById(Integer id);
     //查询全部数据并进行分页
-    List<FeedBack> getAllFeedBack();
+    List<FeedBack> getAll(FeedBack feedBack);
     //根据ID查询
     Object getById(Integer id);
 }
