@@ -14,7 +14,7 @@ import java.util.Date;
 public class FeedBack implements Serializable {
     private Integer id; //ID主键自增
     private String name;
-    private int phone;
+    private String phone;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date date;
     private String picture;

@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class FeedBackController {
     @Autowired
     private FeedService feedService;
@@ -24,9 +25,9 @@ public class FeedBackController {
      * 插入数据库
      * */
     @PostMapping("/feedback")
-    public SysResult insert(@RequestBody FeedBack feedBack){
+    public SysResult insert(@RequestBody(required=false) FeedBack feedBack){
         feedService.insert(feedBack);
-        return SysResult.success();
+        return SysResult.success("null");
     }
 
     /**

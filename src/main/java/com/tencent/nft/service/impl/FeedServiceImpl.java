@@ -24,6 +24,9 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public int insert(FeedBack feedBack) {
+        if(feedBack.getMessage() == null || feedBack.getMessage() == "") {
+                return 1;
+        }
         return feedMapper.insert(feedBack);
     }
 
