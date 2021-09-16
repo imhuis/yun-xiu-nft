@@ -77,6 +77,7 @@ public class NftManagementController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseResult createNFT(@RequestBody @Validated NftCreateDTO dto){
+        // 参数判断
 
         if (dto.getDetailPicture().size() > 6){
             return ResponseUtil.define(0, "最多上传6张图片");

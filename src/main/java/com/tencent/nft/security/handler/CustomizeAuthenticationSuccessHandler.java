@@ -38,8 +38,8 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         // 生成token
-        String newToken = TokenUtil.generateToken();
-        User user = (User) authentication.getPrincipal();
+//        String newToken = TokenUtil.generateToken();
+//        User user = (User) authentication.getPrincipal();
 
         Set<? extends GrantedAuthority> authorities = authentication.getAuthorities().stream().collect(Collectors.toSet());
 
@@ -50,13 +50,13 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
 
         // 缓存保存token信息
         Duration expires = Duration.ofMinutes(60);
-        BoundHashOperations<String,String,Object> boundHashOps = redisTemplate.boundHashOps(newToken);
-        boundHashOps.putAll(BeanUtil.beanToMap(securityUser));
-        boundHashOps.expire(expires);
+//        BoundHashOperations<String,String,Object> boundHashOps = redisTemplate.boundHashOps(newToken);
+//        boundHashOps.putAll(BeanUtil.beanToMap(securityUser));
+//        boundHashOps.expire(expires);
 
         ResponseResult<TokenInfo> responseResult = new ResponseResult();
         responseResult.setMessage("Login success");
-        TokenInfo tokenInfo = new TokenInfo(newToken, expires.getSeconds());
+        TokenInfo tokenInfo = new TokenInfo(request.getSession().getId(), expires.getSeconds());
 //        tokenInfo.setToken(request.getSession().getId());
         responseResult.setData(tokenInfo);
         ResponseUtil.out(response, responseResult);
