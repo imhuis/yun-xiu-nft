@@ -11,13 +11,13 @@
     </insert>
 
     <select id="getAll" parameterType="com.tencent.nft.common.base.FeedBack" resultType="com.tencent.nft.common.base.FeedBack">
-        select * from feedback order by date desc
+        select * from feedback
         <where>
         <if test="date != null">
             and date = #{date}
         </if>
         </where>
-
+        order by date desc
     </select>
     
     <select id="getByDate" resultType="com.tencent.nft.common.base.FeedBack">

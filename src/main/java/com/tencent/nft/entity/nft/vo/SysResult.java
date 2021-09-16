@@ -21,8 +21,8 @@ public class SysResult implements Serializable { //规范的写法
 
     //重载:  方法名称相同,参数不同
     //为了用户使用VO对象 更加的方便 重载一些方法 简化程序的调用
-    public static SysResult fail(){
-        return new SysResult(false,1, "业务执行失败",null,"");
+    public static SysResult fail(String message){
+        return new SysResult(false,1, message, null,"");
     }
     //1.不带参数的正确返回
     public static SysResult success(){
