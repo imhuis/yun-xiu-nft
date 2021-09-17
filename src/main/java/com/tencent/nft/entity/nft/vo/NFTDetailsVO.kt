@@ -29,10 +29,10 @@ class NFTDetailsVO : NFTInfo(), Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     override var sellEndTime: LocalDateTime? = null
 
+    // 销售总量
+    var totalAmount:Int? = null
+
     // 销售总额
     var totalSales: Long? = null
-
-    // 销售总量
-    var totalAmount = 0
 
 }

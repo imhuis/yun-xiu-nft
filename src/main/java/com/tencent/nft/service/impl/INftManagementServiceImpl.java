@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author: imhuis
@@ -57,26 +58,31 @@ public class INftManagementServiceImpl implements INftManagementService {
     }
 
     @Override
-    public PageBean<List<SuperNFT>> listNFT(Integer page, Integer size, Integer nftStatus, NftListQueryDTO nftListQueryDTO) {
+    public PageBean<List<NFTListVO>> listNFT(Integer page, Integer size, Integer nftStatus, NftListQueryDTO nftListQueryDTO) {
 //        PageRowBounds rowBounds = new PageRowBounds(page, size);
-        if (nftListQueryDTO == null){
-            nftListQueryDTO = new NftListQueryDTO();
-        }
+        // 执行分页
         PageHelper.startPage(page, size);
         List<SuperNFT> superNFTList = nftMapper.selectSuperNFTList(nftListQueryDTO);
         List<NFTListVO> nftListVOList = Lists.newArrayList();
-        Collections.copy(superNFTList, nftListVOList);
+//        Collections.copy(superNFTList, nftListVOList);
         superNFTList.stream().forEach(c -> {
-            if (c.getNftStatus() == NFTStatusEnum.PROCESSING){
-                // 如果为发行状态查询销售金额
+            NFTListVO tmp = new NFTListVO();
+            BeanUtils.copyProperties(c, tmp);
+            if (c.getNftStatus() == NFTStatusEnum.PROCESSING || c.getNftStatus() == NFTStatusEnum.SOLDOUT){
+                // 如果为发行状态为发现中或者是售罄 查询销售金额
+                tmp.setTotalAmount(1000);
+                tmp.setTotalSales(2000L);
             }
+            tmp.setUnitPrice(1);
+            tmp.setCirculation(2000);
+            nftListVOList.add(tmp);
         });
-        PageInfo pageInfo = new PageInfo(superNFTList);
 
-        PageBean<List<SuperNFT>> pageBean = new PageBean<>();
+        PageInfo pageInfo = new PageInfo(nftListVOList);
+        PageBean<List<NFTListVO>> pageBean = new PageBean<>();
         pageBean.setPages(pageInfo.getPages());
         pageBean.setSize(pageInfo.getSize());
-        pageBean.setData(superNFTList);
+        pageBean.setData(nftListVOList);
 
         return pageBean;
     }
@@ -126,9 +132,15 @@ public class INftManagementServiceImpl implements INftManagementService {
         }
         NFTInfo nftInfo;
         if (superNFTOptional.get().getNftStatus() != NFTStatusEnum.WAITING){
+            // 待发行的nft可以查询到信息
             nftInfo = nftMapper.selectNFTInfoByNftId(nftId).orElse(new NFTInfo());
             BeanUtils.copyProperties(superNFTOptional.get(), nftInfo);
+
             NFTDetailsVO nftDetailsVO = new NFTDetailsVO();
+            if (nftInfo.getNftStatus() == NFTStatusEnum.PROCESSING || nftInfo.getNftStatus() == NFTStatusEnum.SOLDOUT){
+                nftDetailsVO.setTotalAmount(200);
+                nftDetailsVO.setTotalSales(2300L);
+            }
             BeanUtils.copyProperties(nftInfo, nftDetailsVO);
             return nftDetailsVO;
         }

@@ -44,17 +44,10 @@ public class NftManagementController {
                                   @RequestParam(value = "nft_status",required = false) Integer nftStatus,
                                   @RequestBody(required = false) NftListQueryDTO nftListQueryDTO){
 
+        if (nftListQueryDTO == null){
+            nftListQueryDTO = new NftListQueryDTO();
+        }
         PageBean nftListVOList = nftManagementService.listNFT(page, size, nftStatus, nftListQueryDTO);
-        return ResponseUtil.success(nftListVOList);
-    }
-
-    @RequestMapping(value = "/sub/{superNFT}", method = RequestMethod.GET)
-    public ResponseResult subNftList(@RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
-                                  @RequestParam(value = "per_page",required = false, defaultValue = "20") Integer size,
-                                  @PathVariable("superNFT") String superNFTId,
-                                  @RequestBody(required = false) SubNFTQueryDTO subNFTQueryDTO){
-
-        PageBean nftListVOList = nftManagementService.listSubNFT(page, size, superNFTId, subNFTQueryDTO);
         return ResponseUtil.success(nftListVOList);
     }
 
@@ -71,6 +64,16 @@ public class NftManagementController {
             return ResponseUtil.define(0, "查询记录不存在");
         }
         return ResponseUtil.success(nftDetailsVO);
+    }
+
+    @RequestMapping(value = "/sub/{superNFT}", method = RequestMethod.GET)
+    public ResponseResult subNftList(@RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
+                                  @RequestParam(value = "per_page",required = false, defaultValue = "20") Integer size,
+                                  @PathVariable("superNFT") String superNFTId,
+                                  @RequestBody(required = false) SubNFTQueryDTO subNFTQueryDTO){
+
+        PageBean nftListVOList = nftManagementService.listSubNFT(page, size, superNFTId, subNFTQueryDTO);
+        return ResponseUtil.success(nftListVOList);
     }
 
 

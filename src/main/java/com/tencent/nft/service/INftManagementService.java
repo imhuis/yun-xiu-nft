@@ -1,11 +1,10 @@
 package com.tencent.nft.service;
 
 import com.tencent.nft.common.base.PageBean;
-import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
-import com.tencent.nft.entity.nft.vo.NFTDetailsVO;
+import com.tencent.nft.entity.nft.vo.NFTListVO;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public interface INftManagementService {
 
     void deleteNft(String nftId);
 
-    PageBean<List<SuperNFT>> listNFT(Integer page, Integer size, Integer nftStatus, NftListQueryDTO nftListQueryDTO);
+    PageBean<List<NFTListVO>> listNFT(Integer page, Integer size, Integer nftStatus, NftListQueryDTO nftListQueryDTO);
 
     PageBean listSubNFT(Integer page, Integer size, String parentNftId, SubNFTQueryDTO subNFTQueryDTO);
 
