@@ -32,4 +32,13 @@
     </insert>
 
 
+
+
+
+
+
+
+    <select id="selectById" resultType="com.tencent.nft.entity.security.WxUser">
+        select * FROM s_wx_user where id = #{id}
+    </select>
 </mapper>

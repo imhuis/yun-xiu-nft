@@ -17,8 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.UUID;
+import java.security.PublicKey;
+
 
 @RestController
 @RequestMapping("/oss")
@@ -48,8 +48,9 @@ public class OssController {
         PutObjectResult result = fileUploadUtil.upload(newName, newFile.getAbsolutePath());
         long endTime = System.currentTimeMillis();
         log.info("上传文件耗时：{}ms", endTime - startTime);
+        Object newFileName = "https://nft-1257367141.cos.ap-shanghai.myqcloud.com/" + newName ;
 
-        return ResponseUtil.success("https://nft-1257367141.cos.ap-shanghai.myqcloud.com/" + newName);
+        return ResponseUtil.success(newFileName);
     }
 
     private String getSuffix(String originalFilename) {

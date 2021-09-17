@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @Service
@@ -23,8 +25,15 @@ public class FileServicelmpl implements FileService {
         }
         String OriginalFilename = file.getOriginalFilename();
         String fileName = System.currentTimeMillis()+"."+OriginalFilename.substring(OriginalFilename.lastIndexOf(".")+1);
+        fileName = fileName.toLowerCase();
+        if(!fileName.matches("^.+\\.(jpg|png|gif|svg|avi|wmv|mpeg|quicktime|realvideo|mp4|mp4|wav|cda)$")){
+            return SysResult.fail("文件上传格式错误");
+        }
         String filePath = "F:\\images\\";
-        File dest = new File(filePath+fileName);
+        //准备文件根目录
+        String dateDir = new SimpleDateFormat("/yyyy/MM/dd/").format(new Date());
+        String dirPath = filePath + dateDir;
+        File dest = new File(dirPath+fileName);
         if(!dest.getParentFile().exists())
             dest.getParentFile().mkdirs();
         try {

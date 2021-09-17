@@ -14,4 +14,18 @@ public interface WxUserMapper {
     WxUser selectByPhone(String phone);
 
     void insert(WxUser wxUser);
+
+    Object selectById(Integer id);
+
+
+
+
+
+
+
+
+
+
+
+
 }
