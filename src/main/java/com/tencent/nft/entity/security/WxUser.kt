@@ -9,7 +9,7 @@ import java.time.LocalDateTime
  * @date: 2020/1/28
  * @description: 微信用户表 s_wx_user
  */
-class WxUser : BaseEntity(), Serializable {
+class WxUser() : BaseEntity(), Serializable {
 
     // 用户ID，对应用户表 userId
     var userId: String? = null
@@ -30,4 +30,15 @@ class WxUser : BaseEntity(), Serializable {
     // 头像
     var avatarUrl: String? = null
     var lastLoginTime: LocalDateTime? = null
+
+    constructor(openId: String, phone: String, nickname: String, gender: Int, city: String, province: String, country: String, avatarUrl: String) : this() {
+        this.openId = openId
+        this.phone = phone
+        this.nickname = nickname
+        this.gender = gender
+        this.city = city
+        this.province = province
+        this.country = country
+        this.avatarUrl = avatarUrl
+    }
 }
