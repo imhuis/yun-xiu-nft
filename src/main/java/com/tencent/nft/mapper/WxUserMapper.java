@@ -15,7 +15,7 @@ public interface WxUserMapper {
 
     void insert(WxUser wxUser);
 
-    Object selectById(Integer id);
+    WxUser selectById(Integer id);
 
 
 
