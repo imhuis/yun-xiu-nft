@@ -14,6 +14,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +42,9 @@ public class AppServiceImpl implements IAppService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private AuthorizationServerTokenServices tokenServices;
+
     @Override
     public String appLogin(WxResolvePhoneFormDTO dto) {
         WxAccountInfoObject wxAccountInfoObject = decryptPhone(dto);
@@ -45,10 +52,14 @@ public class AppServiceImpl implements IAppService {
         String phone = wxAccountInfoObject.getPhone();
         WxUser wxUser = wxUserMapper.selectByPhone(phone);
         if (wxUser == null){
-            wxAccountInfoObject.setNickName(dto.getNickName());
-            wxAccountInfoObject.setAvatarUrl(dto.getAvatarUrl());
-            createNewAccount(wxAccountInfoObject);
+            // 该用户不存在
+//            wxAccountInfoObject.setNickName(dto.getNickName());
+//            wxAccountInfoObject.setAvatarUrl(dto.getAvatarUrl());
+//            createNewAccount(wxAccountInfoObject);
         }
+//        OAuth2Authentication authentication = new OAuth2Authentication();
+
+//        tokenServices.createAccessToken(authentication);
         return "";
     }
 
@@ -67,6 +78,8 @@ public class AppServiceImpl implements IAppService {
         // WxUser对象创建, 插入数据库
         WxUser wxUser = new WxUser(openId, phone, nickName, gender, city, province, country, avatarUrl);
         wxUserMapper.insert(wxUser);
+
+
         return wxUser;
     }
 

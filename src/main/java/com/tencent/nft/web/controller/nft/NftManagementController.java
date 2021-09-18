@@ -72,6 +72,9 @@ public class NftManagementController {
                                   @PathVariable("superNFT") String superNFTId,
                                   @RequestBody(required = false) SubNFTQueryDTO subNFTQueryDTO){
 
+        if (subNFTQueryDTO == null){
+            subNFTQueryDTO = new SubNFTQueryDTO();
+        }
         PageBean nftListVOList = nftManagementService.listSubNFT(page, size, superNFTId, subNFTQueryDTO);
         return ResponseUtil.success(nftListVOList);
     }

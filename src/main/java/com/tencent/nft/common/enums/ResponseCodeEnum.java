@@ -8,6 +8,7 @@ package com.tencent.nft.common.enums;
 public enum ResponseCodeEnum {
 
     SUCCESS(0, "success"),
+    FAILD(-1, "fail"),
 
     METHOD_NOT_ALLOWED(405, "spring.exception.405"),
     PARAMETER_MISSING(1001, "spring.exception.1001"),

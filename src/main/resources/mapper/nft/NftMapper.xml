@@ -108,8 +108,8 @@
             <if test="subNFTQueryDTO.id != null">
                 and sub_id = #{subNFTQueryDTO.id}
             </if>
-            <if test="subNFTQueryDTO.nftStatus != null">
-                and nft_status = #{subNFTQueryDTO.nftStatus}
+            <if test="subNFTQueryDTO.saleStatus != null">
+                and sale_status = #{subNFTQueryDTO.saleStatus}
             </if>
         </where>
     </select>

@@ -1,6 +1,7 @@
 package com.tencent.nft.entity.nft.dto
 
 import com.fasterxml.jackson.annotation.JsonAlias
+import com.tencent.nft.common.enums.NFTSaleStatusEnum
 import java.io.Serializable
 
 /**
@@ -13,5 +14,5 @@ class SubNFTQueryDTO : Serializable {
     @JsonAlias("sub_id")
     var id: String? = null
 
-    var nftStatus: Int? = null
+    var saleStatus: NFTSaleStatusEnum? = null
 }

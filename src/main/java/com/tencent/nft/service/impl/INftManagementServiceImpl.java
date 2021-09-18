@@ -88,31 +88,30 @@ public class INftManagementServiceImpl implements INftManagementService {
     }
 
     @Override
-    public PageBean listSubNFT(Integer page, Integer size, String parentNftId, SubNFTQueryDTO subNFTQueryDTO) {
+    public PageBean<List<SubNFTVO>> listSubNFT(Integer page, Integer size, String parentNftId, SubNFTQueryDTO subNFTQueryDTO) {
         if (subNFTQueryDTO == null){
             subNFTQueryDTO = new SubNFTQueryDTO();
         }
-        Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(parentNftId);
+        SuperNFT superNFTBaseInfo = nftMapper.selectSuperNFTByNftId(parentNftId).get();
         Optional<NFTInfo> nftInfoOptional = nftMapper.selectNFTInfoByNftId(parentNftId);
 
         PageHelper.startPage(page, size);
         List<SubNFT> subNFTList = nftMapper.selectSubNFTList(parentNftId, subNFTQueryDTO);
         List<SubNFTVO> subNFTVOList = Lists.newArrayList();
 
-        BeanUtils.copyProperties(subNFTList, subNFTVOList);
-//        System.arraycopy(subNFTList, 0 , subNFTVOList, 0, subNFTList.size());
-
-        subNFTVOList.stream().forEach(subNFTVO -> nftInfoOptional.ifPresent(nftInfo -> {
-            SuperNFT s = superNFTOptional.get();
-            subNFTVO.setNftName(s.getNftName());
-            subNFTVO.setNftType(s.getNftType());
-            subNFTVO.setIssuer(s.getIssuer());
-
-            subNFTVO.setUnitPrice(nftInfo.getUnitPrice());
-            subNFTVO.setReserveStartTime(nftInfo.getReserveStartTime());
-            subNFTVO.setSellStartTime(nftInfo.getSellStartTime());
-        }));
-
+        subNFTList.stream().forEach(subNFT -> {
+            SubNFTVO tmp = new SubNFTVO();
+            BeanUtils.copyProperties(subNFT, tmp);
+            tmp.setNftName(superNFTBaseInfo.getNftName());
+            tmp.setNftType(superNFTBaseInfo.getNftType());
+            tmp.setIssuer(superNFTBaseInfo.getIssuer());
+            nftInfoOptional.ifPresent(nftInfo -> {
+                tmp.setUnitPrice(nftInfo.getUnitPrice());
+                tmp.setReserveStartTime(nftInfo.getReserveStartTime());
+                tmp.setSellStartTime(nftInfo.getSellStartTime());
+            });
+            subNFTVOList.add(tmp);
+        });
 
         PageInfo pageInfo = new PageInfo(subNFTList);
 
@@ -120,7 +119,6 @@ public class INftManagementServiceImpl implements INftManagementService {
         pageBean.setPages(pageInfo.getPages());
         pageBean.setSize(pageInfo.getSize());
         pageBean.setData(subNFTVOList);
-
         return pageBean;
     }
 
