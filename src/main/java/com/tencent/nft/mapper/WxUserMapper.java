@@ -4,6 +4,7 @@ import com.tencent.nft.entity.security.WxUser;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author: imhuis
@@ -15,7 +16,11 @@ public interface WxUserMapper {
 
     WxUser selectByPhone(String phone);
 
-    void insert(WxUser wxUser);
+    Optional<WxUser> selectByOpenId(String openId);
+
+    int insert(WxUser wxUser);
+
+    int update(WxUser wxUser);
 
     WxUser selectById(Integer id);
 

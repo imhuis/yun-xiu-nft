@@ -12,7 +12,11 @@ public enum ResponseCodeEnum {
 
     METHOD_NOT_ALLOWED(405, "spring.exception.405"),
     PARAMETER_MISSING(1001, "spring.exception.1001"),
-    REQUEST_BODY_MISSING(1002, "spring.exception.1002");
+    REQUEST_BODY_MISSING(1002, "spring.exception.1002"),
+
+    YS_5001(5001, "预售开始时间晚于预售结束时间"),
+    YS_5002(5002, "开售时间晚于开售结束时间"),
+    YS_5003(5003, "预售结束时间晚于开售时间");
 
     private final Integer code;
     private final String message;

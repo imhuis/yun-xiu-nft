@@ -12,6 +12,7 @@ import java.time.LocalDateTime
  */
 open class SubNFT : SuperNFT(), Serializable {
 
+    // 对于子nft，nft id是当前nft编号
     override var nftId: String?= null
 
     var superNFTId: String?= null

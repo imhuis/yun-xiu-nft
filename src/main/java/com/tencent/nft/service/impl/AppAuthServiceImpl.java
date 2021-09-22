@@ -6,22 +6,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tencent.nft.common.util.WxResolveDataUtils;
 import com.tencent.nft.entity.WxAccountInfoObject;
 import com.tencent.nft.entity.app.WxResolvePhoneFormDTO;
+import com.tencent.nft.entity.app.WxUserProfileFormDTO;
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.mapper.WxUserMapper;
-import com.tencent.nft.service.IAppService;
+import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.handler.WeChatOpenIdByJsCodeLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Optional;
 
 /**
  * @author: imhuis
@@ -29,9 +28,9 @@ import javax.annotation.Resource;
  * @description:
  */
 @Service
-public class AppServiceImpl implements IAppService {
+public class AppAuthServiceImpl implements IAppAuthService {
 
-    private static Logger LOG = LoggerFactory.getLogger(AppServiceImpl.class);
+    private static Logger LOG = LoggerFactory.getLogger(AppAuthServiceImpl.class);
 
     @Autowired
     private WeChatOpenIdByJsCodeLoader weChatOpenIdByJsCodeLoader;
@@ -44,6 +43,41 @@ public class AppServiceImpl implements IAppService {
 
     @Autowired
     private AuthorizationServerTokenServices tokenServices;
+
+    @Override
+    public WeChatOpenIdByJsCodeLoader.WxLoginResult wxLogin(String jsCode) {
+        return weChatOpenIdByJsCodeLoader.load(jsCode);
+    }
+
+    @Transactional
+    @Override
+    public void updateWxUserProfile(WxUserProfileFormDTO dto) {
+        String openId = dto.getOpenId();
+        Optional<WxUser> wxUserOptional = wxUserMapper.selectByOpenId(openId);
+        // 存在，更新
+        wxUserOptional.ifPresent(wxUser -> {
+            wxUser.setOpenId(dto.getOpenId());
+            wxUser.setNickname(dto.getNickName());
+            wxUser.setGender(dto.getGender());
+            wxUser.setAvatarUrl(dto.getAvatarUrl());
+            wxUser.setCity(dto.getCity());
+            wxUser.setProvince(dto.getProvince());
+            wxUser.setCountry(dto.getCountry());
+            wxUserMapper.update(wxUser);
+        });
+        if (!wxUserOptional.isPresent()){
+            WxUser newWxUser = new WxUser();
+            newWxUser.setOpenId(dto.getOpenId());
+            newWxUser.setNickname(dto.getNickName());
+            newWxUser.setGender(dto.getGender());
+            newWxUser.setAvatarUrl(dto.getAvatarUrl());
+            newWxUser.setCity(dto.getCity());
+            newWxUser.setProvince(dto.getProvince());
+            newWxUser.setCountry(dto.getCountry());
+            wxUserMapper.insert(newWxUser);
+        }
+
+    }
 
     @Override
     public String appLogin(WxResolvePhoneFormDTO dto) {
@@ -60,7 +94,7 @@ public class AppServiceImpl implements IAppService {
 //        OAuth2Authentication authentication = new OAuth2Authentication();
 
 //        tokenServices.createAccessToken(authentication);
-        return "";
+        return wxAccountInfoObject.toString();
     }
 
 

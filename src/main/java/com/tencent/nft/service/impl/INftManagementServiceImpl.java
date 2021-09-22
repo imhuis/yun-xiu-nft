@@ -12,7 +12,7 @@ import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
 import com.tencent.nft.entity.nft.vo.NFTDetailsVO;
-import com.tencent.nft.entity.nft.vo.SubNFTVO;
+import com.tencent.nft.entity.nft.vo.SubNFTListVO;
 import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.service.INftManagementService;
 import com.tencent.nft.entity.nft.vo.NFTListVO;
@@ -21,10 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author: imhuis
@@ -88,19 +86,19 @@ public class INftManagementServiceImpl implements INftManagementService {
     }
 
     @Override
-    public PageBean<List<SubNFTVO>> listSubNFT(Integer page, Integer size, String parentNftId, SubNFTQueryDTO subNFTQueryDTO) {
+    public PageBean<List<SubNFTListVO>> listSubNFT(Integer page, Integer size, String parentNftId, SubNFTQueryDTO subNFTQueryDTO) {
         if (subNFTQueryDTO == null){
             subNFTQueryDTO = new SubNFTQueryDTO();
         }
         SuperNFT superNFTBaseInfo = nftMapper.selectSuperNFTByNftId(parentNftId).get();
-        Optional<NFTInfo> nftInfoOptional = nftMapper.selectNFTInfoByNftId(parentNftId);
+        Optional<NFTInfo> nftInfoOptional = nftMapper.selectNftInfoByNftId(parentNftId);
 
         PageHelper.startPage(page, size);
         List<SubNFT> subNFTList = nftMapper.selectSubNFTList(parentNftId, subNFTQueryDTO);
-        List<SubNFTVO> subNFTVOList = Lists.newArrayList();
+        List<SubNFTListVO> subNFTListVOList = Lists.newArrayList();
 
         subNFTList.stream().forEach(subNFT -> {
-            SubNFTVO tmp = new SubNFTVO();
+            SubNFTListVO tmp = new SubNFTListVO();
             BeanUtils.copyProperties(subNFT, tmp);
             tmp.setNftName(superNFTBaseInfo.getNftName());
             tmp.setNftType(superNFTBaseInfo.getNftType());
@@ -110,15 +108,15 @@ public class INftManagementServiceImpl implements INftManagementService {
                 tmp.setReserveStartTime(nftInfo.getReserveStartTime());
                 tmp.setSellStartTime(nftInfo.getSellStartTime());
             });
-            subNFTVOList.add(tmp);
+            subNFTListVOList.add(tmp);
         });
 
         PageInfo pageInfo = new PageInfo(subNFTList);
 
-        PageBean<List<SubNFTVO>> pageBean = new PageBean<>();
+        PageBean<List<SubNFTListVO>> pageBean = new PageBean<>();
         pageBean.setPages(pageInfo.getPages());
         pageBean.setSize(pageInfo.getSize());
-        pageBean.setData(subNFTVOList);
+        pageBean.setData(subNFTListVOList);
         return pageBean;
     }
 
@@ -131,7 +129,7 @@ public class INftManagementServiceImpl implements INftManagementService {
         NFTInfo nftInfo;
         if (superNFTOptional.get().getNftStatus() != NFTStatusEnum.WAITING){
             // 待发行的nft可以查询到信息
-            nftInfo = nftMapper.selectNFTInfoByNftId(nftId).orElse(new NFTInfo());
+            nftInfo = nftMapper.selectNftInfoByNftId(nftId).orElse(new NFTInfo());
             BeanUtils.copyProperties(superNFTOptional.get(), nftInfo);
 
             NFTDetailsVO nftDetailsVO = new NFTDetailsVO();
@@ -143,5 +141,22 @@ public class INftManagementServiceImpl implements INftManagementService {
             return nftDetailsVO;
         }
         return superNFTOptional.get();
+    }
+
+    @Transactional
+    @Override
+    public void setPreSale(NFTInfo n) {
+        // 预售创建nft详情
+        createNftInfo(n);
+        // 更新 super_nft
+
+        // 更新缓存
+
+
+    }
+
+    @Override
+    public void createNftInfo(NFTInfo n) {
+        nftMapper.insertNftInfo(n);
     }
 }

@@ -22,10 +22,6 @@
         <maven.test.skip>true</maven.test.skip>
     </properties>
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-consul-discovery</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -62,7 +58,6 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -102,14 +97,12 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
-        <!--lombok引入，省去get，set-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
 
         <!-- tools -->
-        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -120,18 +113,15 @@
             <artifactId>hutool-all</artifactId>
             <version>5.7.5</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/joda-time/joda-time -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>2.10.10</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-pool2 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -191,12 +181,6 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.31</version>
         </dependency>
-        <!--druid数据源 -->
-        <dependency>
-           <groupId>com.alibaba</groupId>
-           <artifactId>druid</artifactId>
-           <version>1.1.9</version>
-        </dependency>
         <!-- 视频获取第一帧 -->
         <dependency>
             <groupId>org.bytedeco</groupId>
@@ -213,6 +197,11 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.wechatpay-apiv3</groupId>
+            <artifactId>wechatpay-apache-httpclient</artifactId>
+            <version>0.2.2</version>
         </dependency>
     </dependencies>
 
@@ -246,19 +235,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.tencent.nft.NFTApplication</mainClass>
-                    <layers>
-                        <enabled>true</enabled>
-                    </layers>
-                    <image>
-                        <name>imhuis/${project.artifactId}</name>
-                        <publish>true</publish>
-                    </image>
-                    <docker>
-                        <host>http://localhost:2375</host>
-                    </docker>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>

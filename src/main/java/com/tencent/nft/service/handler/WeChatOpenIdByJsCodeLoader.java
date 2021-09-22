@@ -23,7 +23,6 @@ import java.io.Serializable;
  * @description :获取openId（通过JScode获取openId）
  */
 @Component
-@Slf4j
 public class WeChatOpenIdByJsCodeLoader {
 
     @Autowired
@@ -39,34 +38,37 @@ public class WeChatOpenIdByJsCodeLoader {
     public WxLoginResult load(String jsCode) {
 
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromHttpUrl(WX_JSCODE_URL)
-                .queryParam("appid", "wxc7b46a61408f4797")
+                .queryParam("appid", "wxb3982d59b8a5e644")
                 .queryParam("secret", "4ec5247bfcdc36856e69c4b75f1bb6b4")
                 .queryParam("grant_type", "authorization_code")
                 .queryParam("js_code", jsCode);
 
         ResponseEntity<String> response = restTemplate.getForEntity(uriComponentsBuilder.toUriString(), String.class);
 
+        LOG.info("responseCodeValue: {}", response.getStatusCodeValue());
         if (response.getStatusCode().is2xxSuccessful()){
             String responseBody = response.getBody();
-            log.info("responseTxt:{}", responseBody);
+            LOG.info("responseTxt: {}", responseBody);
 
             JSONObject jsonObject = JSONObject.fromObject(responseBody);
-//            final Integer errorCode = (Integer)jsonObject.get("errcode");
-//            if(errorCode == null){
-            // session_key
-            String sessionKey = (String)jsonObject.get(SESSION_KEY);
-            // openid
-            String openId = (String)jsonObject.get(OPEN_ID_KEY);
-            return new WxLoginResult(openId,sessionKey);
-//            }else {
-//                return new WxLoginResult(errorCode,"系统繁忙，请刷新后重试");
-//            }
+            // 获取异常码
+            final Integer errorCode = (Integer)jsonObject.get("errcode");
+            if(errorCode == null){
+                // session_key
+                String sessionKey = (String)jsonObject.get(SESSION_KEY);
+                // openid
+                String openId = (String)jsonObject.get(OPEN_ID_KEY);
+                return new WxLoginResult(openId,sessionKey);
+            }else {
+                return null;
+            }
         }
         return null;
     }
 
 
     public class WxLoginResult implements Serializable {
+
         private static final long serialVersionUID = 7624975778972786935L;
 
         private String openId;

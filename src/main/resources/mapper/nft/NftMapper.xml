@@ -59,7 +59,7 @@
         </where>
     </select>
 
-    <insert id="insertSuperNFT">
+    <insert id="insertSuperNFT" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         insert into t_super_nft
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="nftId != null">nft_id,</if>
@@ -90,12 +90,38 @@
     </delete>
 
 
-    <select id="selectNFTInfoByNftId" resultMap="NFTInfoResultMap">
+    <select id="selectNftInfoByNftId" resultMap="NFTInfoResultMap">
         select
         <include refid="NFTInfo_Column_List"/>
         from t_nft_info
         where nft_id = #{nftId}
     </select>
+
+    <insert id="insertNftInfo" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into t_nft_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="nftId != null">nft_id,</if>
+            <if test="nftName != null">nft_name,</if>
+            <if test="nftStatus != null">nft_status,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="circulation != null">circulation,</if>
+            <if test="reserveStartTime != null">reserve_start_time,</if>
+            <if test="reserveEndTime != null">reserve_end_time,</if>
+            <if test="sellStartTime != null">sell_Start_time,</if>
+            <if test="sellEndTime != null">sell_end_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="nftId != null">#{nftId},</if>
+            <if test="nftName != null">#{nftName},</if>
+            <if test="nftStatus != null">#{nftStatus},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="circulation != null">#{circulation},</if>
+            <if test="reserveStartTime != null">#{reserveStartTime},</if>
+            <if test="reserveEndTime != null">#{reserveEndTime},</if>
+            <if test="sellStartTime != null">#{sellStartTime},</if>
+            <if test="sellEndTime != null">#{sellEndTime},</if>
+        </trim>
+    </insert>
 
     <select id="selectSubNFTList" resultMap="SubNFTResultMap">
         select

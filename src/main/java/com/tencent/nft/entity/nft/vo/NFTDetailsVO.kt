@@ -2,7 +2,6 @@ package com.tencent.nft.entity.nft.vo
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.tencent.nft.entity.nft.NFTInfo
-import org.springframework.format.annotation.DateTimeFormat
 import java.io.Serializable
 import java.time.LocalDateTime
 

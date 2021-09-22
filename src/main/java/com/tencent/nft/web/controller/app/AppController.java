@@ -4,11 +4,12 @@ import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.entity.app.WxResolvePhoneFormDTO;
-import com.tencent.nft.service.IAppService;
+import com.tencent.nft.entity.app.WxUserProfileFormDTO;
+import com.tencent.nft.service.IAppAuthService;
+import com.tencent.nft.service.handler.WeChatOpenIdByJsCodeLoader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author: imhuis
@@ -16,21 +17,38 @@ import org.springframework.web.bind.annotation.RestController;
  * @description:
  */
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/app/public")
 public class AppController {
 
     @Autowired
-    private IAppService appService;
+    private IAppAuthService appAuthService;
+
+    @RequestMapping(value = "/wx_login", method = RequestMethod.POST)
+    public ResponseResult getSessionCode(@RequestParam("js_code") String jsCode){
+        WeChatOpenIdByJsCodeLoader.WxLoginResult wxLoginResult = appAuthService.wxLogin(jsCode);
+        if (wxLoginResult == null){
+            return ResponseUtil.define(-1, "js_code 过期");
+        }
+        return ResponseUtil.success(wxLoginResult);
+    }
 
     /**
-     * wx.login 接口 = 获取手机号
-     * @param dto
+     * 更新用户信息
+     * @param wxUserProfileFormDTO
      * @return
      */
+    @RequestMapping(value = "/user_profile", method = RequestMethod.POST)
+    public ResponseResult initUser(@RequestBody @Validated WxUserProfileFormDTO wxUserProfileFormDTO){
+        appAuthService.updateWxUserProfile(wxUserProfileFormDTO);
+
+        return ResponseUtil.success();
+    }
+
+
     @RequestMapping("/token")
     public ResponseResult login(@RequestBody WxResolvePhoneFormDTO dto){
         try {
-            String token = appService.appLogin(dto);
+            String token = appAuthService.appLogin(dto);
             return ResponseUtil.success(token);
         }catch (Exception e){
             return ResponseUtil.fail(ResponseCodeEnum.FAILD);

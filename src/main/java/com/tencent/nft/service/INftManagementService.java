@@ -1,11 +1,12 @@
 package com.tencent.nft.service;
 
 import com.tencent.nft.common.base.PageBean;
+import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
 import com.tencent.nft.entity.nft.vo.NFTListVO;
-import com.tencent.nft.entity.nft.vo.SubNFTVO;
+import com.tencent.nft.entity.nft.vo.SubNFTListVO;
 
 import java.util.List;
 
@@ -27,7 +28,11 @@ public interface INftManagementService {
 
     PageBean<List<NFTListVO>> listNFT(Integer page, Integer size, Integer nftStatus, NftListQueryDTO nftListQueryDTO);
 
-    PageBean<List<SubNFTVO>> listSubNFT(Integer page, Integer size, String parentNftId, SubNFTQueryDTO subNFTQueryDTO);
+    PageBean<List<SubNFTListVO>> listSubNFT(Integer page, Integer size, String parentNftId, SubNFTQueryDTO subNFTQueryDTO);
 
     SuperNFT nftDetail(String nftId);
+
+    void setPreSale(NFTInfo n);
+
+    void createNftInfo(NFTInfo n);
 }

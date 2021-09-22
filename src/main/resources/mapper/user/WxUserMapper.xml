@@ -1,10 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tencent.nft.mapper.WxUserMapper">
+    <resultMap id="BaseResultMap" type="com.tencent.nft.entity.security.WxUser">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+    </resultMap>
 
-    <select id="selectByPhone" resultType="com.tencent.nft.entity.security.WxUser">
+    <sql id="WxUser_Column_List">
+        id, open_id, user_id, phone, nick_name, gender, city, province, country, avatar_url, last_login_time
+    </sql>
 
+    <select id="selectByPhone" resultMap="BaseResultMap">
+        select <include refid="WxUser_Column_List"/>
+        from s_wx_user
+        where phone = #{phone}
     </select>
+
+    <select id="selectByOpenId" resultMap="BaseResultMap">
+        select <include refid="WxUser_Column_List"/>
+        from s_wx_user
+        where open_id = #{openId}
+    </select>
+
     <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         INSERT INTO s_wx_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -30,6 +46,21 @@
             now(), now()
         </trim>
     </insert>
+
+    <update id="update">
+        update s_wx_user
+        <set>
+            <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+            <if test="gender != null and gender != ''">gender = #{gender},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="province != null and province != ''">province = #{province},</if>
+            <if test="country != null and country != ''">country = #{country},</if>
+            <if test="avatarUrl != null and avatarUrl != ''">avatar_url = #{avatarUrl},</if>
+            <if test="lastLoginTime != null">last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},</if>
+            <if test="updateTime != null">update_time = #{updateTime,jdbcType=TIMESTAMP}</if>
+        </set>
+        WHERE open_id = #{openId}
+    </update>
 
 
 

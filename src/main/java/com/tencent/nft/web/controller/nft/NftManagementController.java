@@ -5,16 +5,17 @@ import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ICommonEnum;
 import com.tencent.nft.common.enums.NFTTypeEnum;
+import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.common.exception.RecordNotFoundException;
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.SuperNFT;
+import com.tencent.nft.entity.nft.dto.NftCreateDTO;
 import com.tencent.nft.entity.nft.dto.NftDeleteDTO;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
-import com.tencent.nft.entity.nft.vo.NFTDetailsVO;
 import com.tencent.nft.service.INftManagementService;
-import com.tencent.nft.entity.nft.dto.NftCreateDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,9 +69,9 @@ public class NftManagementController {
 
     @RequestMapping(value = "/sub/{superNFT}", method = RequestMethod.GET)
     public ResponseResult subNftList(@RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
-                                  @RequestParam(value = "per_page",required = false, defaultValue = "20") Integer size,
-                                  @PathVariable("superNFT") String superNFTId,
-                                  @RequestBody(required = false) SubNFTQueryDTO subNFTQueryDTO){
+                                     @RequestParam(value = "per_page",required = false, defaultValue = "20") Integer size,
+                                     @PathVariable("superNFT") String superNFTId,
+                                     @RequestBody(required = false) SubNFTQueryDTO subNFTQueryDTO){
 
         if (subNFTQueryDTO == null){
             subNFTQueryDTO = new SubNFTQueryDTO();
@@ -106,9 +107,33 @@ public class NftManagementController {
     }
 
     @RequestMapping(value = "/delete.action", method = RequestMethod.POST)
-    public ResponseResult deleteNFT(@RequestBody NftDeleteDTO nftDeleteDTO){
+    public ResponseResult deleteNFT(@RequestBody @Validated NftDeleteDTO nftDeleteDTO){
         nftManagementService.deleteNft(nftDeleteDTO.getNftId());
         return ResponseUtil.success();
+    }
+
+    /**
+     * 预售设置
+     * @return
+     */
+    @RequestMapping(value = "/pre_sale", method = RequestMethod.POST)
+    public ResponseResult setSale(@RequestBody @Validated NFTInfo n, BindingResult result){
+//        checkYSINfo(n);
+        if (!n.getReserveEndTime().isAfter(n.getReserveStartTime())){
+            return ResponseUtil.fail(ResponseCodeEnum.YS_5001);
+        }
+        if (!n.getSellEndTime().isAfter(n.getSellStartTime())){
+            return ResponseUtil.fail(ResponseCodeEnum.YS_5002);
+        }
+        if (!n.getSellStartTime().isAfter(n.getReserveEndTime())){
+            return ResponseUtil.fail(ResponseCodeEnum.YS_5003);
+        }
+        nftManagementService.setPreSale(n);
+        return ResponseUtil.success();
+    }
+
+    private ResponseResult checkYSINfo(NFTInfo n) {
+        return null;
     }
 
 }

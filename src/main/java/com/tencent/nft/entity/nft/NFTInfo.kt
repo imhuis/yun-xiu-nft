@@ -1,15 +1,18 @@
 package com.tencent.nft.entity.nft
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.io.Serializable
 import java.time.LocalDateTime
 
 open class NFTInfo : SuperNFT(), Serializable {
 
     // 单价
+    @JsonProperty("price")
     var unitPrice: Int? = null
 
     // 发行量
-    var circulation = 0
+    @JsonProperty("fxl")
+    var circulation: Int? = null
 
     // 预约开始时间
     open var reserveStartTime: LocalDateTime? = null
@@ -24,6 +27,7 @@ open class NFTInfo : SuperNFT(), Serializable {
     open var sellEndTime: LocalDateTime? = null
 
     // 预约人数
+    @JsonProperty("yyrs")
     var reservation = 0
 
 }

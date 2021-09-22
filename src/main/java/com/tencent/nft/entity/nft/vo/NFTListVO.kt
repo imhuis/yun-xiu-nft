@@ -1,6 +1,5 @@
 package com.tencent.nft.entity.nft.vo
 
-import com.tencent.nft.entity.nft.NFTInfo
 import com.tencent.nft.entity.nft.SuperNFT
 import java.io.Serializable
 

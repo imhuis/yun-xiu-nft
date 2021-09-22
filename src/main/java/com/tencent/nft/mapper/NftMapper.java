@@ -5,7 +5,6 @@ import com.tencent.nft.entity.nft.SubNFT;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
-import com.tencent.nft.entity.nft.vo.SubNFTVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -33,7 +32,13 @@ public interface NftMapper {
 
     int deleteSuperNFT(String nftId);
 
-    Optional<NFTInfo> selectNFTInfoByNftId(String nftId);
+
+
+    Optional<NFTInfo> selectNftInfoByNftId(String nftId);
+
+    void insertNftInfo(NFTInfo nftInfo);
+
+
 
     List<SubNFT> selectSubNFTList(@Param("superId") String parentNftId, @Param("subNFTQueryDTO") SubNFTQueryDTO subNFTQueryDTO);
 }

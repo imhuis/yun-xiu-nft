@@ -1,5 +1,7 @@
 package com.tencent.nft.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.EnumSet;
 import java.util.Objects;
 
@@ -10,6 +12,7 @@ import java.util.Objects;
  */
 public interface ICommonEnum {
 
+    @JsonValue
     int getCode();
 
     String getValue();
