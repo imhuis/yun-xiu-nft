@@ -19,8 +19,8 @@ public class WxResolvePhoneFormDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @NotNull(message = "jsCode参数不为空")
-    private String jsCode;
+    @NotNull(message = "sessionKey参数不为空")
+    private String sessionKey;
 
     @NotNull(message = "encryptedData参数不为空")
     private String encryptedData;
@@ -29,6 +29,14 @@ public class WxResolvePhoneFormDTO implements Serializable {
     private String iv;
 
     public WxResolvePhoneFormDTO(){}
+
+    public String getSessionKey() {
+        return sessionKey;
+    }
+
+    public void setSessionKey(String sessionKey) {
+        this.sessionKey = sessionKey;
+    }
 
     public String getEncryptedData() {
         return encryptedData;
@@ -44,13 +52,5 @@ public class WxResolvePhoneFormDTO implements Serializable {
 
     public void setIv(String iv) {
         this.iv = iv;
-    }
-
-    public String getJsCode() {
-        return jsCode;
-    }
-
-    public void setJsCode(String jsCode) {
-        this.jsCode = jsCode;
     }
 }

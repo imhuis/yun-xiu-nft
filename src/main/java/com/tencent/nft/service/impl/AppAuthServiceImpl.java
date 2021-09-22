@@ -4,10 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tencent.nft.common.base.ResponseUtil;
+import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.common.util.WxResolveDataUtils;
 import com.tencent.nft.entity.app.WxResolvePhoneFormDTO;
 import com.tencent.nft.entity.app.WxUserProfileFormDTO;
+import com.tencent.nft.entity.security.User;
 import com.tencent.nft.entity.security.WxUser;
+import com.tencent.nft.mapper.UserMapper;
 import com.tencent.nft.mapper.WxUserMapper;
 import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.handler.WeChatOpenIdByJsCodeLoader;
@@ -38,7 +41,8 @@ public class AppAuthServiceImpl implements IAppAuthService {
     @Resource
     private WxUserMapper wxUserMapper;
 
-//    private
+    @Resource
+    private UserMapper userMapper;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -88,10 +92,10 @@ public class AppAuthServiceImpl implements IAppAuthService {
         WxUser wxUser = wxUserMapper.selectByPhone(phone);
         if (wxUser == null){
             // 找不到这个手机号的微信用户
-            createNewAccount(wxAccountInfoObject);
+            wxUser = createNewAccount(wxAccountInfoObject);
         }
 
-        // 创建token 返回token
+        // 找到当前手机号，代码登录程序，创建token 返回token
         return "token";
     }
 
@@ -99,22 +103,26 @@ public class AppAuthServiceImpl implements IAppAuthService {
     @Transactional
     public WxUser createNewAccount(WxUser baseDataDTO) {
         // 先插入 s_user
-
-
-        // 后插入 s_wx_user
-        String openId = baseDataDTO.getOpenId();
-        String phone = baseDataDTO.getPhone();
-        String nickName = baseDataDTO.getNickname();
-        Integer gender = baseDataDTO.getGender();
-        String city = baseDataDTO.getCity();
-        String province = baseDataDTO.getProvince();
-        String country = baseDataDTO.getCountry();
-        String avatarUrl = baseDataDTO.getAvatarUrl();
-        // WxUser对象创建, 插入数据库
-        WxUser wxUser = new WxUser(openId, phone, nickName, gender, city, province, country, avatarUrl);
-        wxUserMapper.insert(wxUser);
-
-
+        String uuid = UUIDUtil.generateUUID();
+        String openid = baseDataDTO.getOpenId();
+        WxUser wxUser;
+        Optional<WxUser> wxUserOptional = wxUserMapper.selectByOpenId(openid);
+        // 如果openid查询还为null 则说明 s_wx_user表也没有当前数据
+        if (wxUserOptional.isEmpty()){
+            wxUser = new WxUser();
+            wxUser.setOpenId(openid);
+            wxUser.setPhone(baseDataDTO.getPhone());
+            wxUser.setUserId(uuid);
+            // 插入wxUser(openId,UserId)
+            wxUserMapper.insert(wxUser);
+            User newUser = new User();
+            newUser.setUserId(uuid);
+            newUser.setPhone(baseDataDTO.getPhone());
+            newUser.setNickname(wxUser.getNickname());
+            userMapper.insert(newUser);
+        }else {
+            wxUser = wxUserOptional.get();
+        }
         return wxUser;
     }
 
@@ -128,11 +136,11 @@ public class AppAuthServiceImpl implements IAppAuthService {
 
         WxUser wxUser = new WxUser();
 
-        WeChatOpenIdByJsCodeLoader.WxLoginResult wxLoginResult = weChatOpenIdByJsCodeLoader.load(wxResolvePhoneFormDTO.getJsCode());
-        if (StringUtils.isNotBlank(wxLoginResult.getOpenId())){
-            wxUser.setOpenId(wxLoginResult.getOpenId());
-        }
-        String sessionKey = wxLoginResult.getSessionKey();
+//        WeChatOpenIdByJsCodeLoader.WxLoginResult wxLoginResult = weChatOpenIdByJsCodeLoader.load(wxResolvePhoneFormDTO.getJsCode());
+//        if (StringUtils.isNotBlank(wxLoginResult.getOpenId())){
+//            wxUser.setOpenId(wxLoginResult.getOpenId());
+//        }
+        String sessionKey = wxResolvePhoneFormDTO.getSessionKey();
         LOG.info("method[resolveWeChatAccountInfo] session>{}", sessionKey);
 
         // 解析encrypted data获取用户手机号（包括openid）

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/app/public")
-public class AppController {
+public class AppAuthController {
 
     @Autowired
     private IAppAuthService appAuthService;

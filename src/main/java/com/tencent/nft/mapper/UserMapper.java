@@ -15,6 +15,8 @@ public interface UserMapper {
 
     int insert(User newUser);
 
+    int update(User newUser);
+
     Optional<User> findUserById(Long id);
 
     Optional<User> findUserByUserId(String userId);

@@ -34,6 +34,9 @@
             now(), now()
         </trim>
     </insert>
+    <update id="update">
+
+    </update>
 
     <select id="findUserById" resultMap="BaseResultMap">
         select <include refid="User_Column_List"/>
