@@ -3,6 +3,7 @@ package com.tencent.nft.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.common.util.WxResolveDataUtils;
 import com.tencent.nft.entity.app.WxResolvePhoneFormDTO;
@@ -13,6 +14,7 @@ import com.tencent.nft.mapper.UserMapper;
 import com.tencent.nft.mapper.WxUserMapper;
 import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.handler.WeChatOpenIdByJsCodeLoader;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +42,7 @@ import java.util.Optional;
  * @description:
  */
 @Service
+@Slf4j
 public class AppAuthServiceImpl implements IAppAuthService {
 
     private static Logger LOG = LoggerFactory.getLogger(AppAuthServiceImpl.class);
@@ -72,7 +77,7 @@ public class AppAuthServiceImpl implements IAppAuthService {
     @Override
     public void updateWxUserProfile(WxUserProfileFormDTO dto) {
         String openId = dto.getOpenId();
-        Optional<WxUser> wxUserOptional = wxUserMapper.selectByOpenId(openId);
+        Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByOpenId(openId);
         // 存在，更新
         wxUserOptional.ifPresent(wxUser -> {
             wxUser.setOpenId(dto.getOpenId());
@@ -99,10 +104,10 @@ public class AppAuthServiceImpl implements IAppAuthService {
     }
 
     @Override
-    public String appLogin(WxResolvePhoneFormDTO dto) {
+    public Object appLogin(WxResolvePhoneFormDTO dto) {
         WxUser wxAccountInfoObject = decryptPhone(dto);
         String phone = wxAccountInfoObject.getPhone();
-        WxUser wxUser = wxUserMapper.selectByPhone(phone).get();
+        WxUser wxUser = wxUserMapper.selectFullByPhone(phone).get();
         if (wxUser == null){
             // 找不到这个手机号的微信用户
             wxUser = createNewAccount(wxAccountInfoObject);
@@ -110,27 +115,28 @@ public class AppAuthServiceImpl implements IAppAuthService {
 
         // 找到当前手机号，代码登录程序，创建token 返回token
         MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
-        map.add("username", phone);
-        map.add("password", "");
         map.add("grant_type", "password");
+        map.add("username", phone);
+        map.add("password", "12345");
 
         URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
                 .post(uri)
-                .header("Authorization",oauthString)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header("Authorization", "Basic YzY0YTAwMDUtYWFmNi00NmEyLWE0NTItYzAwMDA3MDU0NTliOmRmOGEwYTFiLTJkYjUtNGFlOC1iNTE3LTM3M2MxNWU3MTQ4Mw==")
                 .accept(MediaType.APPLICATION_JSON)
                 .body(map);
-//        tokenServices.createAccessToken();
-        ResponseEntity<String> tokenResponseEntity = restTemplate.exchange(requestEntity, String.class);
+        log.info("req: " + requestEntity.getHeaders());
+        ResponseEntity<ResponseResult> tokenResponseEntity = restTemplate.exchange(requestEntity, ResponseResult.class);
         if (tokenResponseEntity.getStatusCode().is2xxSuccessful()){
-            return tokenResponseEntity.getBody();
+            return tokenResponseEntity.getBody().getData();
         }
         return null;
     }
 
     @Override
-    public String testLogin(String phone) {
-        WxUser wxUser = wxUserMapper.selectByPhone(phone).get();
+    public Object testLogin(String phone) {
+        WxUser wxUser = wxUserMapper.selectFullByPhone(phone).get();
         if (wxUser == null){
             // 找不到这个手机号的微信用户
 
@@ -139,21 +145,28 @@ public class AppAuthServiceImpl implements IAppAuthService {
         // 找到当前手机号，代码登录程序，创建token 返回token
         MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
         map.add("username", phone);
-        map.add("password", "");
+        map.add("password", "12345");
         map.add("grant_type", "password");
 
         URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
                 .post(uri)
-                .header("Authorization",oauthString)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header("Authorization", oauthString)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(map);
 //        tokenServices.createAccessToken();
-        ResponseEntity<String> tokenResponseEntity = restTemplate.exchange(requestEntity, String.class);
+        ResponseEntity<ResponseResult> tokenResponseEntity = restTemplate.exchange(requestEntity, ResponseResult.class);
+        log.info("response ", tokenResponseEntity.getBody().toString());
         if (tokenResponseEntity.getStatusCode().is2xxSuccessful()){
-            return tokenResponseEntity.getBody();
+            return tokenResponseEntity.getBody().getData();
         }
         return null;
+    }
+
+    @Override
+    public WxUser getMyInformation(String phone) {
+        return wxUserMapper.selectByPhone(phone).get();
     }
 
 
@@ -163,7 +176,7 @@ public class AppAuthServiceImpl implements IAppAuthService {
         String uuid = UUIDUtil.generateUUID();
         String openid = baseDataDTO.getOpenId();
         WxUser wxUser;
-        Optional<WxUser> wxUserOptional = wxUserMapper.selectByOpenId(openid);
+        Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByOpenId(openid);
         // 如果openid查询还为null 则说明 s_wx_user表也没有当前数据
         if (wxUserOptional.isEmpty()){
             wxUser = new WxUser();

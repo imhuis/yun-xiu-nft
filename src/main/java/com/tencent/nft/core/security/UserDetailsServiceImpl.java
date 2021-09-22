@@ -48,9 +48,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private User createSpringSecurityUser(String login, com.tencent.nft.entity.security.User user){
-//        if (false){
-//            throw new UserNotActivatedException("");
-//        }
         List<String> authorityString = null;
 //        AuthorityUtils.commaSeparatedStringToAuthorityList(authorityString);
 

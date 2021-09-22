@@ -22,7 +22,7 @@ public class WxUserTest {
 
     @Test
     public void test(){
-        Optional<WxUser> wxUserOptional = wxUserMapper.selectByOpenId("aaaa");
+        Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByOpenId("");
         System.out.println(wxUserOptional.isPresent());
         System.out.println(wxUserOptional.isEmpty());
     }

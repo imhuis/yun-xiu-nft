@@ -45,12 +45,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-                .requestMatchers().antMatchers("/app/**")
+                .requestMatchers()
+                .antMatchers("/app/**")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/app/oauth/**").permitAll()
                 .antMatchers("/app/public/**").permitAll()
-//                .anyRequest().authenticated()
                 .antMatchers("/app/**").authenticated()
 
                 // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())

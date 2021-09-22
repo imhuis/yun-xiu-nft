@@ -14,6 +14,10 @@ public enum ResponseCodeEnum {
     PARAMETER_MISSING(1001, "spring.exception.1001"),
     REQUEST_BODY_MISSING(1002, "spring.exception.1002"),
 
+    CC_1001(1001, ""),
+    CC_1002(1002, ""),
+    CC_1003(1003, "未查询到该条记录"),
+
     YS_5001(5001, "预售开始时间晚于预售结束时间"),
     YS_5002(5002, "开售时间晚于开售结束时间"),
     YS_5003(5003, "预售结束时间晚于开售时间");

@@ -24,6 +24,7 @@ public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoi
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
         ResponseResult responseResult = new ResponseResult();
+        responseResult.setCode(403);
         responseResult.setSuccess(false).setMessage("no permission");
         ResponseUtil.out(response, responseResult);
     }

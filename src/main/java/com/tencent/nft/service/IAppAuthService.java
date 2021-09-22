@@ -16,8 +16,9 @@ public interface IAppAuthService {
 
     void updateWxUserProfile(WxUserProfileFormDTO wxUserProfileFormDTO);
 
-    String appLogin(WxResolvePhoneFormDTO dto);
+    Object appLogin(WxResolvePhoneFormDTO dto);
 
-    String testLogin(String phone);
+    Object testLogin(String phone);
 
+    WxUser getMyInformation(String phone);
 }

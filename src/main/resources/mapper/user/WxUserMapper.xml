@@ -7,19 +7,29 @@
     </resultMap>
 
     <sql id="WxUser_Column_List">
-        id, open_id, user_id, phone, nick_name, gender, city, province, country, avatar_url, last_login_time
+        id, open_id, user_id, otp_secret, phone, nick_name, gender, city, province, country, avatar_url, last_login_time
     </sql>
 
-    <select id="selectByPhone" resultMap="BaseResultMap">
+    <sql id="WxUser_Vo_Column_List">
+        open_id, user_id, phone, nick_name, gender, city, province, country, avatar_url, last_login_time
+    </sql>
+
+    <select id="selectFullByPhone" resultMap="BaseResultMap">
         select <include refid="WxUser_Column_List"/>
         from s_wx_user
         where phone = #{phone}
     </select>
 
-    <select id="selectByOpenId" resultMap="BaseResultMap">
+    <select id="selectFullByOpenId" resultMap="BaseResultMap">
         select <include refid="WxUser_Column_List"/>
         from s_wx_user
         where open_id = #{openId}
+    </select>
+
+    <select id="selectByPhone" resultMap="BaseResultMap">
+        select <include refid="WxUser_Vo_Column_List"/>
+        from s_wx_user
+        where phone = #{phone}
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
@@ -62,12 +72,6 @@
         </set>
         WHERE open_id = #{openId}
     </update>
-
-
-
-
-
-
 
 
     <select id="selectById" resultType="com.tencent.nft.entity.security.WxUser">

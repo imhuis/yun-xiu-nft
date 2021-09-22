@@ -14,6 +14,8 @@ class WxUser() : BaseEntity(), Serializable {
     // 用户ID，对应用户表 userId
     var userId: String? = null
 
+    var otpSecret: String? = null
+
     // 小程序用户唯一ID
     var openId: String? = null
     var phone: String? = null

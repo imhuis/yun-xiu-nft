@@ -1,40 +1,21 @@
-package com.tencent.nft.core.security.bo;
+package com.tencent.nft.core.security.bo
 
-import java.io.Serializable;
+import java.io.Serializable
 
 /**
  * @author: imhuis
  * @date: 2020/1/28
  * @description:
  */
-public class TokenInfo implements Serializable {
-
-    private String token;
+class TokenInfo : Serializable {
+    var token: String? = null
 
     // 有效时间
-    private long expires;
+    var expires: Long = 0
 
-    public TokenInfo() {
-    }
-
-    public TokenInfo(String token, long expires) {
-        this.token = token;
-        this.expires = expires;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public long getExpires() {
-        return expires;
-    }
-
-    public void setExpires(long expires) {
-        this.expires = expires;
+    constructor() {}
+    constructor(token: String?, expires: Long) {
+        this.token = token
+        this.expires = expires
     }
 }

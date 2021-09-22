@@ -52,7 +52,7 @@ public class AppAuthController {
     @RequestMapping("/token")
     public ResponseResult login(@RequestBody @Validated WxResolvePhoneFormDTO dto){
         try {
-            String token = appAuthService.appLogin(dto);
+            Object token = appAuthService.appLogin(dto);
             return ResponseUtil.success(token);
         }catch (Exception e){
             return ResponseUtil.fail(ResponseCodeEnum.FAILD);
@@ -62,7 +62,7 @@ public class AppAuthController {
     @RequestMapping("/test_token")
     public ResponseResult testLogin(String phone){
         try {
-            String token = appAuthService.testLogin(phone);
+            Object token = appAuthService.testLogin(phone);
             return ResponseUtil.success(token);
         }catch (Exception e){
             return ResponseUtil.fail(ResponseCodeEnum.FAILD);

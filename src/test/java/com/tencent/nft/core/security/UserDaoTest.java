@@ -27,5 +27,6 @@ public class UserDaoTest {
     @Test
     public void test(){
         System.out.println(passwordEncoder.encode("df8a0a1b-2db5-4ae8-b517-373c15e71483"));
+        System.out.println(passwordEncoder.encode("12345"));
     }
 }

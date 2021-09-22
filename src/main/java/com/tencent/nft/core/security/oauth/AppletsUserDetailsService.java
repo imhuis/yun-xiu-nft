@@ -24,14 +24,12 @@ public class AppletsUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String p) throws UsernameNotFoundException {
-        return wxUserMapper.selectByPhone(p)
-                .map(user -> createSpringSecurityUser(p, user))
-                .orElseThrow(() -> new UsernameNotFoundException("User with username " + p + "was not found"));
-
-//
+        return wxUserMapper.selectFullByPhone(p)
+                .map(user -> createSpringSecurityUser(user))
+                .orElseThrow(() -> new UsernameNotFoundException("User with phone " + p + "was not found"));
     }
 
-    private User createSpringSecurityUser(String p, WxUser user) {
-        return new User(user.getPhone(), null, Collections.emptyList());
+    private User createSpringSecurityUser(WxUser user) {
+        return new User(user.getPhone(), user.getOtpSecret(), Collections.emptyList());
     }
 }

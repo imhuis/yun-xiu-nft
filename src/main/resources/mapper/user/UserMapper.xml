@@ -40,31 +40,31 @@
 
     <select id="findUserById" resultMap="BaseResultMap">
         select <include refid="User_Column_List"/>
-        from s_wx_user
+        from s_user
         where id = #{id}
     </select>
 
     <select id="findUserByUserId" resultMap="BaseResultMap">
         select <include refid="User_Column_List"/>
-        from s_wx_user
+        from s_user
         where user_id = #{userId}
     </select>
 
     <select id="findUserByUserName" resultMap="BaseResultMap">
         select <include refid="User_Column_List"/>
-        from s_wx_user
+        from s_user
         where username = #{userName}
     </select>
 
     <select id="findUserByPhone" resultMap="BaseResultMap">
         select <include refid="User_Column_List"/>
-        from s_wx_user
+        from s_user
         where phone = #{phone}
     </select>
 
     <select id="findUserByEmail" resultMap="BaseResultMap">
         select <include refid="User_Column_List"/>
-        from s_wx_user
+        from s_user
         where email = #{email}
     </select>
 

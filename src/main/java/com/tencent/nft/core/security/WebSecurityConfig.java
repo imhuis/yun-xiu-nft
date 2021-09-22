@@ -55,10 +55,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        super.configure(auth);
-//        auth.inMemoryAuthentication().passwordEncoder(passwordEncoder())
-//                .withUser("admin").password(passwordEncoder().encode("123456")).authorities("ADMIN")
-//                .and()
-//                .withUser("user").password(passwordEncoder().encode("123456")).authorities("USER");
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
 //        auth.authenticationProvider(tokenAuthenticationProvider);
     }
@@ -98,11 +94,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/**").permitAll()
-                .antMatchers("/system/**").hasIpAddress("127.0.0.0/16")
+                .antMatchers("/**").authenticated()
 
-                .anyRequest()
-                .authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login")
