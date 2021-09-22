@@ -44,10 +44,25 @@ public class AppAuthController {
     }
 
 
+    /**
+     * 获取手机号登录，返回token
+     * @param dto
+     * @return
+     */
     @RequestMapping("/token")
     public ResponseResult login(@RequestBody @Validated WxResolvePhoneFormDTO dto){
         try {
             String token = appAuthService.appLogin(dto);
+            return ResponseUtil.success(token);
+        }catch (Exception e){
+            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+        }
+    }
+
+    @RequestMapping("/test_token")
+    public ResponseResult testLogin(String phone){
+        try {
+            String token = appAuthService.testLogin(phone);
             return ResponseUtil.success(token);
         }catch (Exception e){
             return ResponseUtil.fail(ResponseCodeEnum.FAILD);

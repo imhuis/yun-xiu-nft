@@ -18,4 +18,6 @@ public interface IAppAuthService {
 
     String appLogin(WxResolvePhoneFormDTO dto);
 
+    String testLogin(String phone);
+
 }

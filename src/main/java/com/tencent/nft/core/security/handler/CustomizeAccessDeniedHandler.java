@@ -1,9 +1,9 @@
-package com.tencent.nft.security.handler;
+package com.tencent.nft.core.security.handler;
 
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
@@ -17,14 +17,15 @@ import java.io.IOException;
  * @description:
  */
 @Component
-public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class CustomizeAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
         ResponseResult responseResult = new ResponseResult();
-        responseResult.setSuccess(false).setMessage("no permission");
+        responseResult.setCode(403);
+        responseResult.setSuccess(false).setMessage("access denied");
         ResponseUtil.out(response, responseResult);
     }
 }

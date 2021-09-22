@@ -39,3 +39,6 @@ alicos:
   SecretKey: PYPzIK6btue7JFuIOEm32kByUjhOnvoQ
   region: ap-shanghai
   appid: 1257367141
+
+oauth2:
+  basic: Basic YzY0YTAwMDUtYWFmNi00NmEyLWE0NTItYzAwMDA3MDU0NTliOmRmOGEwYTFiLTJkYjUtNGFlOC1iNTE3LTM3M2MxNWU3MTQ4Mw==

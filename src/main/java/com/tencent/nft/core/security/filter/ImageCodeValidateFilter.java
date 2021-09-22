@@ -1,4 +1,4 @@
-package com.tencent.nft.security.filter;
+package com.tencent.nft.core.security.filter;
 
 import com.tencent.nft.common.constant.SecurityConstants;
 import com.tencent.nft.common.exception.CaptchaValidateException;
@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;

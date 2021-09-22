@@ -1,4 +1,4 @@
-package com.tencent.nft.security;
+package com.tencent.nft.core.security;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

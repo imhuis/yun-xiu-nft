@@ -3,7 +3,6 @@ package com.tencent.nft.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.common.util.WxResolveDataUtils;
 import com.tencent.nft.entity.app.WxResolvePhoneFormDTO;
@@ -14,15 +13,23 @@ import com.tencent.nft.mapper.UserMapper;
 import com.tencent.nft.mapper.WxUserMapper;
 import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.handler.WeChatOpenIdByJsCodeLoader;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Resource;
+import java.net.URI;
 import java.util.Optional;
 
 /**
@@ -49,6 +56,12 @@ public class AppAuthServiceImpl implements IAppAuthService {
 
     @Autowired
     private AuthorizationServerTokenServices tokenServices;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${oauth2.basic}")
+    private String oauthString;
 
     @Override
     public WeChatOpenIdByJsCodeLoader.WxLoginResult wxLogin(String jsCode) {
@@ -89,14 +102,58 @@ public class AppAuthServiceImpl implements IAppAuthService {
     public String appLogin(WxResolvePhoneFormDTO dto) {
         WxUser wxAccountInfoObject = decryptPhone(dto);
         String phone = wxAccountInfoObject.getPhone();
-        WxUser wxUser = wxUserMapper.selectByPhone(phone);
+        WxUser wxUser = wxUserMapper.selectByPhone(phone).get();
         if (wxUser == null){
             // 找不到这个手机号的微信用户
             wxUser = createNewAccount(wxAccountInfoObject);
         }
 
         // 找到当前手机号，代码登录程序，创建token 返回token
-        return "token";
+        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+        map.add("username", phone);
+        map.add("password", "");
+        map.add("grant_type", "password");
+
+        URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
+        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
+                .post(uri)
+                .header("Authorization",oauthString)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(map);
+//        tokenServices.createAccessToken();
+        ResponseEntity<String> tokenResponseEntity = restTemplate.exchange(requestEntity, String.class);
+        if (tokenResponseEntity.getStatusCode().is2xxSuccessful()){
+            return tokenResponseEntity.getBody();
+        }
+        return null;
+    }
+
+    @Override
+    public String testLogin(String phone) {
+        WxUser wxUser = wxUserMapper.selectByPhone(phone).get();
+        if (wxUser == null){
+            // 找不到这个手机号的微信用户
+
+        }
+
+        // 找到当前手机号，代码登录程序，创建token 返回token
+        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+        map.add("username", phone);
+        map.add("password", "");
+        map.add("grant_type", "password");
+
+        URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
+        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
+                .post(uri)
+                .header("Authorization",oauthString)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(map);
+//        tokenServices.createAccessToken();
+        ResponseEntity<String> tokenResponseEntity = restTemplate.exchange(requestEntity, String.class);
+        if (tokenResponseEntity.getStatusCode().is2xxSuccessful()){
+            return tokenResponseEntity.getBody();
+        }
+        return null;
     }
 
 

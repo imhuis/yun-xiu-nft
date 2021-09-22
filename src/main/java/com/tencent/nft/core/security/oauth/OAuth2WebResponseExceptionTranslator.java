@@ -1,4 +1,4 @@
-package com.tencent.nft.security.oauth;
+package com.tencent.nft.core.security.oauth;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

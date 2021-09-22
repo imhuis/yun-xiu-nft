@@ -1,4 +1,4 @@
-package com.tencent.nft.security;
+package com.tencent.nft.core.security;
 
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.mapper.WxUserMapper;

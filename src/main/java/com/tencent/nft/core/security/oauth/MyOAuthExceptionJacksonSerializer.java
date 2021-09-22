@@ -1,4 +1,4 @@
-package com.tencent.nft.security.oauth;
+package com.tencent.nft.core.security.oauth;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

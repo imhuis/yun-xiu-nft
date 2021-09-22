@@ -1,4 +1,4 @@
-package com.tencent.nft.security.handler;
+package com.tencent.nft.core.security.handler;
 
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;

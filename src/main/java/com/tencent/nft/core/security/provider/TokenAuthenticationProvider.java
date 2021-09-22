@@ -1,7 +1,7 @@
-package com.tencent.nft.security.provider;
+package com.tencent.nft.core.security.provider;
 
-import com.tencent.nft.security.bo.TokenAuthentication;
-import com.tencent.nft.security.bo.TokenInfo;
+import com.tencent.nft.core.security.bo.TokenAuthentication;
+import com.tencent.nft.core.security.bo.TokenInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

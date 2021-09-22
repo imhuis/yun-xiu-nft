@@ -14,7 +14,7 @@ import java.util.Optional;
 @Mapper
 public interface WxUserMapper {
 
-    WxUser selectByPhone(String phone);
+    Optional<WxUser> selectByPhone(String phone);
 
     Optional<WxUser> selectByOpenId(String openId);
 

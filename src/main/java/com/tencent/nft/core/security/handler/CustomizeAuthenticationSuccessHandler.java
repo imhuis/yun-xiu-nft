@@ -1,17 +1,13 @@
-package com.tencent.nft.security.handler;
+package com.tencent.nft.core.security.handler;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
-import com.tencent.nft.common.util.TokenUtil;
-import com.tencent.nft.security.bo.TokenInfo;
+import com.tencent.nft.core.security.bo.TokenInfo;
 import com.tencent.nft.entity.security.SecurityUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 

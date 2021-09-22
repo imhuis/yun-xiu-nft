@@ -1,6 +1,6 @@
-package com.tencent.nft.security.oauth;
+package com.tencent.nft.core.security.oauth;
 
-import com.tencent.nft.security.handler.CustomizeAuthenticationEntryPoint;
+import com.tencent.nft.core.security.handler.CustomizeAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +41,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsService appletsUserDetailsService;
 
     @Autowired
     private CustomizeAuthenticationEntryPoint authenticationEntryPoint;
@@ -56,7 +56,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 //        super.configure(endpoints);
         endpoints
                 .authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService)
+                .userDetailsService(appletsUserDetailsService)
                 .allowedTokenEndpointRequestMethods(HttpMethod.POST)
                 .pathMapping("/oauth/token", "/app/oauth/token")
                 .tokenServices(tokenServices())

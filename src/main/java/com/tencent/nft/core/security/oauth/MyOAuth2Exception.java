@@ -1,4 +1,4 @@
-package com.tencent.nft.security.oauth;
+package com.tencent.nft.core.security.oauth;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;

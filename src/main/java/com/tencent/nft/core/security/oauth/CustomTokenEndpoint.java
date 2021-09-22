@@ -1,4 +1,4 @@
-package com.tencent.nft.security.oauth;
+package com.tencent.nft.core.security.oauth;
 
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;

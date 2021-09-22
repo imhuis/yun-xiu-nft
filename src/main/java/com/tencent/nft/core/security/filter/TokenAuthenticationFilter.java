@@ -1,8 +1,8 @@
-package com.tencent.nft.security.filter;
+package com.tencent.nft.core.security.filter;
 
 import com.google.common.base.Strings;
 import com.tencent.nft.common.constant.SecurityConstants;
-import com.tencent.nft.security.bo.TokenAuthentication;
+import com.tencent.nft.core.security.bo.TokenAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,6 +1,6 @@
-package com.tencent.nft.security.oauth;
+package com.tencent.nft.core.security.oauth;
 
-import com.tencent.nft.security.handler.CustomizeAccessDeniedHandler;
+import com.tencent.nft.core.security.handler.CustomizeAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

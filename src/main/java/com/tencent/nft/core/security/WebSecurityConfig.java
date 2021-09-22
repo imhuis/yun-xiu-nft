@@ -1,9 +1,7 @@
-package com.tencent.nft.core.config;
+package com.tencent.nft.core.security;
 
-import com.tencent.nft.security.provider.TokenAuthenticationProvider;
-import com.tencent.nft.security.filter.ImageCodeValidateFilter;
-import com.tencent.nft.security.handler.CustomizeAccessDeniedHandler;
-import com.tencent.nft.security.handler.CustomizeAuthenticationFailureHandler;
+import com.tencent.nft.core.security.handler.CustomizeAccessDeniedHandler;
+import com.tencent.nft.core.security.handler.CustomizeAuthenticationFailureHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,9 +38,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
-
-    @Autowired
-    private TokenAuthenticationProvider tokenAuthenticationProvider;
 
     @Autowired
     private AuthenticationEntryPoint authenticationEntryPoint;

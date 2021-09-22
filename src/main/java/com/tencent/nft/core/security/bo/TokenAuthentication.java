@@ -1,4 +1,4 @@
-package com.tencent.nft.security.bo;
+package com.tencent.nft.core.security.bo;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
