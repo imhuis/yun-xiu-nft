@@ -1,7 +1,7 @@
 package com.tencent.nft.security;
 
 import com.tencent.nft.entity.security.User;
-import com.tencent.nft.security.repository.UserDao;
+import com.tencent.nft.mapper.UserMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class UserDaoTest {
 
     @Autowired
-    private UserDao userDao;
+    private UserMapper userMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -19,9 +19,9 @@ public class UserDaoTest {
     @Test
     public void initUser(){
         User newUser = new User();
-        newUser.setUserName("zhangyang");
+        newUser.setUsername("zhangyang");
         newUser.setPassword(passwordEncoder.encode("123456"));
-        userDao.save(newUser);
+        userMapper.insert(newUser);
     }
 
     @Test

@@ -3,6 +3,7 @@
 <mapper namespace="com.tencent.nft.mapper.WxUserMapper">
     <resultMap id="BaseResultMap" type="com.tencent.nft.entity.security.WxUser">
         <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickname"/>
     </resultMap>
 
     <sql id="WxUser_Column_List">
@@ -26,7 +27,7 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="openId != null">open_id,</if>
             <if test="phone != null">phone,</if>
-            <if test="nickName != null">nick_name,</if>
+            <if test="nickname != null">nick_name,</if>
             <if test="gender != null">gender,</if>
             <if test="city != null">city,</if>
             <if test="province != null">province,</if>
@@ -37,7 +38,7 @@
         <trim prefix="VALUES(" suffix=")" suffixOverrides=",">
             <if test="openId != null">#{openId},</if>
             <if test="phone != null">#{phone},</if>
-            <if test="nickName != null">#{nickName},</if>
+            <if test="nickname != null">#{nickname},</if>
             <if test="gender != null">#{gender},</if>
             <if test="city != null">#{city},</if>
             <if test="province != null">#{province},</if>
@@ -50,7 +51,7 @@
     <update id="update">
         update s_wx_user
         <set>
-            <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+            <if test="nickname != null and nickname != ''">nick_name = #{nickname},</if>
             <if test="gender != null and gender != ''">gender = #{gender},</if>
             <if test="city != null and city != ''">city = #{city},</if>
             <if test="province != null and province != ''">province = #{province},</if>

@@ -1,16 +1,19 @@
-package com.tencent.nft.security.repository;
+package com.tencent.nft.mapper;
 
 import com.tencent.nft.entity.security.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;
 
 /**
  * @author: imhuis
- * @date: 2021/9/1
+ * @date: 2021/9/22
  * @description:
  */
-public interface UserDao extends JpaRepository<User,Long> {
+@Mapper
+public interface UserMapper {
+
+    int insert(User newUser);
 
     Optional<User> findUserById(Long id);
 
@@ -21,5 +24,4 @@ public interface UserDao extends JpaRepository<User,Long> {
     Optional<User> findUserByPhone(String phone);
 
     Optional<User> findUserByEmail(String email);
-
 }

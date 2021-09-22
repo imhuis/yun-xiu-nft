@@ -19,9 +19,6 @@ public class WxResolvePhoneFormDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String nickName;
-    private String avatarUrl;
-
     @NotNull(message = "jsCode参数不为空")
     private String jsCode;
 
@@ -32,22 +29,6 @@ public class WxResolvePhoneFormDTO implements Serializable {
     private String iv;
 
     public WxResolvePhoneFormDTO(){}
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
 
     public String getEncryptedData() {
         return encryptedData;

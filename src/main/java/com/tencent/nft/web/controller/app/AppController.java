@@ -40,13 +40,12 @@ public class AppController {
     @RequestMapping(value = "/user_profile", method = RequestMethod.POST)
     public ResponseResult initUser(@RequestBody @Validated WxUserProfileFormDTO wxUserProfileFormDTO){
         appAuthService.updateWxUserProfile(wxUserProfileFormDTO);
-
         return ResponseUtil.success();
     }
 
 
     @RequestMapping("/token")
-    public ResponseResult login(@RequestBody WxResolvePhoneFormDTO dto){
+    public ResponseResult login(@RequestBody @Validated WxResolvePhoneFormDTO dto){
         try {
             String token = appAuthService.appLogin(dto);
             return ResponseUtil.success(token);
@@ -54,6 +53,5 @@ public class AppController {
             return ResponseUtil.fail(ResponseCodeEnum.FAILD);
         }
     }
-
 
 }

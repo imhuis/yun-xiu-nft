@@ -3,8 +3,8 @@ package com.tencent.nft.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.util.WxResolveDataUtils;
-import com.tencent.nft.entity.WxAccountInfoObject;
 import com.tencent.nft.entity.app.WxResolvePhoneFormDTO;
 import com.tencent.nft.entity.app.WxUserProfileFormDTO;
 import com.tencent.nft.entity.security.WxUser;
@@ -37,6 +37,8 @@ public class AppAuthServiceImpl implements IAppAuthService {
 
     @Resource
     private WxUserMapper wxUserMapper;
+
+//    private
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -81,29 +83,28 @@ public class AppAuthServiceImpl implements IAppAuthService {
 
     @Override
     public String appLogin(WxResolvePhoneFormDTO dto) {
-        WxAccountInfoObject wxAccountInfoObject = decryptPhone(dto);
-        String openId = wxAccountInfoObject.getOpenId();
+        WxUser wxAccountInfoObject = decryptPhone(dto);
         String phone = wxAccountInfoObject.getPhone();
         WxUser wxUser = wxUserMapper.selectByPhone(phone);
         if (wxUser == null){
-            // 该用户不存在
-//            wxAccountInfoObject.setNickName(dto.getNickName());
-//            wxAccountInfoObject.setAvatarUrl(dto.getAvatarUrl());
-//            createNewAccount(wxAccountInfoObject);
+            // 找不到这个手机号的微信用户
+            createNewAccount(wxAccountInfoObject);
         }
-//        OAuth2Authentication authentication = new OAuth2Authentication();
 
-//        tokenServices.createAccessToken(authentication);
-        return wxAccountInfoObject.toString();
+        // 创建token 返回token
+        return "token";
     }
 
 
     @Transactional
-    public WxUser createNewAccount(WxAccountInfoObject baseDataDTO) {
-        // 插入两张用户表
+    public WxUser createNewAccount(WxUser baseDataDTO) {
+        // 先插入 s_user
+
+
+        // 后插入 s_wx_user
         String openId = baseDataDTO.getOpenId();
         String phone = baseDataDTO.getPhone();
-        String nickName = baseDataDTO.getNickName();
+        String nickName = baseDataDTO.getNickname();
         Integer gender = baseDataDTO.getGender();
         String city = baseDataDTO.getCity();
         String province = baseDataDTO.getProvince();
@@ -123,27 +124,27 @@ public class AppAuthServiceImpl implements IAppAuthService {
      * @param wxResolvePhoneFormDTO
      * @return
      */
-    private WxAccountInfoObject decryptPhone(WxResolvePhoneFormDTO wxResolvePhoneFormDTO) {
+    private WxUser decryptPhone(WxResolvePhoneFormDTO wxResolvePhoneFormDTO) {
 
-        WxAccountInfoObject wxobj = new WxAccountInfoObject();
+        WxUser wxUser = new WxUser();
 
         WeChatOpenIdByJsCodeLoader.WxLoginResult wxLoginResult = weChatOpenIdByJsCodeLoader.load(wxResolvePhoneFormDTO.getJsCode());
         if (StringUtils.isNotBlank(wxLoginResult.getOpenId())){
-            wxobj.setOpenId(wxLoginResult.getOpenId());
+            wxUser.setOpenId(wxLoginResult.getOpenId());
         }
         String sessionKey = wxLoginResult.getSessionKey();
         LOG.info("method[resolveWeChatAccountInfo] session>{}", sessionKey);
 
         // 解析encrypted data获取用户手机号（包括openid）
-        String resolveData =new String(WxResolveDataUtils.decrypt(wxResolvePhoneFormDTO.getEncryptedData(), sessionKey, wxResolvePhoneFormDTO.getIv()));
+        String resolveData = new String(WxResolveDataUtils.decrypt(wxResolvePhoneFormDTO.getEncryptedData(), sessionKey, wxResolvePhoneFormDTO.getIv()));
         try {
             /*{"phoneNumber":"18852961663","purePhoneNumber":"18852961663","countryCode":"86","watermark":{"timestamp":1554949910,"appid":"wxc418d44a80e38c7b"}}*/
             JsonNode jsonNode = objectMapper.readTree(resolveData);
-            wxobj.setPhone(jsonNode.get("phoneNumber").asText());
+            wxUser.setPhone(jsonNode.get("phoneNumber").asText());
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        return wxobj;
+        return wxUser;
     }
 
 }
