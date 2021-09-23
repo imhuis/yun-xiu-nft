@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 @Component
 @Transactional
-public interface FeedMapper {
+public interface FeedbackMapper {
     //接收前端数据并加入数据库
     int insert(FeedBack feedBack);
     //根据日期查询

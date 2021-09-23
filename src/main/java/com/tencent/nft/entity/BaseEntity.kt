@@ -15,8 +15,8 @@ open class BaseEntity : Serializable {
     var id: Long? = null
 
 //    @CreatedDate
-    var createTime: LocalDateTime? = null
+    var createTime: LocalDateTime? = LocalDateTime.now()
 
 //    @LastModifiedDate
-    var updateTime: LocalDateTime? = null
+    var updateTime: LocalDateTime? = LocalDateTime.now()
 }

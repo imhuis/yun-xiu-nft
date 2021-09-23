@@ -95,7 +95,7 @@ public class NftManagementServiceImpl implements INftManagementService {
         Optional<NFTInfo> nftInfoOptional = nftMapper.selectNftInfoByNftId(parentNftId);
 
         PageHelper.startPage(page, size);
-        List<SubNFT> subNFTList = nftMapper.selectSubNFTList(parentNftId, subNFTQueryDTO);
+        List<SubNFT> subNFTList = nftMapper.selectSubNftList(parentNftId, subNFTQueryDTO);
         List<SubNFTListVO> subNFTListVOList = Lists.newArrayList();
 
         subNFTList.stream().forEach(subNFT -> {
@@ -123,7 +123,8 @@ public class NftManagementServiceImpl implements INftManagementService {
 
     @Override
     public SuperNFT nftDetail(String nftId) {
-        Optional<SuperNFT> superNFTOptional  = nftMapper.selectSuperNFTByNftId(nftId);
+        Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(nftId);
+        // 查询不到当前nft
         if (superNFTOptional.isEmpty()){
             throw new RecordNotFoundException();
         }

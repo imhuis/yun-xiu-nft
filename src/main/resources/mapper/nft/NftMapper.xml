@@ -69,6 +69,7 @@
             <if test="issuer != null">issuer,</if>
             <if test="introduce != null">introduce,</if>
             <if test="nftCreateTime != null">nft_create_time,</if>
+            create_time, update_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="nftId != null">#{nftId},</if>
@@ -79,6 +80,7 @@
             <if test="issuer != null">#{issuer},</if>
             <if test="introduce != null">#{introduce},</if>
             <if test="nftCreateTime != null">#{nftCreateTime},</if>
+            #{createTime}, #{updateTime}
         </trim>
     </insert>
 
@@ -103,16 +105,18 @@
             <if test="nftName != null">nft_name,</if>
             <if test="coverPicture != null">cover_pic,</if>
             <if test="detailPicture != null">detail_pic,</if>
+            create_time, update_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="nftId != null">#{nftId},</if>
             <if test="nftName != null">#{nftName},</if>
             <if test="coverPicture != null">#{coverPicture},</if>
             <if test="detailPicture != null">#{detailPicture},</if>
+            #{createTime}, #{updateTime}
         </trim>
     </insert>
 
-    <select id="selectSubNFTList" resultMap="SubNFTResultMap">
+    <select id="selectSubNftList" resultMap="SubNFTResultMap">
         select
         <include refid="SubNFT_Column_List"/>
         from t_sub_nft

@@ -1,5 +1,6 @@
 package com.tencent.nft.entity.nft
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -21,15 +22,19 @@ open class NFTProduct : SuperNFT(), Serializable {
     var detailPicture: String? = null
 
     // 预约开始时间
-    open var reserveStartTime: LocalDateTime? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    var reserveStartTime: LocalDateTime? = null
 
     // 预约结束时间
-    open var reserveEndTime: LocalDateTime? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    var reserveEndTime: LocalDateTime? = null
 
     // 开售开始时间
-    open var sellStartTime: LocalDateTime? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    var sellStartTime: LocalDateTime? = null
 
     // 开售结束时间
-    open var sellEndTime: LocalDateTime? = null
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    var sellEndTime: LocalDateTime? = null
 
 }

@@ -7,6 +7,7 @@ package com.tencent.nft.common.enums;
  */
 public enum NFTTypeEnum implements ICommonEnum {
 
+    UNDEFINED(-1, "未定义"),
     PICTURE(1, "图片"),
     VIDEO(2, "视频"),
     AUDIO(3, "音频");

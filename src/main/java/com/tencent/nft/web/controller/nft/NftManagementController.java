@@ -89,13 +89,14 @@ public class NftManagementController {
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseResult createNFT(@RequestBody @Validated NftCreateDTO dto, BindingResult bindingResult){
+        // 必要的参数检查
+        //        checkParam();
 
         if (dto.getDetailPicture().size() > 6){
             return ResponseUtil.fail(ResponseCodeEnum.NFT_4003);
         }
         NFTInfo nftInfo = new NFTInfo();
-        // Nft id生成规则
-//        BeanUtils.copyProperties(dto, nftInfo);
+        // Nft id生成规则 - 后面确认
         nftInfo.setNftId(UUIDUtil.generateUUID());
         nftInfo.setNftName(dto.getNftName());
         nftInfo.setNftType(ICommonEnum.getEnum(dto.getNftType(), NFTTypeEnum.class));

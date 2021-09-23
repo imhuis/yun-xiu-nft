@@ -15,7 +15,7 @@ class NftCreateDTO : Serializable {
     var nftName: String? = null
 
     // NFT类型（1-图片 2-视频 3-音频）
-    var nftType = 0
+    var nftType = -1
 
     // NFT文件
     var nftFile: String? = null

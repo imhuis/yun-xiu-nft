@@ -22,7 +22,7 @@ public interface NftMapper {
     Optional<SuperNFT> selectSuperNFTByNftId(String nftId);
 
     /**
-     * PageRowBounds rowBounds
+     * 多条件查询父nft
      * @param nftListQueryDTO
      * @return
      */
@@ -39,6 +39,11 @@ public interface NftMapper {
     int insertNftInfo(NFTInfo nftInfo);
 
 
-
-    List<SubNFT> selectSubNFTList(@Param("superId") String parentNftId, @Param("subNFTQueryDTO") SubNFTQueryDTO subNFTQueryDTO);
+    /**
+     * 多条件查询子nft
+     * @param parentNftId
+     * @param subNFTQueryDTO
+     * @return
+     */
+    List<SubNFT> selectSubNftList(@Param("superId") String parentNftId, @Param("subNFTQueryDTO") SubNFTQueryDTO subNFTQueryDTO);
 }

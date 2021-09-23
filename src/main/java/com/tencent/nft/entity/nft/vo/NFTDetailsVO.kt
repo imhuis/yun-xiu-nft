@@ -10,25 +10,21 @@ import java.time.LocalDateTime
 /**
  * @author: imhuis
  * @date: 2021/9/12
- * @description:
+ * @description: NFT详情vo
  */
 class NFTDetailsVO : NFTProduct(), Serializable {
 
-    // 预约开始时间
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-    override var reserveStartTime: LocalDateTime? = null
-
-    // 预约结束时间
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-    override var reserveEndTime: LocalDateTime? = null
-
-    // 开售开始时间
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-    override var sellStartTime: LocalDateTime? = null
-
-    // 开售结束时间
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-    override var sellEndTime: LocalDateTime? = null
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+//    override var reserveStartTime: LocalDateTime? = null
+//
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+//    override var reserveEndTime: LocalDateTime? = null
+//
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+//    override var sellStartTime: LocalDateTime? = null
+//
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+//    override var sellEndTime: LocalDateTime? = null
 
     // 销售总量
     var totalAmount:Int? = null
@@ -39,5 +35,4 @@ class NFTDetailsVO : NFTProduct(), Serializable {
     // 预约人数
     @JsonProperty("yyrs")
     var reservation = 0
-
 }

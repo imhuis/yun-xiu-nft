@@ -4,7 +4,7 @@ package com.tencent.nft.service.impl;
 
 import com.github.pagehelper.util.StringUtil;
 import com.tencent.nft.common.base.FeedBack;
-import com.tencent.nft.mapper.FeedMapper;
+import com.tencent.nft.mapper.FeedbackMapper;
 import com.tencent.nft.service.FeedService;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import java.util.List;
 public class FeedServiceImpl implements FeedService {
 
     @Resource
-    private FeedMapper feedMapper;
+    private FeedbackMapper feedbackMapper;
 
 
     @Override
@@ -27,7 +27,7 @@ public class FeedServiceImpl implements FeedService {
         if(feedBack.getMessage() == null || feedBack.getMessage() == "") {
                 return 1;
         }
-        return feedMapper.insert(feedBack);
+        return feedbackMapper.insert(feedBack);
     }
 
     /**
@@ -37,13 +37,13 @@ public class FeedServiceImpl implements FeedService {
     public List<FeedBack> getByDate(String date) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDateTime = LocalDate.parse(date, df);
-        return feedMapper.getByDate(localDateTime);
+        return feedbackMapper.getByDate(localDateTime);
     }
 
 
     @Override
     public boolean deleteById(Integer id) {
-        int i = feedMapper.deleteById(id);
+        int i = feedbackMapper.deleteById(id);
         if(i > 0){
             return true;
         }else {
@@ -59,11 +59,11 @@ public class FeedServiceImpl implements FeedService {
             feedBack.setDate(sdf.parse(date));
         }
 
-        return feedMapper.getAll(feedBack);
+        return feedbackMapper.getAll(feedBack);
     }
 
     @Override
     public Object getById(Integer id) {
-        return feedMapper.getById(id);
+        return feedbackMapper.getById(id);
     }
 }
