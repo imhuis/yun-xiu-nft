@@ -4,13 +4,18 @@ import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.core.security.SecurityUtils;
+import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.IAppService;
+import com.tencent.nft.service.INftService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author: imhuis
@@ -26,6 +31,9 @@ public class AppController {
 
     @Autowired
     private IAppService appService;
+
+    @Autowired
+    private INftService nftService;
 
     /**
      * 个人信息
@@ -43,6 +51,7 @@ public class AppController {
 
     @RequestMapping("/me/library")
     public ResponseResult myLibrary(){
+        appService.myLibrary();
         return ResponseUtil.success();
     }
 
@@ -52,8 +61,13 @@ public class AppController {
      * @return
      */
     @RequestMapping("/market")
-    public ResponseResult market(@RequestParam(value = "status", defaultValue = "1") Integer status){
-        return ResponseUtil.success();
+    public ResponseResult market(@RequestParam(value = "status", defaultValue = "0") Integer status){
+        List<SuperNFT> marketList = nftService.getMarketList(status);
+        return ResponseUtil.success(marketList);
+    }
 
+    @RequestMapping("/market/{nft_id}")
+    public ResponseResult productDetail(@PathVariable(value = "nft_id") String nftId){
+        return ResponseUtil.success(nftId);
     }
 }

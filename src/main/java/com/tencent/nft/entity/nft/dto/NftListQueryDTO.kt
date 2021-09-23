@@ -14,4 +14,12 @@ open class NftListQueryDTO : Serializable {
     var nftType: Int? = null
     var nftStatus: Int? = null
 
+    constructor(){}
+
+    constructor(nftId: String?, nftName: String?, nftType: Int?, nftStatus: Int?) {
+        this.nftId = nftId
+        this.nftName = nftName
+        this.nftType = nftType
+        this.nftStatus = nftStatus
+    }
 }

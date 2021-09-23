@@ -52,4 +52,11 @@
         where nft_id = #{nftId}
     </delete>
 
+
+    <select id="selectSubNftIdByUserId" resultType="java.lang.Long">
+        select nft_id
+        from t_user_nft
+        where user_id = #{userId}
+    </select>
+
 </mapper>

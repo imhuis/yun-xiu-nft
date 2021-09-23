@@ -3,7 +3,7 @@
  * www.tencent.com
  * All rights reserved.
  */
-package com.tencent.nft.entity.app
+package com.tencent.nft.entity.app.dto
 
 import java.io.Serializable
 import javax.validation.constraints.NotNull

@@ -1,6 +1,9 @@
 package com.tencent.nft.service;
 
+import com.tencent.nft.entity.app.vo.CollectionVO;
 import com.tencent.nft.entity.security.WxUser;
+
+import java.util.List;
 
 /**
  * @author: imhuis
@@ -9,4 +12,5 @@ import com.tencent.nft.entity.security.WxUser;
  */
 public interface IAppService {
 
+    List<CollectionVO> myLibrary();
 }
