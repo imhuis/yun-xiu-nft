@@ -12,8 +12,4 @@ open class NFTInfo : SuperNFT(), Serializable {
     // 详细介绍图片
     var detailPicture: String? = null
 
-    // 预约人数
-    @JsonProperty("yyrs")
-    var reservation = 0
-
 }

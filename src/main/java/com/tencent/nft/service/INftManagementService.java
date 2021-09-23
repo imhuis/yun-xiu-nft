@@ -30,5 +30,5 @@ public interface INftManagementService {
 
     void setPreSale(NFTProduct n);
 
-    void createNftInfo(NFTProduct n);
+    NFTProduct createNftInfo(NFTProduct n);
 }

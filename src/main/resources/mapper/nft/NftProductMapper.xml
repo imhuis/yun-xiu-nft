@@ -1,65 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tencent.nft.mapper.NftProductMapper">
-    <resultMap id="BaseResultMap" type="com.tencent.nft.entity.nft.NFTInfo">
+    <resultMap id="BaseResultMap" type="com.tencent.nft.entity.nft.NFTProduct">
         <id column="id" jdbcType="BIGINT" property="id"/>
     </resultMap>
-    <resultMap id="SuperNFTResultMap" type="com.tencent.nft.entity.nft.SuperNFT">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="nft_status" jdbcType="INTEGER" property="nftStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
-        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
-    </resultMap>
-    <resultMap id="NFTInfoResultMap" type="com.tencent.nft.entity.nft.NFTInfo">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="nft_status" jdbcType="INTEGER" property="nftStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
-        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
-    </resultMap>
-    <resultMap id="SubNFTResultMap" type="com.tencent.nft.entity.nft.SubNFT">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="sub_id" jdbcType="VARCHAR" property="nftId"/>
-        <result column="super_id" jdbcType="VARCHAR" property="superNFTId"/>
-        <result column="sale_status" jdbcType="INTEGER" property="saleStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
-<!--        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>-->
-    </resultMap>
+
     <sql id="SuperNFT_Column_List">
         id, nft_id, nft_name, nft_status, nft_type, issuer, introduce, unit_price, circulation, nft_create_time
     </sql>
-    <sql id="NFTInfo_Column_List">
-        id, nft_id, nft_name, nft_status, unit_price, circulation,
-        reserve_start_time, reserve_end_time, sell_start_time, sell_end_time, reservation
-    </sql>
-    <sql id="SubNFT_Column_List">
-        id, sub_id, super_id, sale_status, address, sold_time
-    </sql>
 
-    <select id="selectSuperNFTByNftId" resultMap="SuperNFTResultMap">
+    <select id="selectByNftId" resultMap="BaseResultMap">
         select
         <include refid="SuperNFT_Column_List"/>
-        from t_super_nft
+        from t_nft_product
         where nft_id = #{nftId}
     </select>
 
-    <select id="selectSuperNFTList" resultMap="SuperNFTResultMap">
-        select
-        <include refid="SuperNFT_Column_List"/>
-        from t_super_nft
-        <where>
-            <if test="nftListQueryDTO.nftId != null">
-                and nft_id = #{nftListQueryDTO.nftId}
-            </if>
-            <if test="nftListQueryDTO.nftName != null">
-                and nft_name = #{nftListQueryDTO.nftName}
-            </if>
-            <if test="nftListQueryDTO.nftType != null">
-                and nft_type = #{nftListQueryDTO.nftType}
-            </if>
-            <if test="nftListQueryDTO.nftStatus != null">
-                and nft_status = #{nftListQueryDTO.nftStatus}
-            </if>
-        </where>
-    </select>
-
-    <insert id="insertSuperNFT" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    <insert id="insertNftProduct" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         insert into t_super_nft
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="nftId != null">nft_id,</if>
@@ -83,44 +40,10 @@
         </trim>
     </insert>
 
-    <delete id="deleteSuperNFT">
+    <delete id="deleteByNftId">
         delete from
         t_super_nft
         where nft_id = #{nftId}
     </delete>
-
-
-    <select id="selectNftInfoByNftId" resultMap="NFTInfoResultMap">
-        select
-        <include refid="NFTInfo_Column_List"/>
-        from t_nft_info
-        where nft_id = #{nftId}
-    </select>
-
-    <insert id="insertNftInfo" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        insert into t_nft_info
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="nftId != null">nft_id,</if>
-            <if test="nftName != null">nft_name,</if>
-            <if test="nftStatus != null">nft_status,</if>
-            <if test="unitPrice != null">unit_price,</if>
-            <if test="circulation != null">circulation,</if>
-            <if test="reserveStartTime != null">reserve_start_time,</if>
-            <if test="reserveEndTime != null">reserve_end_time,</if>
-            <if test="sellStartTime != null">sell_Start_time,</if>
-            <if test="sellEndTime != null">sell_end_time,</if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="nftId != null">#{nftId},</if>
-            <if test="nftName != null">#{nftName},</if>
-            <if test="nftStatus != null">#{nftStatus},</if>
-            <if test="unitPrice != null">#{unitPrice},</if>
-            <if test="circulation != null">#{circulation},</if>
-            <if test="reserveStartTime != null">#{reserveStartTime},</if>
-            <if test="reserveEndTime != null">#{reserveEndTime},</if>
-            <if test="sellStartTime != null">#{sellStartTime},</if>
-            <if test="sellEndTime != null">#{sellEndTime},</if>
-        </trim>
-    </insert>
 
 </mapper>

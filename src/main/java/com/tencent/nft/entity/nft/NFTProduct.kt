@@ -32,8 +32,4 @@ open class NFTProduct : SuperNFT(), Serializable {
     // 开售结束时间
     open var sellEndTime: LocalDateTime? = null
 
-    // 预约人数
-    @JsonProperty("yyrs")
-    var reservation = 0
-
 }

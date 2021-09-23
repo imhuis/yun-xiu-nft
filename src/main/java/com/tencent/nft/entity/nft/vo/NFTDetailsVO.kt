@@ -1,6 +1,7 @@
 package com.tencent.nft.entity.nft.vo
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.tencent.nft.entity.nft.NFTInfo
 import com.tencent.nft.entity.nft.NFTProduct
 import java.io.Serializable
@@ -34,5 +35,9 @@ class NFTDetailsVO : NFTProduct(), Serializable {
 
     // 销售总额
     var totalSales: Long? = null
+
+    // 预约人数
+    @JsonProperty("yyrs")
+    var reservation = 0
 
 }

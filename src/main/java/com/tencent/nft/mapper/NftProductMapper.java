@@ -1,5 +1,6 @@
 package com.tencent.nft.mapper;
 
+import com.tencent.nft.entity.nft.NFTProduct;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -10,5 +11,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface NftProductMapper {
 
+    NFTProduct selectByNftId(String nftId);
 
+    int insertNftProduct(NFTProduct nftProduct);
+
+    int deleteByNftId(String nftId);
 }

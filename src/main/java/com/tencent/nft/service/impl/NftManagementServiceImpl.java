@@ -147,9 +147,15 @@ public class NftManagementServiceImpl implements INftManagementService {
     @Transactional
     @Override
     public void setPreSale(NFTProduct n) {
+        // 查询父nft
+        Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(n.getNftId());
+        if (superNFTOptional.isEmpty()){
+            // 未找到这条记录
+            throw new RecordNotFoundException();
+        }
         // 预售创建nft详情
-        createNftInfo(n);
-        // 更新 super_nft
+        NFTProduct nftProduct = createNftInfo(n);
+        // 更新 父nft状态
 
         // 更新缓存
 
@@ -157,6 +163,10 @@ public class NftManagementServiceImpl implements INftManagementService {
     }
 
     @Override
-    public void createNftInfo(NFTProduct n) {
+    public NFTProduct createNftInfo(NFTProduct n) {
+
+
+
+        return n;
     }
 }
