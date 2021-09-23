@@ -1,6 +1,5 @@
 package com.tencent.nft.mapper;
 
-
 import com.tencent.nft.common.base.FeedBack;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
