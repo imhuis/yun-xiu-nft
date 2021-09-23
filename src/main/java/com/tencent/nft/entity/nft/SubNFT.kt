@@ -27,5 +27,5 @@ open class SubNFT : SuperNFT(), Serializable {
     var soldTime: LocalDateTime? = null
 
     // 子NFT创建时间
-    override var nftCreateTime: LocalDateTime? = null
+//    override var nftCreateTime: LocalDateTime? = null
 }

@@ -5,6 +5,7 @@ import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
+import com.tencent.nft.entity.nft.dto.PreSaleDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
 import com.tencent.nft.entity.nft.vo.NFTListVO;
 import com.tencent.nft.entity.nft.vo.SubNFTListVO;
@@ -28,7 +29,7 @@ public interface INftManagementService {
 
     SuperNFT nftDetail(String nftId);
 
-    void setPreSale(NFTProduct n);
+    List<String> getPosterPic(String nftId);
 
-    NFTProduct createNftInfo(NFTProduct n);
+    void setPreSale(PreSaleDTO n);
 }

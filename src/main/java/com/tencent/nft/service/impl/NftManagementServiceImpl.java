@@ -11,19 +11,27 @@ import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SubNFT;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
+import com.tencent.nft.entity.nft.dto.PreSaleDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
 import com.tencent.nft.entity.nft.vo.NFTDetailsVO;
+import com.tencent.nft.entity.nft.vo.NFTListVO;
 import com.tencent.nft.entity.nft.vo.SubNFTListVO;
 import com.tencent.nft.mapper.NftMapper;
+import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.service.INftManagementService;
-import com.tencent.nft.entity.nft.vo.NFTListVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author: imhuis
@@ -35,6 +43,12 @@ public class NftManagementServiceImpl implements INftManagementService {
 
     @Resource
     private NftMapper nftMapper;
+
+    @Resource
+    private NftProductMapper productMapper;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     @Transactional
@@ -50,8 +64,7 @@ public class NftManagementServiceImpl implements INftManagementService {
         // 检查状态 只有待发行中的才可以删除
         Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(nftId);
         superNFTOptional.ifPresent(superNFT -> {
-            // 记录存在查询状态
-            System.out.println("code " + superNFT.getNftStatus().getCode());
+            // 记录存在查询状态，只有待发行的可以删除
             if (superNFT.getNftStatus() == NFTStatusEnum.WAITING){
                 nftMapper.deleteSuperNFT(nftId);
             }
@@ -122,52 +135,71 @@ public class NftManagementServiceImpl implements INftManagementService {
     }
 
     @Override
-    public SuperNFT nftDetail(String nftId) {
+    public SuperNFT nftDetail(String n) {
+        String nftId = StringUtils.trim(n.toLowerCase());
         Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(nftId);
         // 查询不到当前nft
         if (superNFTOptional.isEmpty()){
             throw new RecordNotFoundException();
         }
-        NFTInfo nftInfo;
-        if (superNFTOptional.get().getNftStatus() != NFTStatusEnum.WAITING){
-            // 待发行的nft可以查询到信息
-            nftInfo = nftMapper.selectNftInfoByNftId(nftId).orElse(new NFTInfo());
-            BeanUtils.copyProperties(superNFTOptional.get(), nftInfo);
+        SuperNFT superNFT = superNFTOptional.get();
+        NFTInfo nftInfo = nftMapper.selectNftInfoByNftId(nftId).orElse(new NFTInfo());
+        NFTDetailsVO nftDetailsVO = new NFTDetailsVO();
 
-            NFTDetailsVO nftDetailsVO = new NFTDetailsVO();
+        if (superNFT.getNftStatus() != NFTStatusEnum.WAITING){
+            // 待发行的nft可以查询到信息
+            BeanUtils.copyProperties(superNFT, nftInfo);
+
+            Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(nftId);
+            nftProductOptional.ifPresent(nftProduct -> BeanUtils.copyProperties(nftProduct, nftDetailsVO));
+            BeanUtils.copyProperties(nftInfo, nftDetailsVO);
+
             if (nftInfo.getNftStatus() == NFTStatusEnum.PROCESSING || nftInfo.getNftStatus() == NFTStatusEnum.SOLDOUT){
+                // 计算金额
                 nftDetailsVO.setTotalAmount(200);
                 nftDetailsVO.setTotalSales(2300L);
             }
-            BeanUtils.copyProperties(nftInfo, nftDetailsVO);
             return nftDetailsVO;
         }
         return superNFTOptional.get();
     }
 
+    @Override
+    public List<String> getPosterPic(String nftId) {
+        Optional<NFTInfo> nftInfoOptional = nftMapper.selectNftInfoByNftId(nftId);
+        return Arrays.asList(nftInfoOptional.get().getDetailPicture().split(",")).stream().collect(Collectors.toList());
+    }
+
     @Transactional
     @Override
-    public void setPreSale(NFTProduct n) {
+    public void setPreSale(PreSaleDTO n) {
         // 查询父nft
         Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(n.getNftId());
+        SuperNFT superNFTInfo;
+        NFTProduct nftProduct = new NFTProduct();
         if (superNFTOptional.isEmpty()){
             // 未找到这条记录
             throw new RecordNotFoundException();
+        }else {
+            superNFTInfo = superNFTOptional.get();
+            BeanUtils.copyProperties(n, nftProduct);
+            nftProduct.setNftName(superNFTInfo.getNftName());
+            nftProduct.setNftStatus(NFTStatusEnum.RESERVEING);
         }
-        // 预售创建nft详情
-        NFTProduct nftProduct = createNftInfo(n);
-        // 更新 父nft状态
 
+        // 预售创建nft详情
+        productMapper.insertNftProduct(nftProduct);
+        // 更新 父nft状态
+        updateNftStatus(superNFTInfo.getNftId(), NFTStatusEnum.RESERVEING);
         // 更新缓存
 
 
     }
 
-    @Override
-    public NFTProduct createNftInfo(NFTProduct n) {
-
-
-
-        return n;
+    @Transactional
+    @Async
+    void updateNftStatus(String nftId, NFTStatusEnum status) {
+        // 更新 t_super_nft状态
     }
+
 }

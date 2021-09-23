@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.tencent.nft.entity.nft.NFTInfo
 import com.tencent.nft.entity.nft.NFTProduct
+import com.tencent.nft.entity.nft.SubNFT
 import java.io.Serializable
+import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**
@@ -12,19 +14,30 @@ import java.time.LocalDateTime
  * @date: 2021/9/12
  * @description: NFT详情vo
  */
-class NFTDetailsVO : NFTProduct(), Serializable {
+class NFTDetailsVO : SubNFT(), Serializable {
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-//    override var reserveStartTime: LocalDateTime? = null
-//
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-//    override var reserveEndTime: LocalDateTime? = null
-//
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-//    override var sellStartTime: LocalDateTime? = null
-//
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-//    override var sellEndTime: LocalDateTime? = null
+    // 单价
+    @JsonProperty("price")
+    var unitPrice: BigDecimal? = null
+
+    // 发行量
+    @JsonProperty("fxl")
+    var circulation: Int? = null
+
+    // 封面图片
+    var coverPicture: String? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    var reserveStartTime: LocalDateTime? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    var reserveEndTime: LocalDateTime? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    var sellStartTime: LocalDateTime? = null
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+    var sellEndTime: LocalDateTime? = null
 
     // 销售总量
     var totalAmount:Int? = null

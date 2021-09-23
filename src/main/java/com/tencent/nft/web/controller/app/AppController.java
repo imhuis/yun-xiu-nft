@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @description:
  */
 @RestController
+@RequestMapping("/app")
 public class AppController {
 
     @Autowired
@@ -30,7 +31,7 @@ public class AppController {
      * 个人信息
      * @return
      */
-    @RequestMapping("/app/me")
+    @RequestMapping("/me")
     public ResponseResult my(){
         String p = SecurityUtils.getCurrentUsername().get();
         if (p == null){
@@ -40,7 +41,7 @@ public class AppController {
         return ResponseUtil.success(wxUser);
     }
 
-    @RequestMapping("/app/me/library")
+    @RequestMapping("/me/library")
     public ResponseResult myLibrary(){
         return ResponseUtil.success();
     }
@@ -50,7 +51,7 @@ public class AppController {
      * @param status
      * @return
      */
-    @RequestMapping("/app/market")
+    @RequestMapping("/market")
     public ResponseResult market(@RequestParam(value = "status", defaultValue = "1") Integer status){
         return ResponseUtil.success();
 

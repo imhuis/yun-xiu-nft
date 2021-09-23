@@ -24,21 +24,25 @@
             <if test="nftId != null">nft_id,</if>
             <if test="nftName != null">nft_name,</if>
             <if test="nftStatus != null">nft_status,</if>
-            <if test="nftType != null">nft_type,</if>
-            <if test="nftFile != null">nft_file,</if>
-            <if test="issuer != null">issuer,</if>
-            <if test="introduce != null">introduce,</if>
-            <if test="nftCreateTime != null">nft_create_time,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="circulation != null">circulation,</if>
+            <if test="reserveStartTime != null">reserve_start_time,</if>
+            <if test="reserveEndTime != null">reserve_end_time,</if>
+            <if test="sellStartTime != null">sell_start_time,</if>
+            <if test="sellEndTime != null">sell_end_time,</if>
+            create_time, update_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="nftId != null">#{nftId},</if>
             <if test="nftName != null">#{nftName},</if>
             <if test="nftStatus != null">#{nftStatus},</if>
-            <if test="nftType != null">#{nftType},</if>
-            <if test="nftFile != null">#{nftFile},</if>
-            <if test="issuer != null">#{issuer},</if>
-            <if test="introduce != null">#{introduce},</if>
-            <if test="nftCreateTime != null">#{nftCreateTime},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="circulation != null">#{circulation},</if>
+            <if test="reserveStartTime != null">#{reserveStartTime},</if>
+            <if test="reserveEndTime != null">#{reserveEndTime},</if>
+            <if test="sellStartTime != null">#{sellStartTime},</if>
+            <if test="sellEndTime != null">#{sellEndTime},</if>
+            #{createTime}, #{updateTime}
         </trim>
     </insert>
 

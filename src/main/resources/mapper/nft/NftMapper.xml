@@ -25,7 +25,7 @@
         id, nft_id, nft_name, nft_status, nft_type, issuer, introduce, nft_create_time, create_time, update_time
     </sql>
     <sql id="NFTInfo_Column_List">
-        id, nft_id, nft_name, cover_pic, detail_pic, reservation
+        id, nft_id, nft_name, cover_pic, detail_pic
     </sql>
     <sql id="SubNFT_Column_List">
         id, sub_id, super_id, sale_status, address, sold_time

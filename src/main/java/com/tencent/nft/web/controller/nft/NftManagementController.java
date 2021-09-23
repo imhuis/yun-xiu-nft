@@ -12,12 +12,8 @@ import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SuperNFT;
-import com.tencent.nft.entity.nft.dto.NftCreateDTO;
-import com.tencent.nft.entity.nft.dto.NftDeleteDTO;
-import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
-import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
+import com.tencent.nft.entity.nft.dto.*;
 import com.tencent.nft.service.INftManagementService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -72,6 +68,19 @@ public class NftManagementController {
         return ResponseUtil.success(nftDetailsVO);
     }
 
+    /**
+     * 获取海报详情
+     * @param nftId
+     * @return
+     */
+    @RequestMapping(value = "/{nftId}", method = RequestMethod.GET, params = {
+            "detail=true"
+    })
+    public ResponseResult nftDetails(@PathVariable("nftId") String nftId){
+//        nftManagementService.getPosterPic(nftId);
+        return ResponseUtil.success(nftManagementService.getPosterPic(nftId));
+    }
+
     @RequestMapping(value = "/sub/{superNFT}", method = RequestMethod.GET)
     public ResponseResult subNftList(@RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
                                      @RequestParam(value = "per_page",required = false, defaultValue = "20") Integer size,
@@ -85,8 +94,12 @@ public class NftManagementController {
         return ResponseUtil.success(nftListVOList);
     }
 
-
-
+    /**
+     * 创建新的nft
+     * @param dto
+     * @param bindingResult
+     * @return
+     */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseResult createNFT(@RequestBody @Validated NftCreateDTO dto, BindingResult bindingResult){
         // 必要的参数检查
@@ -123,11 +136,14 @@ public class NftManagementController {
     }
 
     /**
-     * 预售设置
+     * 预售设置，相当于发布商品
      * @return
      */
     @RequestMapping(value = "/pre_sale", method = RequestMethod.POST)
-    public ResponseResult setSale(@RequestBody @Validated NFTProduct n, BindingResult result){
+    public ResponseResult setSale(@RequestBody @Validated PreSaleDTO n, BindingResult result){
+        if (result.hasFieldErrors()){
+            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+        }
         if (!n.getReserveEndTime().isAfter(n.getReserveStartTime())){
             return ResponseUtil.fail(ResponseCodeEnum.YS_5001);
         }
@@ -137,7 +153,21 @@ public class NftManagementController {
         if (!n.getSellStartTime().isAfter(n.getReserveEndTime())){
             return ResponseUtil.fail(ResponseCodeEnum.YS_5003);
         }
-        nftManagementService.setPreSale(n);
+        try {
+            nftManagementService.setPreSale(n);
+        }catch (RecordNotFoundException e){
+            return ResponseUtil.fail(ResponseCodeEnum.NFT_4001);
+        }
+
+        return ResponseUtil.success();
+    }
+
+    /**
+     * 商品下架
+     * @return
+     */
+    @RequestMapping(value = "/off_shelf", method = RequestMethod.POST)
+    public ResponseResult offShelf(){
         return ResponseUtil.success();
     }
 

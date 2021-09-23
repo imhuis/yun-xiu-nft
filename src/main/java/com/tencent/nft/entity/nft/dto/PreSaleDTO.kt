@@ -2,7 +2,9 @@ package com.tencent.nft.entity.nft.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.io.Serializable
+import java.math.BigDecimal
 import java.time.LocalDateTime
+import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 /**
@@ -12,10 +14,13 @@ import javax.validation.constraints.NotNull
  */
 class PreSaleDTO : Serializable {
 
+    @NotBlank
+    var nftId: String?= null
+
     // 单价
     @JsonProperty("price")
     @NotNull
-    var unitPrice: Int? = null
+    var unitPrice: BigDecimal? = null
 
     // 发行量
     @JsonProperty("fxl")
