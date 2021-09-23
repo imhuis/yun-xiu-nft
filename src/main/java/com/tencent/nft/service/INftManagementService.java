@@ -2,6 +2,7 @@ package com.tencent.nft.service;
 
 import com.tencent.nft.common.base.PageBean;
 import com.tencent.nft.entity.nft.NFTInfo;
+import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
@@ -17,12 +18,7 @@ import java.util.List;
  */
 public interface INftManagementService {
 
-    /**
-     * 新建NFT
-     * @param superNFT
-     * @return
-     */
-    int createNFT(SuperNFT superNFT);
+    int createNFT(NFTInfo dto);
 
     void deleteNft(String nftId);
 
@@ -32,7 +28,7 @@ public interface INftManagementService {
 
     SuperNFT nftDetail(String nftId);
 
-    void setPreSale(NFTInfo n);
+    void setPreSale(NFTProduct n);
 
-    void createNftInfo(NFTInfo n);
+    void createNftInfo(NFTProduct n);
 }

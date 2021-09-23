@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
@@ -34,6 +35,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.annotation.Resource;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -80,7 +82,6 @@ public class AppAuthServiceImpl implements IAppAuthService {
         Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByOpenId(openId);
         // 存在，更新
         wxUserOptional.ifPresent(wxUser -> {
-            wxUser.setOpenId(dto.getOpenId());
             wxUser.setNickname(dto.getNickName());
             wxUser.setGender(dto.getGender());
             wxUser.setAvatarUrl(dto.getAvatarUrl());
@@ -91,6 +92,7 @@ public class AppAuthServiceImpl implements IAppAuthService {
         });
         if (!wxUserOptional.isPresent()){
             WxUser newWxUser = new WxUser();
+            newWxUser.setOtpSecret(new BCryptPasswordEncoder().encode("123456"));
             newWxUser.setOpenId(dto.getOpenId());
             newWxUser.setNickname(dto.getNickName());
             newWxUser.setGender(dto.getGender());
@@ -98,26 +100,30 @@ public class AppAuthServiceImpl implements IAppAuthService {
             newWxUser.setCity(dto.getCity());
             newWxUser.setProvince(dto.getProvince());
             newWxUser.setCountry(dto.getCountry());
+            newWxUser.setCreateTime(LocalDateTime.now());
+            newWxUser.setUpdateTime(LocalDateTime.now());
             wxUserMapper.insert(newWxUser);
         }
-
     }
 
     @Override
     public Object appLogin(WxResolvePhoneFormDTO dto) {
+        // 解析完手机号只有（openid、phone）
         WxUser wxAccountInfoObject = decryptPhone(dto);
         String phone = wxAccountInfoObject.getPhone();
-        WxUser wxUser = wxUserMapper.selectFullByPhone(phone).get();
-        if (wxUser == null){
-            // 找不到这个手机号的微信用户
-            wxUser = createNewAccount(wxAccountInfoObject);
+        // 查询当前登录用户的手机是否存在
+        Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByPhone(phone);
+        WxUser wxUser = null;
+        // 找不到这个手机号的微信用户
+        if (wxUserOptional.isEmpty()){
+            wxUser = reNewAccount(wxAccountInfoObject);
         }
 
         // 找到当前手机号，代码登录程序，创建token 返回token
         MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
         map.add("grant_type", "password");
-        map.add("username", phone);
-        map.add("password", "12345");
+        map.add("username", wxUser.getPhone());
+        map.add("password", "123456");
 
         URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
@@ -133,6 +139,15 @@ public class AppAuthServiceImpl implements IAppAuthService {
         }
         return null;
     }
+
+//    private String loadPassword() {
+//        String clearOPTSecret = TUSIBase64Utils.decrypt(weChatUser.getOtpSecret());
+//        try {
+//            return new OtpCodeHandler().generateCode(clearOPTSecret);
+//        } catch (OtpCodeException e) {
+//            return null;
+//        }
+//    }
 
     @Override
     public Object testLogin(String phone) {
@@ -171,27 +186,32 @@ public class AppAuthServiceImpl implements IAppAuthService {
 
 
     @Transactional
-    public WxUser createNewAccount(WxUser baseDataDTO) {
+    public WxUser reNewAccount(WxUser bd) {
         // 先插入 s_user
         String uuid = UUIDUtil.generateUUID();
-        String openid = baseDataDTO.getOpenId();
+        String openid = bd.getOpenId();
+        String phone = bd.getPhone();
         WxUser wxUser;
+        // openid 复查一遍
         Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByOpenId(openid);
         // 如果openid查询还为null 则说明 s_wx_user表也没有当前数据
         if (wxUserOptional.isEmpty()){
             wxUser = new WxUser();
-            wxUser.setOpenId(openid);
-            wxUser.setPhone(baseDataDTO.getPhone());
             wxUser.setUserId(uuid);
+            wxUser.setOpenId(openid);
+            wxUser.setPhone(phone);
+            wxUser.setOtpSecret(new BCryptPasswordEncoder().encode("123456"));
             // 插入wxUser(openId,UserId)
             wxUserMapper.insert(wxUser);
             User newUser = new User();
             newUser.setUserId(uuid);
-            newUser.setPhone(baseDataDTO.getPhone());
+            newUser.setPhone(phone);
             newUser.setNickname(wxUser.getNickname());
             userMapper.insert(newUser);
         }else {
             wxUser = wxUserOptional.get();
+            wxUser.setPhone(phone);
+            wxUserMapper.update(wxUser);
         }
         return wxUser;
     }

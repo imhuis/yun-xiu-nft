@@ -31,7 +31,7 @@
 
     </typeAliases>
     <typeHandlers>
-        <!--        <typeHandler handler="com.tencent.tusi.core.ibatis.handler.InvoiceTypeHandler" javaType="com.tencent.tusi.common.enums.InvoiceType" jdbcType="TINYINT"/>-->
+        <typeHandler handler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler" javaType="com.tencent.nft.common.enums.ICommonEnum" jdbcType="TINYINT"/>
     </typeHandlers>
 
     <!-- 分页插件 -->

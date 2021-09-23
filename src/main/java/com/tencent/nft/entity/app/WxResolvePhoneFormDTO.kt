@@ -3,54 +3,23 @@
  * www.tencent.com
  * All rights reserved.
  */
-package com.tencent.nft.entity.app;
+package com.tencent.nft.entity.app
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import java.io.Serializable
+import javax.validation.constraints.NotNull
 
 /**
  * @author :imhui
  * @date :2021-04-08 12:33
  * @description :FormDTO都是接收前端传参的
  */
-public class WxResolvePhoneFormDTO implements Serializable {
+class WxResolvePhoneFormDTO : Serializable {
 
-    private static final long serialVersionUID = 1L;
+    var sessionKey: @NotNull(message = "sessionKey参数不为空") String? = null
+    var encryptedData: @NotNull(message = "encryptedData参数不为空") String? = null
+    var iv: @NotNull(message = "iv参数不为空") String? = null
 
-    @NotNull(message = "sessionKey参数不为空")
-    private String sessionKey;
-
-    @NotNull(message = "encryptedData参数不为空")
-    private String encryptedData;
-
-    @NotNull(message = "iv参数不为空")
-    private String iv;
-
-    public WxResolvePhoneFormDTO(){}
-
-    public String getSessionKey() {
-        return sessionKey;
-    }
-
-    public void setSessionKey(String sessionKey) {
-        this.sessionKey = sessionKey;
-    }
-
-    public String getEncryptedData() {
-        return encryptedData;
-    }
-
-    public void setEncryptedData(String encryptedData) {
-        this.encryptedData = encryptedData;
-    }
-
-    public String getIv() {
-        return iv;
-    }
-
-    public void setIv(String iv) {
-        this.iv = iv;
+    companion object {
+        private const val serialVersionUID = 1L
     }
 }

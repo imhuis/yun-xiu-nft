@@ -2,6 +2,7 @@ package com.tencent.nft.entity.nft.vo
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.tencent.nft.entity.nft.NFTInfo
+import com.tencent.nft.entity.nft.NFTProduct
 import java.io.Serializable
 import java.time.LocalDateTime
 
@@ -10,7 +11,7 @@ import java.time.LocalDateTime
  * @date: 2021/9/12
  * @description:
  */
-class NFTDetailsVO : NFTInfo(), Serializable {
+class NFTDetailsVO : NFTProduct(), Serializable {
 
     // 预约开始时间
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")

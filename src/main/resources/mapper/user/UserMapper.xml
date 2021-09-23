@@ -4,6 +4,7 @@
     <resultMap id="BaseResultMap" type="com.tencent.nft.entity.security.User">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="pwd" jdbcType="VARCHAR" property="password"/>
         <result column="salt_key" jdbcType="VARCHAR" property="salt"/>
     </resultMap>
 

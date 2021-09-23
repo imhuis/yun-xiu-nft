@@ -34,12 +34,6 @@ open class SuperNFT : BaseEntity(), Serializable {
     // 介绍
     var introduce: String? = null
 
-    // 封面图片
-    var coverPicture: String? = null
-
-    // 详细介绍
-    var detailPicture: String? = null
-
     // NFT创建时间
     open var nftCreateTime: LocalDateTime? = null
 

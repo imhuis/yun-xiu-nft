@@ -11,7 +11,4 @@ import org.springframework.web.bind.annotation.RestController;
 public class NftController {
 
 
-    // 用户自己的nft收藏
-
-
 }

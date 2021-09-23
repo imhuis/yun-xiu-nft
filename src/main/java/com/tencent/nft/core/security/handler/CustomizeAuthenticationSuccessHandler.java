@@ -51,6 +51,7 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
 //        boundHashOps.expire(expires);
 
         ResponseResult<TokenInfo> responseResult = new ResponseResult();
+        responseResult.setCode(0);
         responseResult.setMessage("Login success");
         TokenInfo tokenInfo = new TokenInfo(request.getSession().getId(), expires.getSeconds());
 //        tokenInfo.setToken(request.getSession().getId());

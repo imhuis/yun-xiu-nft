@@ -99,6 +99,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
+                .usernameParameter("u")
+                .passwordParameter("pwd")
                 .loginProcessingUrl("/login")
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(new CustomizeAuthenticationFailureHandler())

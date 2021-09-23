@@ -36,7 +36,7 @@ public interface NftMapper {
 
     Optional<NFTInfo> selectNftInfoByNftId(String nftId);
 
-    void insertNftInfo(NFTInfo nftInfo);
+    int insertNftInfo(NFTInfo nftInfo);
 
 
 

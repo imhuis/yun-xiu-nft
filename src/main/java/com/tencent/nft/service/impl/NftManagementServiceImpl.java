@@ -7,6 +7,7 @@ import com.tencent.nft.common.base.PageBean;
 import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.exception.RecordNotFoundException;
 import com.tencent.nft.entity.nft.NFTInfo;
+import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SubNFT;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
@@ -30,16 +31,17 @@ import java.util.Optional;
  * @description:
  */
 @Service
-public class INftManagementServiceImpl implements INftManagementService {
+public class NftManagementServiceImpl implements INftManagementService {
 
     @Resource
     private NftMapper nftMapper;
 
-    @Override
-    @Transactional
-    public int createNFT(SuperNFT superNFT) {
 
-        nftMapper.insertSuperNFT(superNFT);
+    @Transactional
+    @Override
+    public int createNFT(NFTInfo dto) {
+        nftMapper.insertSuperNFT(dto);
+        nftMapper.insertNftInfo(dto);
         return 0;
     }
 
@@ -49,6 +51,7 @@ public class INftManagementServiceImpl implements INftManagementService {
         Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(nftId);
         superNFTOptional.ifPresent(superNFT -> {
             // 记录存在查询状态
+            System.out.println("code " + superNFT.getNftStatus().getCode());
             if (superNFT.getNftStatus() == NFTStatusEnum.WAITING){
                 nftMapper.deleteSuperNFT(nftId);
             }
@@ -57,8 +60,6 @@ public class INftManagementServiceImpl implements INftManagementService {
 
     @Override
     public PageBean<List<NFTListVO>> listNFT(Integer page, Integer size, Integer nftStatus, NftListQueryDTO nftListQueryDTO) {
-//        PageRowBounds rowBounds = new PageRowBounds(page, size);
-        // 执行分页
         PageHelper.startPage(page, size);
         List<SuperNFT> superNFTList = nftMapper.selectSuperNFTList(nftListQueryDTO);
         List<NFTListVO> nftListVOList = Lists.newArrayList();
@@ -104,9 +105,9 @@ public class INftManagementServiceImpl implements INftManagementService {
             tmp.setNftType(superNFTBaseInfo.getNftType());
             tmp.setIssuer(superNFTBaseInfo.getIssuer());
             nftInfoOptional.ifPresent(nftInfo -> {
-                tmp.setUnitPrice(nftInfo.getUnitPrice());
-                tmp.setReserveStartTime(nftInfo.getReserveStartTime());
-                tmp.setSellStartTime(nftInfo.getSellStartTime());
+//                tmp.setUnitPrice(nftInfo.getUnitPrice());
+//                tmp.setReserveStartTime(nftInfo.getReserveStartTime());
+//                tmp.setSellStartTime(nftInfo.getSellStartTime());
             });
             subNFTListVOList.add(tmp);
         });
@@ -145,7 +146,7 @@ public class INftManagementServiceImpl implements INftManagementService {
 
     @Transactional
     @Override
-    public void setPreSale(NFTInfo n) {
+    public void setPreSale(NFTProduct n) {
         // 预售创建nft详情
         createNftInfo(n);
         // 更新 super_nft
@@ -156,7 +157,6 @@ public class INftManagementServiceImpl implements INftManagementService {
     }
 
     @Override
-    public void createNftInfo(NFTInfo n) {
-        nftMapper.insertNftInfo(n);
+    public void createNftInfo(NFTProduct n) {
     }
 }

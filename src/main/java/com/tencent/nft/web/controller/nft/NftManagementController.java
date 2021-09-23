@@ -4,21 +4,26 @@ import com.tencent.nft.common.base.PageBean;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ICommonEnum;
+import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.enums.NFTTypeEnum;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.common.exception.RecordNotFoundException;
+import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.entity.nft.NFTInfo;
+import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftCreateDTO;
 import com.tencent.nft.entity.nft.dto.NftDeleteDTO;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
 import com.tencent.nft.service.INftManagementService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 /**
@@ -62,7 +67,7 @@ public class NftManagementController {
         try {
             nftDetailsVO = nftManagementService.nftDetail(nftId);
         }catch (RecordNotFoundException e){
-            return ResponseUtil.define(0, "查询记录不存在");
+            return ResponseUtil.fail(ResponseCodeEnum.NFT_4001);
         }
         return ResponseUtil.success(nftDetailsVO);
     }
@@ -83,27 +88,31 @@ public class NftManagementController {
 
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseResult createNFT(@RequestBody @Validated NftCreateDTO dto){
-        // 参数判断
+    public ResponseResult createNFT(@RequestBody @Validated NftCreateDTO dto, BindingResult bindingResult){
 
         if (dto.getDetailPicture().size() > 6){
-            return ResponseUtil.define(0, "最多上传6张图片");
+            return ResponseUtil.fail(ResponseCodeEnum.NFT_4003);
         }
-        SuperNFT superNFT = new SuperNFT();
-        superNFT.setNftName(dto.getNftName());
-        superNFT.setNftType(ICommonEnum.getEnum(dto.getNftType(), NFTTypeEnum.class));
-        superNFT.setNftFile(dto.getNftFile());
-        superNFT.setIssuer(dto.getIssuer());
-        superNFT.setIntroduce(dto.getIntroduce());
-        superNFT.setCoverPicture(dto.getCoverPicture());
-        superNFT.setDetailPicture(dto.getDetailPicture().stream().collect(Collectors.joining(",")));
+        NFTInfo nftInfo = new NFTInfo();
+        // Nft id生成规则
+//        BeanUtils.copyProperties(dto, nftInfo);
+        nftInfo.setNftId(UUIDUtil.generateUUID());
+        nftInfo.setNftName(dto.getNftName());
+        nftInfo.setNftType(ICommonEnum.getEnum(dto.getNftType(), NFTTypeEnum.class));
+        nftInfo.setNftStatus(NFTStatusEnum.WAITING);
+        nftInfo.setNftFile(dto.getNftFile());
+        nftInfo.setIssuer(dto.getIssuer());
+        nftInfo.setIntroduce(dto.getIntroduce());
+        nftInfo.setNftCreateTime(LocalDateTime.now());
+        nftInfo.setCoverPicture(dto.getCoverPicture());
+        nftInfo.setDetailPicture(dto.getDetailPicture().stream().collect(Collectors.joining(",")));
 
         try {
-            nftManagementService.createNFT(superNFT);
+            nftManagementService.createNFT(nftInfo);
         }catch (Exception e){
-            return ResponseUtil.define(-1, "fail");
+            return ResponseUtil.fail(ResponseCodeEnum.NFT_4002);
         }
-        return ResponseUtil.success();
+        return ResponseUtil.success(nftInfo);
     }
 
     @RequestMapping(value = "/delete.action", method = RequestMethod.POST)
@@ -117,8 +126,7 @@ public class NftManagementController {
      * @return
      */
     @RequestMapping(value = "/pre_sale", method = RequestMethod.POST)
-    public ResponseResult setSale(@RequestBody @Validated NFTInfo n, BindingResult result){
-//        checkYSINfo(n);
+    public ResponseResult setSale(@RequestBody @Validated NFTProduct n, BindingResult result){
         if (!n.getReserveEndTime().isAfter(n.getReserveStartTime())){
             return ResponseUtil.fail(ResponseCodeEnum.YS_5001);
         }

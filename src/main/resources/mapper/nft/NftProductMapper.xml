@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tencent.nft.mapper.NftMapper">
+<mapper namespace="com.tencent.nft.mapper.NftProductMapper">
     <resultMap id="BaseResultMap" type="com.tencent.nft.entity.nft.NFTInfo">
         <id column="id" jdbcType="BIGINT" property="id"/>
     </resultMap>
     <resultMap id="SuperNFTResultMap" type="com.tencent.nft.entity.nft.SuperNFT">
         <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="nft_status" jdbcType="INTEGER" property="nftStatus"/>
-        <result column="nft_type" jdbcType="INTEGER" property="nftType"/>
+        <result column="nft_status" jdbcType="INTEGER" property="nftStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
+        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
     </resultMap>
     <resultMap id="NFTInfoResultMap" type="com.tencent.nft.entity.nft.NFTInfo">
         <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="cover_pic" jdbcType="VARCHAR" property="coverPicture"/>
-        <result column="detail_pic" jdbcType="VARCHAR" property="detailPicture"/>
+        <result column="nft_status" jdbcType="INTEGER" property="nftStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
+        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
     </resultMap>
     <resultMap id="SubNFTResultMap" type="com.tencent.nft.entity.nft.SubNFT">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="sub_id" jdbcType="VARCHAR" property="nftId"/>
         <result column="super_id" jdbcType="VARCHAR" property="superNFTId"/>
-        <result column="sale_status" jdbcType="INTEGER" property="saleStatus"/>
+        <result column="sale_status" jdbcType="INTEGER" property="saleStatus" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>
 <!--        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>-->
     </resultMap>
     <sql id="SuperNFT_Column_List">
-        id, nft_id, nft_name, nft_status, nft_type, issuer, introduce, nft_create_time, create_time, update_time
+        id, nft_id, nft_name, nft_status, nft_type, issuer, introduce, unit_price, circulation, nft_create_time
     </sql>
     <sql id="NFTInfo_Column_List">
-        id, nft_id, nft_name, cover_pic, detail_pic, reservation
+        id, nft_id, nft_name, nft_status, unit_price, circulation,
+        reserve_start_time, reserve_end_time, sell_start_time, sell_end_time, reservation
     </sql>
     <sql id="SubNFT_Column_List">
         id, sub_id, super_id, sale_status, address, sold_time
@@ -101,32 +102,25 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="nftId != null">nft_id,</if>
             <if test="nftName != null">nft_name,</if>
-            <if test="coverPicture != null">cover_pic,</if>
-            <if test="detailPicture != null">detail_pic,</if>
+            <if test="nftStatus != null">nft_status,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="circulation != null">circulation,</if>
+            <if test="reserveStartTime != null">reserve_start_time,</if>
+            <if test="reserveEndTime != null">reserve_end_time,</if>
+            <if test="sellStartTime != null">sell_Start_time,</if>
+            <if test="sellEndTime != null">sell_end_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="nftId != null">#{nftId},</if>
             <if test="nftName != null">#{nftName},</if>
-            <if test="coverPicture != null">#{coverPicture},</if>
-            <if test="detailPicture != null">#{detailPicture},</if>
+            <if test="nftStatus != null">#{nftStatus},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="circulation != null">#{circulation},</if>
+            <if test="reserveStartTime != null">#{reserveStartTime},</if>
+            <if test="reserveEndTime != null">#{reserveEndTime},</if>
+            <if test="sellStartTime != null">#{sellStartTime},</if>
+            <if test="sellEndTime != null">#{sellEndTime},</if>
         </trim>
     </insert>
-
-    <select id="selectSubNFTList" resultMap="SubNFTResultMap">
-        select
-        <include refid="SubNFT_Column_List"/>
-        from t_sub_nft
-        <where>
-            <if test="superId != null">
-                and super_id = #{superId}
-            </if>
-            <if test="subNFTQueryDTO.id != null">
-                and sub_id = #{subNFTQueryDTO.id}
-            </if>
-            <if test="subNFTQueryDTO.saleStatus != null">
-                and sale_status = #{subNFTQueryDTO.saleStatus}
-            </if>
-        </where>
-    </select>
 
 </mapper>

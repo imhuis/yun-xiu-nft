@@ -36,6 +36,8 @@
         INSERT INTO s_wx_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="openId != null">open_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="otpSecret != null">otp_secret,</if>
             <if test="phone != null">phone,</if>
             <if test="nickname != null">nick_name,</if>
             <if test="gender != null">gender,</if>
@@ -47,6 +49,8 @@
         </trim>
         <trim prefix="VALUES(" suffix=")" suffixOverrides=",">
             <if test="openId != null">#{openId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="otpSecret != null">#{otpSecret},</if>
             <if test="phone != null">#{phone},</if>
             <if test="nickname != null">#{nickname},</if>
             <if test="gender != null">#{gender},</if>
@@ -61,6 +65,7 @@
     <update id="update">
         update s_wx_user
         <set>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
             <if test="nickname != null and nickname != ''">nick_name = #{nickname},</if>
             <if test="gender != null and gender != ''">gender = #{gender},</if>
             <if test="city != null and city != ''">city = #{city},</if>
