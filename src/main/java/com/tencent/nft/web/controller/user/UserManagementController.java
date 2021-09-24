@@ -50,10 +50,10 @@ public class UserManagementController {
     @PostMapping("/selectAllUser")
     public SysResult selectAllUser(Model model,
         @RequestParam(value = "pageNum",required = false, defaultValue = "1") Integer pageNum,
-        @RequestParam(value = "pageSize",required = false, defaultValue = "20") Integer pagesize,
+        @RequestParam(value = "pageSize",required = false, defaultValue = "20") Integer pageSize,
         @RequestParam(value = "date", required = false)  String date,
         @RequestParam(value = "phone", required = false)  String phone)throws ParseException {
-        PageHelper.startPage(pageNum,pagesize);
+        PageHelper.startPage(pageNum,pageSize);
         List<WxUser> list = null;
         try {
             list = userManagerService.selectAllUser(date,phone);

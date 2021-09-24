@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,17 +29,16 @@ public class UserManagerServicelmpl implements UserManagerService {
     }
 
     @Override
-    public List<WxUser> selectAllUser(String create_time, String phone) throws ParseException {
-        WxUser wxUser=new WxUser();
-        if(!StringUtil.isEmpty(create_time)){
+    public List<WxUser> selectAllUser(String create_date, String phone) throws ParseException {
+        if(!StringUtil.isEmpty(create_date)){
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate date = LocalDate.parse(create_time, fmt);
-            wxUser.setCreateTime(date.atStartOfDay());
+            LocalDate date = LocalDate.parse(create_date, fmt);
+//            wxUser.setCreateTime(date.atStartOfDay());
         }
         if(!StringUtil.isEmpty(phone)){
-            wxUser.setPhone(phone);
+//            wxUser.setPhone(phone);
         }
 
-        return wxUserMapper.selectAllUser(wxUser);
+        return wxUserMapper.selectAllUser(phone, create_date);
     }
 }

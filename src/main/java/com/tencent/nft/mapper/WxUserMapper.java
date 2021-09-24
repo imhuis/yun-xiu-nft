@@ -3,6 +3,7 @@ package com.tencent.nft.mapper;
 import com.tencent.nft.entity.security.WxUser;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,5 +27,7 @@ public interface WxUserMapper {
 
     WxUser selectById(Integer id);
 
-    List<WxUser> selectAllUser(WxUser wxUser);
+//    List<WxUser> selectAllUser(WxUser wxUser);
+
+    List<WxUser> selectAllUser(String phone, String create_date);
 }

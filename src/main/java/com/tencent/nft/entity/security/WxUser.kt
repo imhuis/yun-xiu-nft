@@ -32,6 +32,9 @@ class WxUser() : BaseEntity(), Serializable {
     // 头像
     var avatarUrl: String? = null
     var lastLoginTime: LocalDateTime? = null
+    //金额和订单
+    var totalprice: Integer? = null
+    var buynum: Integer? = null
 
     constructor(openId: String, phone: String, nickname: String, gender: Int, city: String, province: String, country: String, avatarUrl: String) : this() {
         this.openId = openId
