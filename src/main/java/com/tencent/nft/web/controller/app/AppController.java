@@ -32,9 +32,6 @@ public class AppController {
     @Autowired
     private IAppService appService;
 
-    @Autowired
-    private INftService nftService;
-
     /**
      * 个人信息
      * @return
@@ -53,21 +50,5 @@ public class AppController {
     public ResponseResult myLibrary(){
         appService.myLibrary();
         return ResponseUtil.success();
-    }
-
-    /**
-     * nft市场
-     * @param status
-     * @return
-     */
-    @RequestMapping("/market")
-    public ResponseResult market(@RequestParam(value = "status", defaultValue = "0") Integer status){
-        List<SuperNFT> marketList = nftService.getMarketList(status);
-        return ResponseUtil.success(marketList);
-    }
-
-    @RequestMapping("/market/{nft_id}")
-    public ResponseResult productDetail(@PathVariable(value = "nft_id") String nftId){
-        return ResponseUtil.success(nftId);
     }
 }

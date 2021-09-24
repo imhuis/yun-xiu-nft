@@ -43,16 +43,16 @@
         <include refid="SuperNFT_Column_List"/>
         from t_super_nft
         <where>
-            <if test="nftListQueryDTO.nftId != null">
-                and nft_id = #{nftListQueryDTO.nftId}
+            <if test="nftListQueryDTO.nftId != null and nftListQueryDTO.nftId !=''">
+                and nft_id like concat('%',#{nftListQueryDTO.nftId,jdbcType=VARCHAR},'%')
             </if>
-            <if test="nftListQueryDTO.nftName != null">
+            <if test="nftListQueryDTO.nftName != null and nftListQueryDTO.nftName != ''">
                 and nft_name = #{nftListQueryDTO.nftName}
             </if>
-            <if test="nftListQueryDTO.nftType != null">
+            <if test="nftListQueryDTO.nftType != null and nftListQueryDTO.nftType != ''">
                 and nft_type = #{nftListQueryDTO.nftType}
             </if>
-            <if test="nftListQueryDTO.nftStatus != null">
+            <if test="nftListQueryDTO.nftStatus != null and nftListQueryDTO.nftStatus != ''">
                 and nft_status = #{nftListQueryDTO.nftStatus}
             </if>
         </where>
@@ -121,13 +121,13 @@
         <include refid="SubNFT_Column_List"/>
         from t_sub_nft
         <where>
-            <if test="superId != null">
+            <if test="superId != null and superId != ''">
                 and super_id = #{superId}
             </if>
-            <if test="subNFTQueryDTO.id != null">
+            <if test="subNFTQueryDTO.id != null and subNFTQueryDTO.id != ''">
                 and sub_id = #{subNFTQueryDTO.id}
             </if>
-            <if test="subNFTQueryDTO.saleStatus != null">
+            <if test="subNFTQueryDTO.saleStatus != null and subNFTQueryDTO.saleStatus != ''">
                 and sale_status = #{subNFTQueryDTO.saleStatus}
             </if>
         </where>

@@ -1,7 +1,6 @@
 package com.tencent.nft.entity.nft
 
 import com.tencent.nft.common.enums.NFTSaleStatusEnum
-import com.tencent.nft.common.enums.NFTStatusEnum
 import java.io.Serializable
 import java.time.LocalDateTime
 

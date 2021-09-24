@@ -1,6 +1,5 @@
 package com.tencent.nft.entity.nft
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.io.Serializable
 import java.math.BigDecimal

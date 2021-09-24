@@ -130,7 +130,10 @@ public class NftManagementController {
     }
 
     @RequestMapping(value = "/delete.action", method = RequestMethod.POST)
-    public ResponseResult deleteNFT(@RequestBody @Validated NftDeleteDTO nftDeleteDTO){
+    public ResponseResult deleteNFT(@RequestBody @Validated NftDeleteDTO nftDeleteDTO, BindingResult result){
+        if (result.hasFieldErrors()){
+            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+        }
         nftManagementService.deleteNft(nftDeleteDTO.getNftId());
         return ResponseUtil.success();
     }

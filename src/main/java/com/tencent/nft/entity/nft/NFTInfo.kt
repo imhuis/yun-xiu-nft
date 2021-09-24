@@ -1,8 +1,6 @@
 package com.tencent.nft.entity.nft
 
-import com.fasterxml.jackson.annotation.JsonProperty
 import java.io.Serializable
-import java.time.LocalDateTime
 
 open class NFTInfo : SuperNFT(), Serializable {
 

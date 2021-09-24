@@ -90,10 +90,9 @@ public class NftManagementServiceImpl implements INftManagementService {
             nftListVOList.add(tmp);
         });
 
-        PageInfo pageInfo = new PageInfo(nftListVOList);
-        PageBean<List<NFTListVO>> pageBean = new PageBean<>();
-        pageBean.setPages(pageInfo.getPages());
-        pageBean.setSize(pageInfo.getSize());
+        PageBean<List<NFTListVO>> pageBean = new PageBean<>(new PageInfo(superNFTList));
+//        pageBean.setPages(pageInfo.getPages());
+//        pageBean.setTotal(pageInfo.getTotal());
         pageBean.setData(nftListVOList);
 
         return pageBean;
@@ -125,11 +124,10 @@ public class NftManagementServiceImpl implements INftManagementService {
             subNFTListVOList.add(tmp);
         });
 
-        PageInfo pageInfo = new PageInfo(subNFTList);
-
-        PageBean<List<SubNFTListVO>> pageBean = new PageBean<>();
-        pageBean.setPages(pageInfo.getPages());
-        pageBean.setSize(pageInfo.getSize());
+//        PageInfo pageInfo = new PageInfo(subNFTList);
+        PageBean<List<SubNFTListVO>> pageBean = new PageBean<>(new PageInfo(subNFTList));
+//        pageBean.setPages(pageInfo.getPages());
+//        pageBean.setSize(pageInfo.getTotal());
         pageBean.setData(subNFTListVOList);
         return pageBean;
     }

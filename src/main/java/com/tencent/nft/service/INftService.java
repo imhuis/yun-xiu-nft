@@ -1,5 +1,6 @@
 package com.tencent.nft.service;
 
+import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.SuperNFT;
 
 import java.util.List;
@@ -11,5 +12,10 @@ import java.util.List;
  */
 public interface INftService {
 
-    List<SuperNFT> getMarketList(Integer status);
+    /**
+     * 市场展示还需要封面
+     * @param status
+     * @return
+     */
+    List<NFTInfo> getMarketList(Integer status);
 }

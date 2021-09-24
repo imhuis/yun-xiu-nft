@@ -2,7 +2,6 @@ package com.tencent.nft.service;
 
 import com.tencent.nft.common.base.PageBean;
 import com.tencent.nft.entity.nft.NFTInfo;
-import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.PreSaleDTO;

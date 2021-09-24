@@ -1,7 +1,8 @@
 package com.tencent.nft.common.base;
 
+import com.github.pagehelper.PageInfo;
+
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @author: imhuis
@@ -11,9 +12,17 @@ import java.util.List;
 public class PageBean<T extends Collection> {
 
     private int pages;
-    private int size;
+    private long total;
     private T data;
 
+
+    public PageBean() {
+    }
+
+    public PageBean(PageInfo pageInfo) {
+        this.pages = pageInfo.getPages();
+        this.total = pageInfo.getTotal();
+    }
 
     public int getPages() {
         return pages;
@@ -23,12 +32,12 @@ public class PageBean<T extends Collection> {
         this.pages = pages;
     }
 
-    public int getSize() {
-        return size;
+    public long getTotal() {
+        return total;
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    public void setTotal(long total) {
+        this.total = total;
     }
 
     public T getData() {
