@@ -8,8 +8,11 @@ import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.mapper.WxUserMapper;
 import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.IAppService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -28,6 +31,9 @@ public class AppServiceImpl implements IAppService {
     @Resource
     private NftProductMapper productMapper;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     @Override
     public List<CollectionVO> myLibrary() {
 
@@ -39,5 +45,13 @@ public class AppServiceImpl implements IAppService {
             collectionVOList.add(cv);
         });
         return Lists.newArrayList();
+    }
+
+    @Override
+    public void reserve(String nftId) {
+        String phone = SecurityUtils.getCurrentUsername().get();
+//        redisTemplate.boundListOps("" + nftId).
+
+
     }
 }

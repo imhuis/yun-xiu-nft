@@ -86,12 +86,12 @@
     <select id="selectAllUser" resultType="com.tencent.nft.entity.security.WxUser">
         select * FROM s_wx_user
         <where>
-            <if test="create_date != null">
+            <if test="create_date != null and create_date != ''">
                 and Date(create_time) = #{create_date}
             </if>
-        <if test="phone != null">
+            <if test="phone != null and phone != ''">
                 and phone = #{phone}
-        </if>
+            </if>
         </where>
     </select>
 

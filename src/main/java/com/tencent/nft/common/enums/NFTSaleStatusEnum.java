@@ -7,7 +7,7 @@ package com.tencent.nft.common.enums;
  */
 public enum NFTSaleStatusEnum implements ICommonEnum {
 
-    NotSold(0, "未出售"),
+    NotSold(2, "未出售"),
     Sold(1, "已出售"),
     OFFShelf(3, "已下架");
 

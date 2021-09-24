@@ -6,9 +6,10 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
     </resultMap>
 
+    <!-- reserve_end_time, sell_end_time, -->
     <sql id="Base_Column_List">
         id, nft_id, nft_name, nft_status, unit_price, circulation,
-        reserve_start_time, reserve_end_time, sell_start_time, sell_end_time, create_time, update_time
+        reserve_start_time, sell_start_time, create_time, update_time
     </sql>
 
     <select id="selectByNftId" resultMap="BaseResultMap">
@@ -27,9 +28,9 @@
             <if test="unitPrice != null">unit_price,</if>
             <if test="circulation != null">circulation,</if>
             <if test="reserveStartTime != null">reserve_start_time,</if>
-            <if test="reserveEndTime != null">reserve_end_time,</if>
+<!--            <if test="reserveEndTime != null">reserve_end_time,</if>-->
             <if test="sellStartTime != null">sell_start_time,</if>
-            <if test="sellEndTime != null">sell_end_time,</if>
+<!--            <if test="sellEndTime != null">sell_end_time,</if>-->
             create_time, update_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -39,9 +40,9 @@
             <if test="unitPrice != null">#{unitPrice},</if>
             <if test="circulation != null">#{circulation},</if>
             <if test="reserveStartTime != null">#{reserveStartTime},</if>
-            <if test="reserveEndTime != null">#{reserveEndTime},</if>
+<!--            <if test="reserveEndTime != null">#{reserveEndTime},</if>-->
             <if test="sellStartTime != null">#{sellStartTime},</if>
-            <if test="sellEndTime != null">#{sellEndTime},</if>
+<!--            <if test="sellEndTime != null">#{sellEndTime},</if>-->
             #{createTime}, #{updateTime}
         </trim>
     </insert>
@@ -51,6 +52,19 @@
         t_nft_product
         where nft_id = #{nftId}
     </delete>
+
+    <update id="updateByNftId">
+        update t_nft_product
+        <set>
+            <if test="nftStatus != null">nft_status = #{nftStatus},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="circulation != null">circulation = #{circulation},</if>
+            <if test="reserveStartTime != null">reserve_start_time = #{reserveStartTime},</if>
+            <if test="sellStartTime != null">sell_start_time = #{sellStartTime},</if>
+            update_time = #{updateTime}
+        </set>
+        WHERE nft_id = #{nftId}
+    </update>
 
 
     <select id="selectSubNftIdByUserId" resultType="java.lang.Long">

@@ -104,13 +104,14 @@ public class NftManagementController {
     public ResponseResult createNFT(@RequestBody @Validated NftCreateDTO dto, BindingResult bindingResult){
         // 必要的参数检查
         //        checkParam();
+        if (bindingResult.hasFieldErrors()){
+            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+        }
 
         if (dto.getDetailPicture().size() > 6){
             return ResponseUtil.fail(ResponseCodeEnum.NFT_4003);
         }
         NFTInfo nftInfo = new NFTInfo();
-        // Nft id生成规则 - 后面确认
-        nftInfo.setNftId(UUIDUtil.generateUUID());
         nftInfo.setNftName(dto.getNftName());
         nftInfo.setNftType(ICommonEnum.getEnum(dto.getNftType(), NFTTypeEnum.class));
         nftInfo.setNftStatus(NFTStatusEnum.WAITING);
@@ -122,11 +123,11 @@ public class NftManagementController {
         nftInfo.setDetailPicture(dto.getDetailPicture().stream().collect(Collectors.joining(",")));
 
         try {
-            nftManagementService.createNFT(nftInfo);
+            nftInfo = nftManagementService.createNFT(nftInfo);
+            return ResponseUtil.success(nftInfo);
         }catch (Exception e){
             return ResponseUtil.fail(ResponseCodeEnum.NFT_4002);
         }
-        return ResponseUtil.success(nftInfo);
     }
 
     @RequestMapping(value = "/delete.action", method = RequestMethod.POST)
@@ -147,13 +148,17 @@ public class NftManagementController {
         if (result.hasFieldErrors()){
             return ResponseUtil.fail(ResponseCodeEnum.FAILD);
         }
-        if (!n.getReserveEndTime().isAfter(n.getReserveStartTime())){
-            return ResponseUtil.fail(ResponseCodeEnum.YS_5001);
+//        if (!n.getReserveEndTime().isAfter(n.getReserveStartTime())){
+//            return ResponseUtil.fail(ResponseCodeEnum.YS_5001);
+//        }
+//        if (!n.getSellEndTime().isAfter(n.getSellStartTime())){
+//            return ResponseUtil.fail(ResponseCodeEnum.YS_5002);
+//        }
+        LocalDateTime now = LocalDateTime.now();
+        if (n.getReserveStartTime().isBefore(now) || n.getSellStartTime().isBefore(now)){
+            return ResponseUtil.fail(ResponseCodeEnum.YS_5004);
         }
-        if (!n.getSellEndTime().isAfter(n.getSellStartTime())){
-            return ResponseUtil.fail(ResponseCodeEnum.YS_5002);
-        }
-        if (!n.getSellStartTime().isAfter(n.getReserveEndTime())){
+        if (!n.getSellStartTime().isAfter(n.getReserveStartTime())){
             return ResponseUtil.fail(ResponseCodeEnum.YS_5003);
         }
         try {
@@ -170,7 +175,13 @@ public class NftManagementController {
      * @return
      */
     @RequestMapping(value = "/off_shelf", method = RequestMethod.POST)
-    public ResponseResult offShelf(){
+    public ResponseResult offShelf(@RequestParam("nft_id") String nftId){
+        try {
+            nftManagementService.offShelf(nftId);
+        }catch (Exception e){
+
+        }
+
         return ResponseUtil.success();
     }
 

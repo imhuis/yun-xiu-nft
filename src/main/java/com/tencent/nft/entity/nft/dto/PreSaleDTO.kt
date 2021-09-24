@@ -32,14 +32,14 @@ class PreSaleDTO : Serializable {
     var reserveStartTime: LocalDateTime? = null
 
     // 预约结束时间
-    @NotNull
-    var reserveEndTime: LocalDateTime? = null
+//    @NotNull
+//    var reserveEndTime: LocalDateTime? = null
 
     // 开售开始时间
     @NotNull
     var sellStartTime: LocalDateTime? = null
 
     // 开售结束时间
-    @NotNull
-    var sellEndTime: LocalDateTime? = null
+//    @NotNull
+//    var sellEndTime: LocalDateTime? = null
 }

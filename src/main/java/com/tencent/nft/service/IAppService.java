@@ -13,4 +13,6 @@ import java.util.List;
 public interface IAppService {
 
     List<CollectionVO> myLibrary();
+
+    void reserve(String nftId);
 }

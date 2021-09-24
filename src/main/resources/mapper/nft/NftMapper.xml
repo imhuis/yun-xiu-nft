@@ -28,7 +28,7 @@
         id, nft_id, nft_name, cover_pic, detail_pic
     </sql>
     <sql id="SubNFT_Column_List">
-        id, sub_id, super_id, sale_status, address, sold_time
+        id, sub_id, super_id, sale_status, chain_address, sold_time
     </sql>
 
     <select id="selectSuperNFTByNftId" resultMap="SuperNFTResultMap">
@@ -116,6 +116,7 @@
         </trim>
     </insert>
 
+
     <select id="selectSubNftList" resultMap="SubNFTResultMap">
         select
         <include refid="SubNFT_Column_List"/>
@@ -124,13 +125,35 @@
             <if test="superId != null and superId != ''">
                 and super_id = #{superId}
             </if>
-            <if test="subNFTQueryDTO.id != null and subNFTQueryDTO.id != ''">
-                and sub_id = #{subNFTQueryDTO.id}
+            <if test="sqd.id != null and sqd.id != ''">
+                and sub_id = #{sqd.id}
             </if>
-            <if test="subNFTQueryDTO.saleStatus != null and subNFTQueryDTO.saleStatus != ''">
-                and sale_status = #{subNFTQueryDTO.saleStatus}
+            <if test="sqd.saleStatus != null and sqd.saleStatus != ''">
+                and sale_status = #{sqd.saleStatus,jdbcType=INTEGER}
             </if>
         </where>
     </select>
+
+    <insert id="insertSubNft" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into t_sub_nft
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="nftId != null">sub_id,</if>
+            <if test="superNFTId != null">super_id,</if>
+            <if test="saleStatus != null">sale_status,</if>
+            <if test="chainAddress != null">chain_address,</if>
+            <if test="nftCreateTime != null">nft_create_time,</if>
+            <if test="soldTime != null">sold_time,</if>
+            create_time, update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="nftId != null">#{nftId},</if>
+            <if test="superNFTId != null">#{superNFTId},</if>
+            <if test="saleStatus != null">#{saleStatus},</if>
+            <if test="chainAddress != null">#{chainAddress},</if>
+            <if test="nftCreateTime != null">#{nftCreateTime},</if>
+            <if test="soldTime != null">#{soldTime},</if>
+            #{createTime}, #{updateTime}
+        </trim>
+    </insert>
 
 </mapper>

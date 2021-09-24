@@ -14,5 +14,6 @@ class SubNFTQueryDTO : Serializable {
     @JsonAlias("sub_id")
     var id: String? = null
 
-    var saleStatus: NFTSaleStatusEnum? = null
+    @JsonAlias("status")
+    var saleStatus: Int? = null
 }

@@ -8,6 +8,8 @@ import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.service.INftService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
 @Service
 public class NftServiceImpl implements INftService {
 
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Resource
     private NftMapper nftMapper;
@@ -43,4 +47,19 @@ public class NftServiceImpl implements INftService {
                 .collect(Collectors.toList());
         return nftInfos;
     }
+
+    @Override
+    public NFTInfo getProductDetail(String nftId) {
+        Optional<NFTInfo> nftInfoOptional = nftMapper.selectNftInfoByNftId(nftId);
+
+        return nftInfoOptional.get();
+    }
+
+    @Override
+    public long getReservationAmount(String nftId) {
+        StringBuilder sb = new StringBuilder("yy:");
+        sb.append(nftId.toLowerCase());
+        return redisTemplate.boundListOps(sb).size();
+    }
+
 }

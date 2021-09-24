@@ -35,6 +35,6 @@ open class SuperNFT : BaseEntity(), Serializable {
     var introduce: String? = null
 
     // NFT创建时间
-    open var nftCreateTime: LocalDateTime? = null
+    var nftCreateTime: LocalDateTime? = null
 
 }

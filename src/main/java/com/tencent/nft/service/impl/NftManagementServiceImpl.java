@@ -4,8 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.tencent.nft.common.base.PageBean;
+import com.tencent.nft.common.enums.NFTSaleStatusEnum;
 import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.exception.RecordNotFoundException;
+import com.tencent.nft.common.util.BusinessIdGenerate;
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SubNFT;
@@ -28,9 +30,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -53,10 +57,13 @@ public class NftManagementServiceImpl implements INftManagementService {
 
     @Transactional
     @Override
-    public int createNFT(NFTInfo dto) {
+    public NFTInfo createNFT(NFTInfo dto) {
+        // 生成nft id
+
+        dto.setNftId(BusinessIdGenerate.generateNftId());
         nftMapper.insertSuperNFT(dto);
         nftMapper.insertNftInfo(dto);
-        return 0;
+        return dto;
     }
 
     @Override
@@ -104,7 +111,6 @@ public class NftManagementServiceImpl implements INftManagementService {
             subNFTQueryDTO = new SubNFTQueryDTO();
         }
         SuperNFT superNFTBaseInfo = nftMapper.selectSuperNFTByNftId(parentNftId).get();
-        Optional<NFTInfo> nftInfoOptional = nftMapper.selectNftInfoByNftId(parentNftId);
 
         PageHelper.startPage(page, size);
         List<SubNFT> subNFTList = nftMapper.selectSubNftList(parentNftId, subNFTQueryDTO);
@@ -116,18 +122,11 @@ public class NftManagementServiceImpl implements INftManagementService {
             tmp.setNftName(superNFTBaseInfo.getNftName());
             tmp.setNftType(superNFTBaseInfo.getNftType());
             tmp.setIssuer(superNFTBaseInfo.getIssuer());
-            nftInfoOptional.ifPresent(nftInfo -> {
-//                tmp.setUnitPrice(nftInfo.getUnitPrice());
-//                tmp.setReserveStartTime(nftInfo.getReserveStartTime());
-//                tmp.setSellStartTime(nftInfo.getSellStartTime());
-            });
+            tmp.setUnitPrice(20);
             subNFTListVOList.add(tmp);
         });
 
-//        PageInfo pageInfo = new PageInfo(subNFTList);
         PageBean<List<SubNFTListVO>> pageBean = new PageBean<>(new PageInfo(subNFTList));
-//        pageBean.setPages(pageInfo.getPages());
-//        pageBean.setSize(pageInfo.getTotal());
         pageBean.setData(subNFTListVOList);
         return pageBean;
     }
@@ -165,7 +164,10 @@ public class NftManagementServiceImpl implements INftManagementService {
     @Override
     public List<String> getPosterPic(String nftId) {
         Optional<NFTInfo> nftInfoOptional = nftMapper.selectNftInfoByNftId(nftId);
-        return Arrays.asList(nftInfoOptional.get().getDetailPicture().split(",")).stream().collect(Collectors.toList());
+        if (nftInfoOptional.isPresent()){
+            return Arrays.asList(nftInfoOptional.get().getDetailPicture().split(",")).stream().collect(Collectors.toList());
+        }
+        return Lists.newArrayList();
     }
 
     @Transactional
@@ -189,8 +191,15 @@ public class NftManagementServiceImpl implements INftManagementService {
         productMapper.insertNftProduct(nftProduct);
         // 更新 父nft状态
         updateNftStatus(superNFTInfo.getNftId(), NFTStatusEnum.RESERVEING);
+        // 创建子nft任务
+        generateSublist(superNFTInfo.getNftId(), n.getCirculation());
         // 更新缓存
 
+
+    }
+
+    @Override
+    public void offShelf(String nftId) {
 
     }
 
@@ -198,6 +207,23 @@ public class NftManagementServiceImpl implements INftManagementService {
     @Async
     void updateNftStatus(String nftId, NFTStatusEnum status) {
         // 更新 t_super_nft状态
+    }
+
+    @Transactional
+    @Async
+    public void generateSublist(String nftId, Integer number){
+        AtomicInteger atomicInteger = new AtomicInteger(1);
+
+        for (int i = 0; i < number; i++){
+            SubNFT subNFT = new SubNFT();
+            subNFT.setNftId(nftId+String.format("%04d", i));
+            subNFT.setSuperNFTId(nftId);
+            subNFT.setSaleStatus(NFTSaleStatusEnum.NotSold);
+            subNFT.setCreateTime(LocalDateTime.now());
+            nftMapper.insertSubNft(subNFT);
+            atomicInteger.incrementAndGet();
+        }
+
     }
 
 }

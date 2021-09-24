@@ -21,9 +21,9 @@ import java.util.List;
  */
 @RestController
 public class UserManagementController {
-        @Resource
-        private UserManagerService userManagerService;
-    // 用户列表
+
+    @Resource
+    private UserManagerService userManagerService;
 
 
 

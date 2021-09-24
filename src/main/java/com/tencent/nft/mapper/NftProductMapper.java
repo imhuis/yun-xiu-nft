@@ -20,6 +20,8 @@ public interface NftProductMapper {
 
     int deleteByNftId(String nftId);
 
+    int updateByNftId(String nftId);
+
     /**
      * 根据userid查询出子nftid
      * @param userId

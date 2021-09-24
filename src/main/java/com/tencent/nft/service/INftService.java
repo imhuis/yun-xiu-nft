@@ -18,4 +18,12 @@ public interface INftService {
      * @return
      */
     List<NFTInfo> getMarketList(Integer status);
+
+    NFTInfo getProductDetail(String nftId);
+
+    /**
+     * 获取预约数量
+     * @param nftId
+     */
+    long getReservationAmount(String nftId);
 }

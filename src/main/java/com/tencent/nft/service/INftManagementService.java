@@ -18,7 +18,7 @@ import java.util.List;
  */
 public interface INftManagementService {
 
-    int createNFT(NFTInfo dto);
+    NFTInfo createNFT(NFTInfo dto);
 
     void deleteNft(String nftId);
 
@@ -31,4 +31,6 @@ public interface INftManagementService {
     List<String> getPosterPic(String nftId);
 
     void setPreSale(PreSaleDTO n);
+
+    void offShelf(String nftId);
 }

@@ -10,10 +10,7 @@ import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.IAppService;
 import com.tencent.nft.service.INftService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -49,6 +46,17 @@ public class AppController {
     @RequestMapping("/me/library")
     public ResponseResult myLibrary(){
         appService.myLibrary();
+        return ResponseUtil.success();
+    }
+
+    /**
+     * 预约nft
+     * @param nftId
+     * @return
+     */
+    @RequestMapping(value = "/reserve/{nftId}", method = RequestMethod.POST)
+    public ResponseResult reserve(@PathVariable String nftId){
+        appService.reserve(nftId);
         return ResponseUtil.success();
     }
 }
