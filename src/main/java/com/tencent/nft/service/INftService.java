@@ -2,6 +2,7 @@ package com.tencent.nft.service;
 
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.SuperNFT;
+import com.tencent.nft.entity.nft.vo.ProductVO;
 
 import java.util.List;
 
@@ -19,11 +20,13 @@ public interface INftService {
      */
     List<NFTInfo> getMarketList(Integer status);
 
-    NFTInfo getProductDetail(String nftId);
+    ProductVO getProductDetail(String nftId);
 
     /**
      * 获取预约数量
      * @param nftId
      */
     long getReservationAmount(String nftId);
+
+    void reserveProduct(String nftId);
 }

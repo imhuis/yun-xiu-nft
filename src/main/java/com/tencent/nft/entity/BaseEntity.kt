@@ -1,8 +1,8 @@
 package com.tencent.nft.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreType
 import com.fasterxml.jackson.annotation.JsonView
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import java.io.Serializable
 import java.time.LocalDateTime
 
@@ -18,10 +18,12 @@ open class BaseEntity : Serializable {
     var id: Long? = null
 
 //    @CreatedDate
+    @JsonIgnore
     @JsonView(BaseViewGroup::class)
     var createTime: LocalDateTime? = LocalDateTime.now()
 
 //    @LastModifiedDate
+    @JsonIgnore
     @JsonView(BaseViewGroup::class)
     var updateTime: LocalDateTime? = LocalDateTime.now()
 }

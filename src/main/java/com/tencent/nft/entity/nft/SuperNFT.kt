@@ -31,6 +31,9 @@ open class SuperNFT : BaseEntity(), Serializable {
     // 发行方
     var issuer: String? = null
 
+    // 品牌方
+    var brandOwner: String? = null
+
     // 介绍
     var introduce: String? = null
 

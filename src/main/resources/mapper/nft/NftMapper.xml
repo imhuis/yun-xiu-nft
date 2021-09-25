@@ -22,7 +22,7 @@
 <!--        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>-->
     </resultMap>
     <sql id="SuperNFT_Column_List">
-        id, nft_id, nft_name, nft_status, nft_type, issuer, introduce, nft_create_time, create_time, update_time
+        id, nft_id, nft_name, nft_status, nft_type, issuer, brand_owner, introduce, nft_create_time, create_time, update_time
     </sql>
     <sql id="NFTInfo_Column_List">
         id, nft_id, nft_name, cover_pic, detail_pic
@@ -67,6 +67,7 @@
             <if test="nftType != null">nft_type,</if>
             <if test="nftFile != null">nft_file,</if>
             <if test="issuer != null">issuer,</if>
+            <if test="brandOwner != null">brand_owner,</if>
             <if test="introduce != null">introduce,</if>
             <if test="nftCreateTime != null">nft_create_time,</if>
             create_time, update_time
@@ -78,6 +79,7 @@
             <if test="nftType != null">#{nftType},</if>
             <if test="nftFile != null">#{nftFile},</if>
             <if test="issuer != null">#{issuer},</if>
+            <if test="brandOwner != null">#{brandOwner},</if>
             <if test="introduce != null">#{introduce},</if>
             <if test="nftCreateTime != null">#{nftCreateTime},</if>
             #{createTime}, #{updateTime}

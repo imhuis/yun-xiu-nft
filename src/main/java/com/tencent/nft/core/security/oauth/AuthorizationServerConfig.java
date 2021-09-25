@@ -108,8 +108,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         tokenServices.setTokenStore(redisTokenStore());
         tokenServices.setSupportRefreshToken(true);
         tokenServices.setReuseRefreshToken(true);
-        tokenServices.setAccessTokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(2));
-        tokenServices.setRefreshTokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(7));
+        tokenServices.setAccessTokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(7));
+        tokenServices.setRefreshTokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30));
         return tokenServices;
     }
 
