@@ -32,16 +32,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         logger.info("UserDetails [loadUserByUsername]: {}", s);
         // 邮箱
-//        if (new EmailValidator().isValid(s, null)){
-//            return userMapper.findUserByEmail(s)
-//                    .map(user -> createSpringSecurityUser(s, user))
-//                    .orElseThrow(() -> new UsernameNotFoundException("User with email " + s + "was not found"));
-//        }
-//        if (Character.isDigit(s.charAt(0))){
-//            return userMapper.findUserByPhone(s)
-//                    .map(user -> createSpringSecurityUser(s, user))
-//                    .orElseThrow(() -> new UsernameNotFoundException("User with phone " + s + "was not found"));
-//        }
+        if (new EmailValidator().isValid(s, null)){
+            return userMapper.findUserByEmail(s)
+                    .map(user -> createSpringSecurityUser(s, user))
+                    .orElseThrow(() -> new UsernameNotFoundException("User with email " + s + "was not found"));
+        }
+        if (Character.isDigit(s.charAt(0))){
+            return userMapper.findUserByPhone(s)
+                    .map(user -> createSpringSecurityUser(s, user))
+                    .orElseThrow(() -> new UsernameNotFoundException("User with phone " + s + "was not found"));
+        }
 
         return userMapper.findUserByUserName(s)
                 .map(user -> createSpringSecurityUser(s, user))

@@ -3,6 +3,7 @@ package com.tencent.nft.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Sets;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.common.util.WxResolveDataUtils;
@@ -22,7 +23,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +38,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.annotation.Resource;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -155,26 +162,47 @@ public class AppAuthServiceImpl implements IAppAuthService {
 
         }
 
-        // 找到当前手机号，代码登录程序，创建token 返回token
-        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
-        map.add("username", phone);
-        map.add("password", "12345");
-        map.add("grant_type", "password");
+        Map<String, String> authorizationParameters = new HashMap<>();
+        authorizationParameters.put("username", phone);
+        authorizationParameters.put("scope", "app");
+        authorizationParameters.put("client_id", "c64a0005-aaf6-46a2-a452-c0000705459b");
+        authorizationParameters.put("client_secret", "df8a0a1b-2db5-4ae8-b517-373c15e71483");
+        authorizationParameters.put("grant", "password");
 
-        URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
-        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
-                .post(uri)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .header("Authorization", oauthString)
-                .accept(MediaType.APPLICATION_JSON)
-                .body(map);
-//        tokenServices.createAccessToken();
-        ResponseEntity<ResponseResult> tokenResponseEntity = restTemplate.exchange(requestEntity, ResponseResult.class);
-        log.info("response ", tokenResponseEntity.getBody().toString());
-        if (tokenResponseEntity.getStatusCode().is2xxSuccessful()){
-            return tokenResponseEntity.getBody().getData();
-        }
-        return null;
+        OAuth2Request authorizationRequest = new OAuth2Request(
+                authorizationParameters, "Client_Id",
+                null, true, null, null, "",
+                null, null);
+
+        org.springframework.security.core.userdetails.User userPrincipal = new org.springframework.security.core.userdetails.User(phone, "", Collections.emptyList());
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userPrincipal, null);
+
+        OAuth2Authentication authenticationRequest = new OAuth2Authentication(
+                authorizationRequest, authenticationToken);
+        authenticationRequest.setAuthenticated(true);
+        return tokenServices.createAccessToken(authenticationRequest);
+
+
+//        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+//        map.add("username", phone);
+//        map.add("password", "12345");
+//        map.add("grant_type", "password");
+//
+//        URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
+//        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
+//                .post(uri)
+//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+//                .header("Authorization", oauthString)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .body(map);
+//        ResponseEntity<ResponseResult> tokenResponseEntity = restTemplate.exchange(requestEntity, ResponseResult.class);
+//        log.info("response ", tokenResponseEntity.getBody().toString());
+//        if (tokenResponseEntity.getStatusCode().is2xxSuccessful()){
+//            return tokenResponseEntity.getBody().getData();
+//        }
+//        return null;
+
     }
 
     @Override

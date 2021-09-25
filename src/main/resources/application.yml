@@ -4,7 +4,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://42.192.12.13:3306/nft?serverTimezone=Asia/Shanghai
     username: root
-    password: AhBcosDb_1!$
+    password: ENC(ZMo+L06z8Xj3GlAewFCXdu1BbmK404xLF9jNm90ito4L9Vul98eu3mHmKPo0CvR0)
     hikari:
       connection-timeout: 60000
       maximum-pool-size: 20
@@ -18,6 +18,8 @@ spring:
     jdbc:
       table-prefix: batch
       initialize-schema: never
+  config:
+    import: classpath:properties/wechat.properties
 
 mybatis:
   type-aliases-package: com.tencent.nft.entity
@@ -29,6 +31,9 @@ mybatis:
 pagehelper:
   reasonable: true
   row-bounds-with-count: true
+jasypt:
+  encryptor:
+    password: EEyjg9P1QRoFkzxYENw2i2wcoV
 
 alicos:
   endpoint:

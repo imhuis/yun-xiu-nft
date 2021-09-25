@@ -2,6 +2,7 @@ package com.tencent.nft.core.security.oauth;
 
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.mapper.WxUserMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,6 +31,6 @@ public class AppletsUserDetailsService implements UserDetailsService {
     }
 
     private User createSpringSecurityUser(WxUser user) {
-        return new User(user.getPhone(), user.getOtpSecret(), Collections.emptyList());
+        return new User(user.getPhone(), StringUtils.EMPTY, Collections.emptyList());
     }
 }

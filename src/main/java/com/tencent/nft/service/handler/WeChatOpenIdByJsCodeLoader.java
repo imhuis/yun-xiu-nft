@@ -25,10 +25,10 @@ import java.io.Serializable;
 @Component
 public class WeChatOpenIdByJsCodeLoader {
 
+    private static Logger LOG = LoggerFactory.getLogger(WeChatOpenIdByJsCodeLoader.class);
+
     @Autowired
     private RestTemplate restTemplate;
-
-    private static Logger LOG = LoggerFactory.getLogger(WeChatOpenIdByJsCodeLoader.class);
 
     private static final String SESSION_KEY = "session_key";
     private static final String OPEN_ID_KEY = "openid";
