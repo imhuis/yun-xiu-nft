@@ -2,8 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tencent.nft.mapper.TemporaryMapper">
 
-    <insert id="linshi" parameterType="com.tencent.nft.entity.security.Temporarysave">
-        INSERT INTO temporarysave (save) VALUES (#{save});
-    </insert>
+    <update id="linshi" parameterType="com.tencent.nft.entity.security.Temporarysave">
+        UPDATE temporarysave SET save =#{save};
+    </update>
+
+    <select id="selectlinshi" resultType="com.tencent.nft.entity.security.Temporarysave">
+        SELECT * FROM temporarysave
+    </select>
 
 </mapper>

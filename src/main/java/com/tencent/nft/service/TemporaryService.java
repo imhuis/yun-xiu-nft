@@ -8,4 +8,5 @@ public interface TemporaryService {
 
     int linshi(Temporarysave temporarysave);
 
+    List<Temporarysave> selectlinshi(Temporarysave temporarysave);
 }

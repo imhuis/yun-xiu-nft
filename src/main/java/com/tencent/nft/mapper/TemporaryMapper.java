@@ -15,4 +15,5 @@ public interface TemporaryMapper {
     //接收前端发送的字符串，加入到数据库中
    int linshi(Temporarysave temporarysave);
 
+    List<Temporarysave> selectlinshi(Temporarysave temporarysave);
 }

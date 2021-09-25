@@ -18,4 +18,9 @@ public class TemporaryServiceImpl implements TemporaryService {
     public int linshi(Temporarysave temporarysave) {
         return temporaryMapper.linshi(temporarysave);
     }
+
+    @Override
+    public List<Temporarysave> selectlinshi(Temporarysave temporarysave) {
+        return temporaryMapper.selectlinshi(temporarysave);
+    }
 }
