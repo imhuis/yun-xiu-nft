@@ -7,6 +7,7 @@ import com.google.common.collect.Sets;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.common.util.WxResolveDataUtils;
+import com.tencent.nft.common.util.otpcode.OtpCodeHandler;
 import com.tencent.nft.entity.app.dto.WxResolvePhoneFormDTO;
 import com.tencent.nft.entity.app.dto.WxUserProfileFormDTO;
 import com.tencent.nft.entity.security.User;
@@ -23,8 +24,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.AuthorizationRequest;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
@@ -53,6 +58,9 @@ import java.util.Optional;
 public class AppAuthServiceImpl implements IAppAuthService {
 
     private static Logger LOG = LoggerFactory.getLogger(AppAuthServiceImpl.class);
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private WeChatOpenIdByJsCodeLoader weChatOpenIdByJsCodeLoader;
@@ -85,29 +93,22 @@ public class AppAuthServiceImpl implements IAppAuthService {
     public void updateWxUserProfile(WxUserProfileFormDTO dto) {
         String openId = dto.getOpenId();
         Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByOpenId(openId);
-        // 存在，更新
-        wxUserOptional.ifPresent(wxUser -> {
-            wxUser.setNickname(dto.getNickName());
-            wxUser.setGender(dto.getGender());
-            wxUser.setAvatarUrl(dto.getAvatarUrl());
-            wxUser.setCity(dto.getCity());
-            wxUser.setProvince(dto.getProvince());
-            wxUser.setCountry(dto.getCountry());
-            wxUserMapper.update(wxUser);
-        });
-        if (!wxUserOptional.isPresent()){
-            WxUser newWxUser = new WxUser();
-            newWxUser.setOtpSecret(new BCryptPasswordEncoder().encode("123456"));
-            newWxUser.setOpenId(dto.getOpenId());
-            newWxUser.setNickname(dto.getNickName());
-            newWxUser.setGender(dto.getGender());
-            newWxUser.setAvatarUrl(dto.getAvatarUrl());
-            newWxUser.setCity(dto.getCity());
-            newWxUser.setProvince(dto.getProvince());
-            newWxUser.setCountry(dto.getCountry());
-            newWxUser.setCreateTime(LocalDateTime.now());
-            newWxUser.setUpdateTime(LocalDateTime.now());
-            wxUserMapper.insert(newWxUser);
+
+        WxUser wxUser = new WxUser();
+        wxUser.setNickname(dto.getNickName());
+        wxUser.setGender(dto.getGender());
+        wxUser.setAvatarUrl(dto.getAvatarUrl());
+        wxUser.setCity(dto.getCity());
+        wxUser.setProvince(dto.getProvince());
+        wxUser.setCountry(dto.getCountry());
+        wxUser.setUpdateTime(LocalDateTime.now());
+        // 已存在，更新
+        wxUserOptional.ifPresent(w -> wxUserMapper.updateByOpenid(wxUser));
+        if (wxUserOptional.isEmpty()){
+            wxUser.setOtpSecret(new OtpCodeHandler().generateSecret());
+            wxUser.setOpenId(dto.getOpenId());
+            wxUser.setCreateTime(LocalDateTime.now());
+            wxUserMapper.insert(wxUser);
         }
     }
 
@@ -116,25 +117,28 @@ public class AppAuthServiceImpl implements IAppAuthService {
         // 解析完手机号只有（openid、phone）
         WxUser wxAccountInfoObject = decryptPhone(dto);
         String phone = wxAccountInfoObject.getPhone();
-        // 查询当前登录用户的手机是否存在
+        String openId = wxAccountInfoObject.getOpenId();
+        // 查询当前登录用户的手机是否存在，存在直接登录
         Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByPhone(phone);
         WxUser wxUser = null;
         // 找不到这个手机号的微信用户
         if (wxUserOptional.isEmpty()){
-            wxUser = reNewAccount(wxAccountInfoObject);
+            wxUser = reNewAccount(phone, openId);
+        }else {
+            wxUser = wxUserOptional.get();
         }
 
         // 找到当前手机号，代码登录程序，创建token 返回token
         MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
         map.add("grant_type", "password");
         map.add("username", wxUser.getPhone());
-        map.add("password", "123456");
+        map.add("password", wxUser.getOtpSecret());
 
         URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
                 .post(uri)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .header("Authorization", "Basic YzY0YTAwMDUtYWFmNi00NmEyLWE0NTItYzAwMDA3MDU0NTliOmRmOGEwYTFiLTJkYjUtNGFlOC1iNTE3LTM3M2MxNWU3MTQ4Mw==")
+                .header("Authorization", oauthString)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(map);
         log.info("req: " + requestEntity.getHeaders());
@@ -157,51 +161,52 @@ public class AppAuthServiceImpl implements IAppAuthService {
     @Override
     public Object testLogin(String phone) {
         WxUser wxUser = wxUserMapper.selectFullByPhone(phone).get();
-        if (wxUser == null){
-            // 找不到这个手机号的微信用户
 
-        }
-
-        Map<String, String> authorizationParameters = new HashMap<>();
-        authorizationParameters.put("username", phone);
-        authorizationParameters.put("scope", "app");
-        authorizationParameters.put("client_id", "c64a0005-aaf6-46a2-a452-c0000705459b");
-        authorizationParameters.put("client_secret", "df8a0a1b-2db5-4ae8-b517-373c15e71483");
-        authorizationParameters.put("grant", "password");
-
-        OAuth2Request authorizationRequest = new OAuth2Request(
-                authorizationParameters, "Client_Id",
-                null, true, null, null, "",
-                null, null);
-
-        org.springframework.security.core.userdetails.User userPrincipal = new org.springframework.security.core.userdetails.User(phone, "", Collections.emptyList());
-
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userPrincipal, null);
-
-        OAuth2Authentication authenticationRequest = new OAuth2Authentication(
-                authorizationRequest, authenticationToken);
-        authenticationRequest.setAuthenticated(true);
-        return tokenServices.createAccessToken(authenticationRequest);
-
-
-//        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
-//        map.add("username", phone);
-//        map.add("password", "12345");
-//        map.add("grant_type", "password");
+        // 使用 DefaultTokenServices.createAccessToken 创建token
+//        Map<String, String> authorizationParameters = new HashMap<>();
+//        authorizationParameters.put("username", phone);
+//        authorizationParameters.put("password", wxUser.getOtpSecret());
+//        authorizationParameters.put("scope", "app");
+//        authorizationParameters.put("client_id", "c64a0005-aaf6-46a2-a452-c0000705459b");
+//        authorizationParameters.put("client_secret", "df8a0a1b-2db5-4ae8-b517-373c15e71483");
+//        authorizationParameters.put("grant", "password");
 //
-//        URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
-//        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
-//                .post(uri)
-//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//                .header("Authorization", oauthString)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .body(map);
-//        ResponseEntity<ResponseResult> tokenResponseEntity = restTemplate.exchange(requestEntity, ResponseResult.class);
-//        log.info("response ", tokenResponseEntity.getBody().toString());
-//        if (tokenResponseEntity.getStatusCode().is2xxSuccessful()){
-//            return tokenResponseEntity.getBody().getData();
-//        }
-//        return null;
+//
+//        OAuth2Request authorizationRequest = new OAuth2Request(
+//                authorizationParameters, "c64a0005-aaf6-46a2-a452-c0000705459b",
+//                null, true, null, null, "",
+//                null, null);
+//
+//        org.springframework.security.core.userdetails.User userPrincipal =
+//                new org.springframework.security.core.userdetails.User(phone, wxUser.getOtpSecret(), Collections.emptyList());
+//
+//        final UsernamePasswordAuthenticationToken wxLoginToken =
+//                new UsernamePasswordAuthenticationToken(userPrincipal, wxUser.getOtpSecret());
+////        Authentication authentication = authenticationManager.authenticate(wxLoginToken);
+//
+//        OAuth2Authentication authenticationRequest = new OAuth2Authentication(authorizationRequest, wxLoginToken);
+//        authenticationRequest.setAuthenticated(true);
+//
+//        OAuth2AccessToken accessToken = tokenServices.createAccessToken(authenticationRequest);
+//        return accessToken;
+
+        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+        map.add("username", phone);
+        map.add("password", wxUser.getOtpSecret());
+        map.add("grant_type", "password");
+
+        URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
+        RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
+                .post(uri)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .header("Authorization", oauthString)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(map);
+        ResponseEntity<ResponseResult> tokenResponseEntity = restTemplate.exchange(requestEntity, ResponseResult.class);
+        if (tokenResponseEntity.getStatusCode().is2xxSuccessful()){
+            return tokenResponseEntity.getBody().getData();
+        }
+        return null;
 
     }
 
@@ -212,11 +217,10 @@ public class AppAuthServiceImpl implements IAppAuthService {
 
 
     @Transactional
-    public WxUser reNewAccount(WxUser bd) {
-        // 先插入 s_user
-        String uuid = UUIDUtil.generateUUID();
-        String openid = bd.getOpenId();
-        String phone = bd.getPhone();
+    public WxUser reNewAccount(String phone, String openid) {
+        // 生成用户uuid，先插入 s_user
+        final String uuid = UUIDUtil.generateUUID();
+
         WxUser wxUser;
         // openid 复查一遍
         Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByOpenId(openid);
@@ -226,18 +230,19 @@ public class AppAuthServiceImpl implements IAppAuthService {
             wxUser.setUserId(uuid);
             wxUser.setOpenId(openid);
             wxUser.setPhone(phone);
-            wxUser.setOtpSecret(new BCryptPasswordEncoder().encode("123456"));
+            wxUser.setOtpSecret(new OtpCodeHandler().generateSecret());
             // 插入wxUser(openId,UserId)
-            wxUserMapper.insert(wxUser);
             User newUser = new User();
             newUser.setUserId(uuid);
             newUser.setPhone(phone);
             newUser.setNickname(wxUser.getNickname());
             userMapper.insert(newUser);
+            wxUserMapper.insert(wxUser);
         }else {
+            // 可以通过openid查询到说明存在该条记录
             wxUser = wxUserOptional.get();
             wxUser.setPhone(phone);
-            wxUserMapper.update(wxUser);
+            wxUserMapper.updateByOpenid(wxUser);
         }
         return wxUser;
     }
@@ -262,7 +267,7 @@ public class AppAuthServiceImpl implements IAppAuthService {
         // 解析encrypted data获取用户手机号（包括openid）
         String resolveData = new String(WxResolveDataUtils.decrypt(wxResolvePhoneFormDTO.getEncryptedData(), sessionKey, wxResolvePhoneFormDTO.getIv()));
         try {
-            /*{"phoneNumber":"18852961663","purePhoneNumber":"18852961663","countryCode":"86","watermark":{"timestamp":1554949910,"appid":"wxc418d44a80e38c7b"}}*/
+            /*{"phoneNumber":"11111111111","purePhoneNumber":"11111111111","countryCode":"86","watermark":{"timestamp":1554949910,"appid":"wxc418d44a80e38c7b"}}*/
             JsonNode jsonNode = objectMapper.readTree(resolveData);
             wxUser.setPhone(jsonNode.get("phoneNumber").asText());
         } catch (JsonProcessingException e) {

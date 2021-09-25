@@ -12,6 +12,8 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -57,6 +59,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private OAuth2WebResponseExceptionTranslator oAuth2WebResponseExceptionTranslator;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     private final String OAUTH_TOKEN_PREFIX = "app:oauth:";
 
     @Override
@@ -87,7 +92,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(appletsUserDetailsService);
-        authenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+        authenticationProvider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+//        authenticationProvider.setPasswordEncoder(passwordEncoder);
         return authenticationProvider;
     }
 

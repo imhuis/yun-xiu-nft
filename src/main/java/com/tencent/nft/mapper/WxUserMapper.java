@@ -23,7 +23,7 @@ public interface WxUserMapper {
 
     int insert(WxUser wxUser);
 
-    int update(WxUser wxUser);
+    int updateByOpenid(WxUser wxUser);
 
     WxUser selectById(Integer id);
 

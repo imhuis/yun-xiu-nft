@@ -31,6 +31,6 @@ public class AppletsUserDetailsService implements UserDetailsService {
     }
 
     private User createSpringSecurityUser(WxUser user) {
-        return new User(user.getPhone(), StringUtils.EMPTY, Collections.emptyList());
+        return new User(user.getPhone(), user.getOtpSecret(), Collections.emptyList());
     }
 }
