@@ -7,14 +7,22 @@ import com.tencent.nft.common.util.WXPayUtil;
 import com.tencent.nft.core.config.WxGroupConfig;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.app.vo.CollectionVO;
+import com.tencent.nft.entity.nft.NFTInfo;
+import com.tencent.nft.entity.nft.NFTProduct;
+import com.tencent.nft.entity.nft.SubNFT;
+import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.pay.TradeInfo;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import com.tencent.nft.entity.pay.PayRequestDTO;
 import com.tencent.nft.entity.pay.bo.PrepayBO;
+import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.mapper.TradeMapper;
+import com.tencent.nft.mapper.UserLibraryMapper;
 import com.tencent.nft.service.IAppService;
 import com.tencent.nft.service.handler.WechatPayHandler;
+import org.checkerframework.checker.units.qual.C;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -37,7 +45,16 @@ import java.util.Map;
 public class AppServiceImpl implements IAppService {
 
     @Resource
+    private NftMapper nftMapper;
+
+    @Resource
+    private UserLibraryMapper userLibraryMapper;
+
+    @Resource
     private NftProductMapper productMapper;
+
+    @Resource
+    private TradeMapper tradeMapper;
 
     @Autowired
     private WechatPayHandler payHandler;
@@ -48,20 +65,35 @@ public class AppServiceImpl implements IAppService {
     @Autowired
     private WxGroupConfig wxGroupConfig;
 
-    @Resource
-    private TradeMapper tradeMapper;
+    @Override
+    public List<NFTInfo> myLibrary() {
+        String p = SecurityUtils.getCurrentUsername().get();
+        List<NFTInfo> collectionVOList = Lists.newLinkedList();
+        List<Long> subNftList = userLibraryMapper.selectNftIdByPhone(p);
+        subNftList.stream().forEach(s -> {
+            SubNFT subNFT = nftMapper.selectSubNftById(s);
+            NFTInfo nftInfo = nftMapper.selectNftInfoByNftId(subNFT.getSuperNFTId()).get();
+            nftInfo.setCoverPicture(nftInfo.getCoverPicture());
+            nftInfo.setNftName(nftInfo.getNftName());
+            collectionVOList.add(nftInfo);
+        });
+        return collectionVOList;
+    }
 
     @Override
-    public List<CollectionVO> myLibrary() {
+    public CollectionVO collectionDetails(String subId) {
+        SubNFT zi = nftMapper.selectSubNftByNftId(subId);
+        SuperNFT superNFT = nftMapper.selectSuperNFTByNftId(zi.getSuperNFTId()).get();
+        NFTProduct nftProduct = productMapper.selectByNftId(zi.getSuperNFTId()).get();
+        CollectionVO collectionVO = new CollectionVO();
 
-        String p = SecurityUtils.getCurrentUsername().get();
-        List<CollectionVO> collectionVOList = Lists.newLinkedList();
-        List<Long> subNftIdList = productMapper.selectSubNftIdByUserId(p);
-        subNftIdList.stream().forEach(s -> {
-            CollectionVO cv = new CollectionVO();
-            collectionVOList.add(cv);
-        });
-        return Lists.newArrayList();
+        collectionVO.setNftName(superNFT.getNftName());
+        collectionVO.setNftFile(superNFT.getNftFile());
+        collectionVO.setIssuer(superNFT.getIssuer());
+        collectionVO.setBrandOwner(superNFT.getBrandOwner());
+        collectionVO.setPrice(nftProduct.getUnitPrice().doubleValue());
+        collectionVO.setBlockChainAddress(UUIDUtil.generateUUID());
+        return collectionVO;
     }
 
     @Override

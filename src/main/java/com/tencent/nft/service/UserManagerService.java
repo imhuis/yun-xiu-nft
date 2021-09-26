@@ -1,6 +1,5 @@
 package com.tencent.nft.service;
 
-import com.tencent.nft.common.base.FeedBack;
 import com.tencent.nft.entity.security.WxUser;
 
 import java.text.ParseException;

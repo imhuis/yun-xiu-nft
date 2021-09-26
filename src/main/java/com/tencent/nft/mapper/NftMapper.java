@@ -52,4 +52,8 @@ public interface NftMapper {
     List<SubNFT> selectSubNftList(@Param("superId") String parentNftId, @Param("sqd") SubNFTQueryDTO subNFTQueryDTO);
 
     int insertSubNft(SubNFT subNFT);
+
+    SubNFT selectSubNftByNftId(String subId);
+
+    SubNFT selectSubNftById(Long id);
 }

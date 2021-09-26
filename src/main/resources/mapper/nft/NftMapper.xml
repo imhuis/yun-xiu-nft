@@ -22,8 +22,8 @@
 <!--        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>-->
     </resultMap>
     <sql id="SuperNFT_Column_List">
-        id, nft_id, nft_name, nft_status, nft_type, issuer, brand_owner, introduce, chain_address, nft_create_time,
-        create_time, update_time
+        id, nft_id, nft_name, nft_status, nft_type, nft_file, issuer, brand_owner, introduce, chain_address,
+        nft_create_time, create_time, update_time
     </sql>
     <sql id="NFTInfo_Column_List">
         id, nft_id, nft_name, cover_pic, detail_pic
@@ -183,5 +183,19 @@
             #{createTime}, #{updateTime}
         </trim>
     </insert>
+
+    <select id="selectSubNftByNftId" resultMap="SubNFTResultMap">
+        select
+        <include refid="SubNFT_Column_List"/>
+        from t_sub_nft
+        where sub_id = #{subId}
+    </select>
+
+    <select id="selectSubNftById" resultMap="SubNFTResultMap">
+        select
+        <include refid="SubNFT_Column_List"/>
+        from t_sub_nft
+        where id = #{id}
+    </select>
 
 </mapper>
