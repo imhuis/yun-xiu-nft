@@ -3,6 +3,24 @@
 <mapper namespace="com.tencent.nft.mapper.TradeMapper">
 
     <insert id="insert">
-
+        INSERT INTO t_trade
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tradeno != null">trade_no,</if>
+            <if test="transactionid != null">transaction_id,</if>
+            <if test="description != null">description,</if>
+            <if test="amount != null">amount,</if>
+            <if test="payer != null">payer,</if>
+            <if test="successtime != null">success_time,</if>
+            create_time, update_time
+        </trim>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tradeno != null">#{tradeInfo},</if>
+            <if test="transactionid != null">#{transactionId},</if>
+            <if test="description != null">#{description},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="payer != null">#{payer},</if>
+            <if test="successtime != null">#{successTime},</if>
+            #{createTime}, #{updateTime}
+        </trim>
     </insert>
 </mapper>
