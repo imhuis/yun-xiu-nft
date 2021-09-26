@@ -21,7 +21,7 @@ import java.security.PublicKey;
 
 
 @RestController
-@RequestMapping("/oss")
+@RequestMapping("/public/oss")
 @Slf4j
 public class OssController {
 
