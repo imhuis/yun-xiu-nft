@@ -87,6 +87,7 @@ public class AppServiceImpl implements IAppService {
         prepayBO.setTimeStamp(timestamp);
         prepayBO.setNonceStr(nonceStr);
         prepayBO.setPrepayId(prepayId);
+        prepayBO.setPackageStr(packages);
         prepayBO.setSignType("MD5");
         prepayBO.setPaySign(sign);
         return prepayBO;

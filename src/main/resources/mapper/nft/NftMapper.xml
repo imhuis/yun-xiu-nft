@@ -87,7 +87,20 @@
     </insert>
 
     <update id="updateSuperNFT">
-
+        update t_super_nft
+        <set>
+<!--            <if test="nftId != null">nft_id = #{nftId},</if>-->
+<!--            <if test="nftName != null">nft_name = #{nftName},</if>-->
+            <if test="nftStatus != null">nft_status = #{nftStatus},</if>
+            <if test="nftType != null">nft_type = #{nftType},</if>
+            <if test="nftFile != null">nft_file = #{nftFile},</if>
+            <if test="issuer != null">issuer = #{issuer},</if>
+            <if test="brandOwner != null">brand_owner = #{brandOwner},</if>
+            <if test="introduce != null">introduce = #{introduce},</if>
+<!--            <if test="nftCreateTime != null">nft_create_time = #{nftCreateTime},</if>-->
+            update_time = #{updateTime}
+        </set>
+        WHERE nft_id = #{nftId}
     </update>
 
     <delete id="deleteSuperNFT">

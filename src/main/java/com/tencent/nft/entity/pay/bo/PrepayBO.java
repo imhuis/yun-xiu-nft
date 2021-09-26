@@ -1,5 +1,7 @@
 package com.tencent.nft.entity.pay.bo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +19,8 @@ public class PrepayBO implements Serializable {
     private String nonceStr;
     // 订单详情扩展字符串-必填
     private String prepayId;
+    @JsonProperty("package")
+    private String packageStr;
     // 签名方式-必填
     private String signType;
     // 签名-必填
@@ -52,6 +56,14 @@ public class PrepayBO implements Serializable {
 
     public void setPrepayId(String prepayId) {
         this.prepayId = prepayId;
+    }
+
+    public String getPackageStr() {
+        return packageStr;
+    }
+
+    public void setPackageStr(String packageStr) {
+        this.packageStr = packageStr;
     }
 
     public String getSignType() {

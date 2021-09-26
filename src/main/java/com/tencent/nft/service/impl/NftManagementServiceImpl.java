@@ -92,8 +92,11 @@ public class NftManagementServiceImpl implements INftManagementService {
                 tmp.setTotalAmount(1000);
                 tmp.setTotalSales(2000L);
             }
-            tmp.setUnitPrice(1);
-            tmp.setCirculation(2000);
+            // 如果不是待发行，则显示金额和发行量
+            if (c.getNftStatus() != NFTStatusEnum.WAITING){
+                tmp.setUnitPrice(1);
+                tmp.setCirculation(2000);
+            }
             nftListVOList.add(tmp);
         });
 
@@ -143,7 +146,8 @@ public class NftManagementServiceImpl implements INftManagementService {
         NFTInfo nftInfo = nftMapper.selectNftInfoByNftId(nftId).orElse(new NFTInfo());
         NFTDetailsVO nftDetailsVO = new NFTDetailsVO();
 
-        if (superNFT.getNftStatus() != NFTStatusEnum.WAITING){
+        NFTStatusEnum status = superNFT.getNftStatus();
+        if (status != NFTStatusEnum.WAITING){
             // 待发行的nft可以查询到信息
             BeanUtils.copyProperties(superNFT, nftInfo);
 
@@ -151,10 +155,13 @@ public class NftManagementServiceImpl implements INftManagementService {
             nftProductOptional.ifPresent(nftProduct -> BeanUtils.copyProperties(nftProduct, nftDetailsVO));
             BeanUtils.copyProperties(nftInfo, nftDetailsVO);
 
-            if (nftInfo.getNftStatus() == NFTStatusEnum.PROCESSING || nftInfo.getNftStatus() == NFTStatusEnum.SOLDOUT){
+            if (status == NFTStatusEnum.PROCESSING || status == NFTStatusEnum.SOLDOUT){
                 // 计算金额
                 nftDetailsVO.setTotalAmount(200);
                 nftDetailsVO.setTotalSales(2300L);
+            }
+            if(status == NFTStatusEnum.WAITING){
+                nftDetailsVO.setSellStartTime(null);
             }
             return nftDetailsVO;
         }
@@ -233,7 +240,8 @@ public class NftManagementServiceImpl implements INftManagementService {
             subNFT.setNftId(nftId+String.format("%04d", i));
             subNFT.setSuperNFTId(nftId);
             subNFT.setSaleStatus(NFTSaleStatusEnum.NotSold);
-            subNFT.setCreateTime(LocalDateTime.now());
+            subNFT.setNftCreateTime(LocalDateTime.now());
+            subNFT.setUpdateTime(LocalDateTime.now());
             nftMapper.insertSubNft(subNFT);
             atomicInteger.incrementAndGet();
         }
