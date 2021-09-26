@@ -42,6 +42,10 @@ public class AppController {
         return ResponseUtil.success(wxUser);
     }
 
+    /**
+     * 藏品
+     * @return
+     */
     @RequestMapping("/me/library")
     public ResponseResult myLibrary(){
         appService.myLibrary();

@@ -63,6 +63,11 @@ public class NftManagementServiceImpl implements INftManagementService {
         dto.setNftId(BusinessIdGenerate.generateNftId());
         nftMapper.insertSuperNFT(dto);
         nftMapper.insertNftInfo(dto);
+
+        // 调用上链接口 返回nft在区块链中的地址
+
+
+
         return dto;
     }
 
@@ -89,16 +94,21 @@ public class NftManagementServiceImpl implements INftManagementService {
         superNFTList.stream().forEach(c -> {
             NFTListVO tmp = new NFTListVO();
             BeanUtils.copyProperties(c, tmp);
+            // 如果不是待发行，则显示金额和发行量
+            if (c.getNftStatus() != NFTStatusEnum.WAITING){
+                NFTProduct nftProduct = productMapper.selectByNftId(c.getNftId()).get();
+                tmp.setUnitPrice(nftProduct.getUnitPrice().doubleValue());
+                tmp.setCirculation(nftProduct.getCirculation());
+            }else {
+                // others
+            }
+
+            // 如果为发行状态为发现中或者是售罄 查询销售总量和金额
             if (c.getNftStatus() == NFTStatusEnum.PROCESSING || c.getNftStatus() == NFTStatusEnum.SOLDOUT){
-                // 如果为发行状态为发现中或者是售罄 查询销售金额
                 tmp.setTotalAmount(1000);
                 tmp.setTotalSales(2000L);
             }
-            // 如果不是待发行，则显示金额和发行量
-            if (c.getNftStatus() != NFTStatusEnum.WAITING){
-                tmp.setUnitPrice(1);
-                tmp.setCirculation(2000);
-            }
+
             nftListVOList.add(tmp);
         });
 
@@ -157,14 +167,18 @@ public class NftManagementServiceImpl implements INftManagementService {
             nftProductOptional.ifPresent(nftProduct -> BeanUtils.copyProperties(nftProduct, nftDetailsVO));
             BeanUtils.copyProperties(nftInfo, nftDetailsVO);
 
+            // 预约人数
+            if (status == NFTStatusEnum.RESERVEING){
+                nftDetailsVO.setReservation(redisTemplate.opsForSet().size("yy:" + nftId));
+            }
+
             if (status == NFTStatusEnum.PROCESSING || status == NFTStatusEnum.SOLDOUT){
                 // 计算金额
                 nftDetailsVO.setTotalAmount(200);
                 nftDetailsVO.setTotalSales(2300L);
             }
-            if(status == NFTStatusEnum.WAITING){
-                nftDetailsVO.setSellStartTime(null);
-            }
+
+
             return nftDetailsVO;
         }
         return superNFTOptional.get();
@@ -189,6 +203,9 @@ public class NftManagementServiceImpl implements INftManagementService {
         if (superNFTOptional.isEmpty()){
             // 未找到这条记录
             throw new RecordNotFoundException();
+            // 重复预售
+
+
         }else {
             superNFTInfo = superNFTOptional.get();
             BeanUtils.copyProperties(n, nftProduct);

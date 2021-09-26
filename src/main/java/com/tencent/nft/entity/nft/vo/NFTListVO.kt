@@ -11,7 +11,7 @@ import java.io.Serializable
 class NFTListVO : SuperNFT(), Serializable {
 
     // 单价
-    var unitPrice: Int? = null
+    var unitPrice: Double? = null
 
     // 发行量
     var circulation:Int? = null

@@ -1,5 +1,6 @@
 package com.tencent.nft.entity.nft
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.tencent.nft.common.enums.NFTStatusEnum
 import com.tencent.nft.common.enums.NFTTypeEnum
 import com.tencent.nft.entity.BaseEntity
@@ -11,6 +12,7 @@ import java.time.LocalDateTime
  * @date: 2021/9/1
  * @description: 父NFT
  */
+@JsonIgnoreProperties(value = ["id", "create_time", "update_time"])
 open class SuperNFT : BaseEntity(), Serializable {
 
     // NFT编号
@@ -39,5 +41,7 @@ open class SuperNFT : BaseEntity(), Serializable {
 
     // NFT创建时间
     var nftCreateTime: LocalDateTime? = null
+
+    var chainAddress: String? = null
 
 }

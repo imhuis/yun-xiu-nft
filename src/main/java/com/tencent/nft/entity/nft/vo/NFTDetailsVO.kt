@@ -1,9 +1,8 @@
 package com.tencent.nft.entity.nft.vo
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.tencent.nft.entity.nft.NFTInfo
-import com.tencent.nft.entity.nft.NFTProduct
 import com.tencent.nft.entity.nft.SubNFT
 import java.io.Serializable
 import java.math.BigDecimal
@@ -14,6 +13,7 @@ import java.time.LocalDateTime
  * @date: 2021/9/12
  * @description: NFT详情vo
  */
+@JsonIgnoreProperties(value = ["id", "create_time", "update_time"])
 class NFTDetailsVO : SubNFT(), Serializable {
 
     // 单价
@@ -43,9 +43,9 @@ class NFTDetailsVO : SubNFT(), Serializable {
     var totalAmount:Int? = null
 
     // 销售总额
-    var totalSales: Long? = null
+    var totalSales:Long? = null
 
     // 预约人数
     @JsonProperty("yyrs")
-    var reservation = 0
+    var reservation:Long? = null
 }

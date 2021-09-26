@@ -1,5 +1,7 @@
 package com.tencent.nft.entity.nft.vo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 /**
@@ -33,6 +35,12 @@ public class ProductVO implements Serializable {
 
     // 区块链地址
     private String chainAddress;
+
+    // 用户权限
+    // 预约状态时：1-已经预约 2-未预约（默认）
+    // 购买状态时：1-已经购买 2-未购买（默认）
+    @JsonProperty("ps")
+    private int personStatus = 2;
 
     public String getNftId() {
         return nftId;
@@ -120,5 +128,13 @@ public class ProductVO implements Serializable {
 
     public void setChainAddress(String chainAddress) {
         this.chainAddress = chainAddress;
+    }
+
+    public int getPersonStatus() {
+        return personStatus;
+    }
+
+    public void setPersonStatus(int personStatus) {
+        this.personStatus = personStatus;
     }
 }

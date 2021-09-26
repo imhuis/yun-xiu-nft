@@ -12,7 +12,27 @@ spring:
 
   session:
     timeout: 7200
-
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /nft
+    # 开启发布者发送失败退回
+    publisher-returns: true
+    # 开启ACK手动确认
+    listener:
+      simple:
+        acknowledge-mode: manual
+      direct:
+        acknowledge-mode: manual
+    template:
+      # 参数设为 true 时，交换器无法根据自身的类型和路由键找到一个符合条件的队列，
+      # 那么 RabbitMQ 会调用 Basic.Return 命令将消息返回给生产者
+      mandatory: true
+      # 开启rabbitmq的生产端重试机制,默认是false,默认重试3次
+      retry:
+        enabled: true
   jackson:
     property-naming-strategy: SNAKE_CASE
   batch:

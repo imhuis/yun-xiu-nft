@@ -81,6 +81,20 @@ public class NftServiceImpl implements INftService {
             productVO.setPrice(nftProduct.getUnitPrice().doubleValue());
             productVO.setAmount(nftProduct.getCirculation());
         }
+
+        if (SecurityUtils.getCurrentUsername().isPresent()){
+            StringBuilder sb = new StringBuilder("yy:");
+            sb.append(nftId.toLowerCase());
+            // 判断是否预约过
+            if (redisTemplate.opsForSet().isMember(sb.toString(), SecurityUtils.getCurrentUsername().get()) == true){
+                productVO.setPersonStatus(1);
+            }
+            // 判断是否购买过
+
+
+
+        }
+
         return productVO;
     }
 

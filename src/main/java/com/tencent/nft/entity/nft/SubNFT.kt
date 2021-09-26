@@ -20,7 +20,7 @@ open class SubNFT : SuperNFT(), Serializable {
     var saleStatus: NFTSaleStatusEnum? = null
 
     // 区块链地址
-    var chainAddress: String? = null
+//    var chainAddress: String? = null
 
     // 售出时间
     var soldTime: LocalDateTime? = null

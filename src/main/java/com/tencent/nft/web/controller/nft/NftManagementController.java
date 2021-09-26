@@ -77,7 +77,6 @@ public class NftManagementController {
             "detail=true"
     })
     public ResponseResult nftDetails(@PathVariable("nftId") String nftId){
-//        nftManagementService.getPosterPic(nftId);
         return ResponseUtil.success(nftManagementService.getPosterPic(nftId));
     }
 

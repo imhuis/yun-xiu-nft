@@ -17,8 +17,8 @@ public class PrepayBO implements Serializable {
     private String timeStamp;
     // 随机字符串-必填
     private String nonceStr;
-    // 订单详情扩展字符串-必填
     private String prepayId;
+    // 订单详情扩展字符串-必填
     @JsonProperty("package")
     private String packageStr;
     // 签名方式-必填
