@@ -7,11 +7,14 @@ import com.tencent.nft.entity.nft.vo.SysResult;
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.service.UserManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.parameters.P;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,7 +54,7 @@ public class UserManagementController {
     public SysResult selectAllUser(Model model,
         @RequestParam(value = "pageNum",required = false, defaultValue = "1") Integer pageNum,
         @RequestParam(value = "pageSize",required = false, defaultValue = "20") Integer pageSize,
-        @RequestParam(value = "date", required = false)  String date,
+        @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)Date date,
         @RequestParam(value = "phone", required = false)  String phone)throws ParseException {
         PageHelper.startPage(pageNum,pageSize);
         List<WxUser> list = null;

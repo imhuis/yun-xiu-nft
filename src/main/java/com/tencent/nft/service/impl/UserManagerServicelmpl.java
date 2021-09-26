@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -25,12 +26,12 @@ public class UserManagerServicelmpl implements UserManagerService {
     }
 
     @Override
-    public List<WxUser> selectAllUser(String create_date, String phone) throws ParseException {
-        if(!StringUtil.isEmpty(create_date)){
-            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate date = LocalDate.parse(create_date, fmt);
+    public List<WxUser> selectAllUser(Date create_date, String phone) throws ParseException {
+//        if(!StringUtil.isEmpty(create_date)){
+//            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//            LocalDate date = LocalDate.parse(create_date, fmt);
 //            wxUser.setCreateTime(date.atStartOfDay());
-        }
+//        }
         if(!StringUtil.isEmpty(phone)){
 //            wxUser.setPhone(phone);
         }
