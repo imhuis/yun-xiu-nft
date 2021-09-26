@@ -179,14 +179,8 @@ public class NftManagementController {
         try {
             nftManagementService.offShelf(nftId);
         }catch (Exception e){
-
         }
-
         return ResponseUtil.success();
-    }
-
-    private ResponseResult checkYSINfo(NFTInfo n) {
-        return null;
     }
 
 }

@@ -25,7 +25,8 @@ public enum ResponseCodeEnum {
     YS_5001(5001, "预售开始时间晚于预售结束时间"),
     YS_5002(5002, "开售时间晚于开售结束时间"),
     YS_5003(5003, "预售结束时间晚于开售时间"),
-    YS_5004(5004, "预售或售卖开始时间早于当前时间");
+    YS_5004(5004, "预售或售卖开始时间早于当前时间"),
+    YY_6000(6000, "重复预约");
 
     private final Integer code;
     private final String message;

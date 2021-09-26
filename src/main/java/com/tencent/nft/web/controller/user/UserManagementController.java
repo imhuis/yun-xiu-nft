@@ -28,16 +28,6 @@ public class UserManagementController {
     @Resource
     private UserManagerService userManagerService;
 
-
-
-
-
-
-
-
-
-
-
     /**
      * 根据id查询
      * */

@@ -49,10 +49,10 @@
             <if test="nftListQueryDTO.nftName != null and nftListQueryDTO.nftName != ''">
                 and nft_name = #{nftListQueryDTO.nftName}
             </if>
-            <if test="nftListQueryDTO.nftType != null and nftListQueryDTO.nftType != ''">
+            <if test="nftListQueryDTO.nftType != null">
                 and nft_type = #{nftListQueryDTO.nftType}
             </if>
-            <if test="nftListQueryDTO.nftStatus != null and nftListQueryDTO.nftStatus != ''">
+            <if test="nftListQueryDTO.nftStatus != null">
                 and nft_status = #{nftListQueryDTO.nftStatus}
             </if>
         </where>
@@ -85,6 +85,10 @@
             #{createTime}, #{updateTime}
         </trim>
     </insert>
+
+    <update id="updateSuperNFT">
+
+    </update>
 
     <delete id="deleteSuperNFT">
         delete from
@@ -130,7 +134,7 @@
             <if test="sqd.id != null and sqd.id != ''">
                 and sub_id = #{sqd.id}
             </if>
-            <if test="sqd.saleStatus != null and sqd.saleStatus != ''">
+            <if test="sqd.saleStatus != null">
                 and sale_status = #{sqd.saleStatus,jdbcType=INTEGER}
             </if>
         </where>

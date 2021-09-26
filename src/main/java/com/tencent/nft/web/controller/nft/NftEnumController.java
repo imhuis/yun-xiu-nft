@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin/nft/enum")
 public class NftEnumController {
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+//    @Autowired
+//    private RedisTemplate redisTemplate;
 
     // nft类型
     @RequestMapping("/nft_type")

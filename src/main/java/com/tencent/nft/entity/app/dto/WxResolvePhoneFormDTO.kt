@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull
  */
 class WxResolvePhoneFormDTO : Serializable {
 
+    var openId: @NotNull(message = "openId参数不为空") String? = null
     var sessionKey: @NotNull(message = "sessionKey参数不为空") String? = null
     var encryptedData: @NotNull(message = "encryptedData参数不为空") String? = null
     var iv: @NotNull(message = "iv参数不为空") String? = null

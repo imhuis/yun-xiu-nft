@@ -61,12 +61,12 @@ public class AppAuthController {
 
     @RequestMapping("/test_token")
     public ResponseResult testLogin(String phone){
-//        try {
+        try {
             Object token = appAuthService.testLogin(phone);
             return ResponseUtil.success(token);
-//        }catch (Exception e){
-//            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
-//        }
+        }catch (Exception e){
+            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+        }
     }
 
 }

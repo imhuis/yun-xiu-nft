@@ -4,15 +4,15 @@ import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.core.security.SecurityUtils;
-import com.tencent.nft.entity.nft.SuperNFT;
+import com.tencent.nft.entity.pay.PayRequestDTO;
+import com.tencent.nft.entity.pay.PrepayBO;
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.IAppService;
-import com.tencent.nft.service.INftService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * @author: imhuis
@@ -50,13 +50,16 @@ public class AppController {
     }
 
     /**
-     * 预约nft
-     * @param nftId
+     * 预支付接口
      * @return
      */
-    @RequestMapping(value = "/reserve/{nftId}", method = RequestMethod.POST)
-    public ResponseResult reserve(@PathVariable String nftId){
-        appService.reserve(nftId);
-        return ResponseUtil.success();
+    @RequestMapping(value = "/pay", method = RequestMethod.POST)
+    public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO){
+        try {
+            PrepayBO prepayBO = appService.prePay(payRequestDTO);
+            return ResponseUtil.success(prepayBO);
+        }catch (Exception e){
+            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+        }
     }
 }

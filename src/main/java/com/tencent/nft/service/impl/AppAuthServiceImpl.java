@@ -114,16 +114,17 @@ public class AppAuthServiceImpl implements IAppAuthService {
 
     @Override
     public Object appLogin(WxResolvePhoneFormDTO dto) {
-        // 解析完手机号只有（openid、phone）
+        // 解析完手机号只有（phone）
         WxUser wxAccountInfoObject = decryptPhone(dto);
         String phone = wxAccountInfoObject.getPhone();
-        String openId = wxAccountInfoObject.getOpenId();
+        // decryptPhone()改过了不能获取openid
+        String openId = dto.getOpenId();
         // 查询当前登录用户的手机是否存在，存在直接登录
         Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByPhone(phone);
-        WxUser wxUser = null;
+        WxUser wxUser;
         // 找不到这个手机号的微信用户
         if (wxUserOptional.isEmpty()){
-            wxUser = reNewAccount(phone, openId);
+            wxUser = checkAccount(phone, openId);
         }else {
             wxUser = wxUserOptional.get();
         }
@@ -215,35 +216,37 @@ public class AppAuthServiceImpl implements IAppAuthService {
         return wxUserMapper.selectByPhone(phone).get();
     }
 
+    @Transactional
+    WxUser checkAccount(String phone, String openid) {
+        // openid再次查询
+        Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByOpenId(openid);
+        if (wxUserOptional.isPresent()){
+            WxUser wxUser = wxUserOptional.get();
+            wxUser.setPhone(phone);
+            wxUser.setUpdateTime(LocalDateTime.now());
+            wxUserMapper.updateByOpenid(wxUser);
+            return wxUser;
+        }else {
+            return reNewAccount(phone, openid);
+        }
+    }
 
     @Transactional
-    public WxUser reNewAccount(String phone, String openid) {
+    WxUser reNewAccount(String phone, String openid) {
         // 生成用户uuid，先插入 s_user
         final String uuid = UUIDUtil.generateUUID();
-
-        WxUser wxUser;
-        // openid 复查一遍
-        Optional<WxUser> wxUserOptional = wxUserMapper.selectFullByOpenId(openid);
-        // 如果openid查询还为null 则说明 s_wx_user表也没有当前数据
-        if (wxUserOptional.isEmpty()){
-            wxUser = new WxUser();
-            wxUser.setUserId(uuid);
-            wxUser.setOpenId(openid);
-            wxUser.setPhone(phone);
-            wxUser.setOtpSecret(new OtpCodeHandler().generateSecret());
-            // 插入wxUser(openId,UserId)
-            User newUser = new User();
-            newUser.setUserId(uuid);
-            newUser.setPhone(phone);
-            newUser.setNickname(wxUser.getNickname());
-            userMapper.insert(newUser);
-            wxUserMapper.insert(wxUser);
-        }else {
-            // 可以通过openid查询到说明存在该条记录
-            wxUser = wxUserOptional.get();
-            wxUser.setPhone(phone);
-            wxUserMapper.updateByOpenid(wxUser);
-        }
+        WxUser wxUser = new WxUser();
+        wxUser.setUserId(uuid);
+        wxUser.setOpenId(openid);
+        wxUser.setPhone(phone);
+        wxUser.setOtpSecret(new OtpCodeHandler().generateSecret());
+        // 插入wxUser(openId,UserId)
+        User newUser = new User();
+        newUser.setUserId(uuid);
+        newUser.setPhone(phone);
+        newUser.setNickname(wxUser.getNickname());
+        userMapper.insert(newUser);
+        wxUserMapper.insert(wxUser);
         return wxUser;
     }
 

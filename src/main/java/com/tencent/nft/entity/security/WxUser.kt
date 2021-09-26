@@ -1,5 +1,6 @@
 package com.tencent.nft.entity.security
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.tencent.nft.entity.BaseEntity
 import java.io.Serializable
 import java.time.LocalDateTime
@@ -9,6 +10,7 @@ import java.time.LocalDateTime
  * @date: 2020/1/28
  * @description: 微信用户表 s_wx_user
  */
+@JsonIgnoreProperties(value = ["create_time", "update_time"])
 class WxUser() : BaseEntity(), Serializable {
 
     // 用户ID，对应用户表 userId

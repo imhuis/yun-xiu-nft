@@ -30,6 +30,8 @@ public interface NftMapper {
 
     int insertSuperNFT(SuperNFT superNFT);
 
+    int updateSuperNFT(SuperNFT superNFT);
+
     int deleteSuperNFT(String nftId);
 
 
