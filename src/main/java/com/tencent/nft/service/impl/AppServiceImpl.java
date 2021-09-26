@@ -72,7 +72,7 @@ public class AppServiceImpl implements IAppService {
 
         Map<String, String> wxPayMap = new HashMap<>();
         wxPayMap.put("appId", wxGroupConfig.getAppletAppId());
-        wxPayMap.put("timeStamp", String.valueOf(System.currentTimeMillis()));
+        wxPayMap.put("timeStamp", timestamp);
         wxPayMap.put("nonceStr", nonceStr);
         wxPayMap.put("package", packages);
         wxPayMap.put("signType", "MD5");
