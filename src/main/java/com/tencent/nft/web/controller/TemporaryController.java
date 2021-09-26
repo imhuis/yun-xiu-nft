@@ -15,7 +15,7 @@ public class TemporaryController {
       @Resource
       private TemporaryService temporaryService;
 
-      @PostMapping("/public/linshiinsert")
+      @PostMapping("/linshiinsert")
       public SysResult linshi(@RequestBody Temporarysave temporarysave){
           temporaryService.linshi(temporarysave);
           return SysResult.success();
