@@ -7,18 +7,23 @@ import com.tencent.nft.common.util.WXPayUtil;
 import com.tencent.nft.core.config.WxGroupConfig;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.app.vo.CollectionVO;
+import com.tencent.nft.entity.pay.TradeInfo;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import com.tencent.nft.entity.pay.PayRequestDTO;
 import com.tencent.nft.entity.pay.bo.PrepayBO;
 import com.tencent.nft.mapper.NftProductMapper;
+import com.tencent.nft.mapper.TradeMapper;
 import com.tencent.nft.service.IAppService;
 import com.tencent.nft.service.handler.WechatPayHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +48,9 @@ public class AppServiceImpl implements IAppService {
     @Autowired
     private WxGroupConfig wxGroupConfig;
 
+    @Resource
+    private TradeMapper tradeMapper;
+
     @Override
     public List<CollectionVO> myLibrary() {
 
@@ -58,12 +66,18 @@ public class AppServiceImpl implements IAppService {
 
     @Override
     public PrepayBO prePay(PayRequestDTO dto) throws Exception {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String dateStr = dtf.format(LocalDateTime.now());
+        final String tradeNo = dateStr + UUIDUtil.generateUUID();
         PayDetailBO payDetailBO = new PayDetailBO();
         payDetailBO.setTotal(1);
         payDetailBO.setDescription("数字藏品-" + dto.getNftId());
-        payDetailBO.setTradeNo(UUIDUtil.generateUUID());
+        payDetailBO.setTradeNo(tradeNo);
         payDetailBO.setOpenId(dto.getOpenId());
         String prepayId = payHandler.handler(payDetailBO);
+
+        // 异步插入数据表
+        createOrder(payDetailBO);
 
         // 处理下单结果内容，生成前端调起微信支付的sign
         String timestamp = String.valueOf(Instant.now().getEpochSecond());
@@ -78,8 +92,6 @@ public class AppServiceImpl implements IAppService {
         wxPayMap.put("signType", "MD5");
         String sign = WXPayUtil.generateSignature(wxPayMap, wxGroupConfig.getWxPayKey());
 
-        // 插入订单表
-
 
         // 小程序调起支付API
         PrepayBO prepayBO = new PrepayBO();
@@ -93,8 +105,16 @@ public class AppServiceImpl implements IAppService {
         return prepayBO;
     }
 
-    public static void main(String[] args) {
-        System.out.println(System.currentTimeMillis());
-        System.out.println(Instant.now().getEpochSecond());
+
+    @Async
+    public void createOrder(PayDetailBO payDetailBO){
+        // 默认新增状态为无效订单
+        TradeInfo tradeInfo = new TradeInfo();
+        tradeInfo.setTradeNo(payDetailBO.getTradeNo());
+        // 分 >> 元
+        tradeInfo.setAmount(payDetailBO.getTotal());
+        tradeInfo.setDescription(payDetailBO.getDescription());
+        tradeInfo.setPayer(payDetailBO.getOpenId());
+        tradeMapper.insert(tradeInfo);
     }
 }

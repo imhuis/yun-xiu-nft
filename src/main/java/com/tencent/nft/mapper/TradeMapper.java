@@ -11,5 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface TradeMapper {
 
-    void insert(TradeInfo tradeInfo);
+    int insert(TradeInfo tradeInfo);
 }

@@ -12,19 +12,29 @@ import java.time.LocalDateTime;
  */
 public class TradeInfo extends BaseEntity implements Serializable {
 
-    private String tradeInfo;
+    private String tradeNo;
+    // 默认不生效
+    private Integer tradeStatus = 0;
     private String transactionId;
     private String description;
     private int amount;
     private String payer;
     private LocalDateTime successTime;
 
-    public String getTradeInfo() {
-        return tradeInfo;
+    public String getTradeNo() {
+        return tradeNo;
     }
 
-    public void setTradeInfo(String tradeInfo) {
-        this.tradeInfo = tradeInfo;
+    public void setTradeNo(String tradeNo) {
+        this.tradeNo = tradeNo;
+    }
+
+    public Integer getTradeStatus() {
+        return tradeStatus;
+    }
+
+    public void setTradeStatus(Integer tradeStatus) {
+        this.tradeStatus = tradeStatus;
     }
 
     public String getTransactionId() {

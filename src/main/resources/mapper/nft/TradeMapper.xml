@@ -5,21 +5,23 @@
     <insert id="insert">
         INSERT INTO t_trade
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="tradeno != null">trade_no,</if>
-            <if test="transactionid != null">transaction_id,</if>
+            <if test="tradeNo != null">trade_no,</if>
+            <if test="tradeStatus != null">trade_status,</if>
+            <if test="transactionId != null">transaction_id,</if>
             <if test="description != null">description,</if>
             <if test="amount != null">amount,</if>
             <if test="payer != null">payer,</if>
-            <if test="successtime != null">success_time,</if>
+            <if test="successTime != null">success_time,</if>
             create_time, update_time
         </trim>
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="tradeno != null">#{tradeInfo},</if>
-            <if test="transactionid != null">#{transactionId},</if>
+            <if test="tradeNo != null">#{tradeNo},</if>
+            <if test="tradeStatus != null">#{tradeStatus},</if>
+            <if test="transactionId != null">#{transactionId},</if>
             <if test="description != null">#{description},</if>
             <if test="amount != null">#{amount},</if>
             <if test="payer != null">#{payer},</if>
-            <if test="successtime != null">#{successTime},</if>
+            <if test="successTime != null">#{successTime},</if>
             #{createTime}, #{updateTime}
         </trim>
     </insert>
