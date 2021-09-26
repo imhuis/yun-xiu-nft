@@ -40,6 +40,8 @@ public interface NftMapper {
 
     int insertNftInfo(NFTInfo nftInfo);
 
+    int deleteNftINfo(String nftId);
+
 
     /**
      * 多条件查询子nft

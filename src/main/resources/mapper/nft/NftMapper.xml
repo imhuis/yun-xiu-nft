@@ -135,6 +135,12 @@
         </trim>
     </insert>
 
+    <delete id="deleteNftINfo">
+        delete from
+        t_nft_info
+        where nft_id = #{nftId}
+    </delete>
+
 
     <select id="selectSubNftList" resultMap="SubNFTResultMap">
         select

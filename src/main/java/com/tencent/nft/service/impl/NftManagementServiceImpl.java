@@ -66,6 +66,7 @@ public class NftManagementServiceImpl implements INftManagementService {
         return dto;
     }
 
+    @Transactional
     @Override
     public void deleteNft(String nftId) {
         // 检查状态 只有待发行中的才可以删除
@@ -75,6 +76,7 @@ public class NftManagementServiceImpl implements INftManagementService {
             if (superNFT.getNftStatus() == NFTStatusEnum.WAITING){
                 nftMapper.deleteSuperNFT(nftId);
             }
+            nftMapper.deleteNftINfo(nftId);
         });
     }
 

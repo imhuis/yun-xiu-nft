@@ -21,8 +21,11 @@ class NftCreateDTO : Serializable {
     var nftFile: String? = null
 
     // 发行方
-    @NotBlank(message = "发行方名称不能为空")
     var issuer: String? = null
+
+    // 发行方
+//    @NotBlank(message = "品牌方名称不能为空")
+    var brandOwner: String? = null
 
     // 介绍
     var introduce: String? = null
