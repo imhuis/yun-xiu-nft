@@ -76,7 +76,7 @@ public class AppServiceImpl implements IAppService {
         wxPayMap.put("nonceStr", nonceStr);
         wxPayMap.put("package", packages);
         wxPayMap.put("signType", "MD5");
-        String sign = WXPayUtil.generateSignature(wxPayMap, wxGroupConfig.getWxPayKey());
+        String sign = WXPayUtil.generateSignature(wxPayMap, "jiangsuanhuanglingyukejiyouxian1");
 
         // 插入订单表
 
