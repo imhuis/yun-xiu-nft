@@ -55,7 +55,7 @@ public class WechatPayHandler {
 
         ObjectNode rootNode = objectMapper.createObjectNode();
         rootNode.put("mchid",wxGroupConfig.getWxPayMchId())
-                .put("appid", "wxb3982d59b8a5e644")
+                .put("appid", wxGroupConfig.getAppletAppId())
                 .put("description", bo.getDescription())
                 .put("notify_url", wxGroupConfig.getCallBack())
                 .put("out_trade_no", bo.getTradeNo());
@@ -67,7 +67,6 @@ public class WechatPayHandler {
         objectMapper.writeValue(bos, rootNode);
 
         httpPost.setEntity(new StringEntity(bos.toString("UTF-8"), "UTF-8"));
-
 
         HttpResponse response = wechatPayHttpClient.execute(httpPost);
 
