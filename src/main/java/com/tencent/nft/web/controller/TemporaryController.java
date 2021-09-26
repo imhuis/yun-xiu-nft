@@ -21,7 +21,7 @@ public class TemporaryController {
           return SysResult.success();
       }
 
-      @GetMapping("/selectlinshi")
+      @GetMapping("/public/selectlinshi")
       public SysResult selecttemporarysave(Temporarysave temporarysave){
           temporaryService.selectlinshi(temporarysave);
           return SysResult.success(temporaryService.selectlinshi(temporarysave));
