@@ -2,29 +2,26 @@ package com.tencent.nft.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.google.common.collect.Lists;
+import com.tencent.nft.common.util.UUIDUtil;
+import com.tencent.nft.common.util.WXPayUtil;
+import com.tencent.nft.core.config.WxGroupConfig;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.app.vo.CollectionVO;
-import com.tencent.nft.entity.pay.PayDetailBO;
+import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import com.tencent.nft.entity.pay.PayRequestDTO;
-import com.tencent.nft.entity.pay.PrepayBO;
-import com.tencent.nft.entity.security.WxUser;
+import com.tencent.nft.entity.pay.bo.PrepayBO;
 import com.tencent.nft.mapper.NftProductMapper;
-import com.tencent.nft.mapper.WxUserMapper;
-import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.IAppService;
 import com.tencent.nft.service.handler.WechatPayHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.time.Instant;
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalField;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: imhuis
@@ -43,6 +40,9 @@ public class AppServiceImpl implements IAppService {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private WxGroupConfig wxGroupConfig;
+
     @Override
     public List<CollectionVO> myLibrary() {
 
@@ -57,30 +57,38 @@ public class AppServiceImpl implements IAppService {
     }
 
     @Override
-    public void reserve(String nftId) {
-        String phone = SecurityUtils.getCurrentUsername().get();
-//        redisTemplate.boundListOps("" + nftId).
-
-
-    }
-
-    @Override
-    public PrepayBO prePay(PayRequestDTO dto) throws IOException {
+    public PrepayBO prePay(PayRequestDTO dto) throws Exception {
         PayDetailBO payDetailBO = new PayDetailBO();
+        payDetailBO.setTotal(1);
+        payDetailBO.setDescription("数字藏品-" + dto.getNftId());
+        payDetailBO.setTradeNo(UUIDUtil.generateUUID());
+        payDetailBO.setOpenId(dto.getOpenId());
         String prepayId = payHandler.handler(payDetailBO);
 
+        // 处理下单结果内容，生成前端调起微信支付的sign
         String timestamp = String.valueOf(Instant.now().getEpochSecond());
-        String noStr = RandomUtil.randomString(32);
+        final String nonceStr = RandomUtil.randomString(32);
+        final String packages = "prepay_id=" + prepayId;
+
+        Map<String, String> wxPayMap = new HashMap<>();
+        wxPayMap.put("appId", wxGroupConfig.getAppletAppId());
+        wxPayMap.put("timeStamp", String.valueOf(System.currentTimeMillis()));
+        wxPayMap.put("nonceStr", nonceStr);
+        wxPayMap.put("package", packages);
+        wxPayMap.put("signType", "MD5");
+        String sign = WXPayUtil.generateSignature(wxPayMap, wxGroupConfig.getWxPayKey());
+
+        // 插入订单表
+
 
         // 小程序调起支付API
         PrepayBO prepayBO = new PrepayBO();
-        prepayBO.setAppId("wxb3982d59b8a5e644");
+        prepayBO.setAppId(wxGroupConfig.getAppId());
         prepayBO.setTimeStamp(timestamp);
-        prepayBO.setNonceStr(noStr);
-        StringBuilder sb = new StringBuilder("prepay_id=");
-        prepayBO.setPrepayId(sb.append(prepayId).toString());
+        prepayBO.setNonceStr(nonceStr);
+        prepayBO.setPrepayId(prepayId);
         prepayBO.setSignType("MD5");
-        prepayBO.setPaySign("");
+        prepayBO.setPaySign(sign);
         return prepayBO;
     }
 

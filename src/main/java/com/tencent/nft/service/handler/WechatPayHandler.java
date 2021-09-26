@@ -2,11 +2,11 @@ package com.tencent.nft.service.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.tencent.nft.entity.pay.PayDetailBO;
+import com.tencent.nft.core.config.WxGroupConfig;
+import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import net.sf.json.JSONObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 /**
  * @author: imhuis
@@ -34,6 +33,9 @@ public class WechatPayHandler {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private WxGroupConfig wxGroupConfig;
 
     private final String JS_API = "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi";
 
@@ -52,10 +54,10 @@ public class WechatPayHandler {
 //        ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode rootNode = objectMapper.createObjectNode();
-        rootNode.put("mchid","1503971171")
+        rootNode.put("mchid",wxGroupConfig.getWxPayMchId())
                 .put("appid", "wxb3982d59b8a5e644")
                 .put("description", bo.getDescription())
-                .put("notify_url", "https://yunxiu.cayden.cn/public/notify/wxpay/pay.yy")
+                .put("notify_url", wxGroupConfig.getCallBack())
                 .put("out_trade_no", bo.getTradeNo());
         rootNode.putObject("amount")
                 .put("total", bo.getTotal());

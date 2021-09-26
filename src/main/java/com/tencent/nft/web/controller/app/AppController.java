@@ -5,12 +5,11 @@ import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.pay.PayRequestDTO;
-import com.tencent.nft.entity.pay.PrepayBO;
+import com.tencent.nft.entity.pay.bo.PrepayBO;
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.IAppService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
