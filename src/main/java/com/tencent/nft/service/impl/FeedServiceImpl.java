@@ -2,6 +2,7 @@ package com.tencent.nft.service.impl;
 
 
 
+import cn.hutool.core.date.LocalDateTimeUtil;
 import com.github.pagehelper.util.StringUtil;
 import com.tencent.nft.common.base.FeedBack;
 import com.tencent.nft.mapper.FeedbackMapper;
@@ -12,6 +13,7 @@ import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -60,9 +62,10 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public List<FeedBack> getAll(String date) throws ParseException {
         FeedBack feedBack=new FeedBack();
-        if(!StringUtil.isEmpty(date)){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            feedBack.setDate(sdf.parse(date));
+        if(date != null){
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate localDateTime = LocalDate.parse(date, df);
+            return feedbackMapper.getByDate(localDateTime.atStartOfDay(), localDateTime.atStartOfDay().plusDays(1));
         }
 
         return feedbackMapper.getAll(feedBack);
