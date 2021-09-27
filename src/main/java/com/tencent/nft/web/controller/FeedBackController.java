@@ -70,7 +70,7 @@ public class FeedBackController {
     /**
      * 根据用户的id删除反馈记录
      * */
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public SysResult deleteById(@PathVariable Integer id){
         feedService.deleteById(id);
         return SysResult.success();
