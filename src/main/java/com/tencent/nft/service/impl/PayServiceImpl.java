@@ -1,6 +1,7 @@
 package com.tencent.nft.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import com.tencent.nft.common.util.MoneyUtil;
 import com.tencent.nft.common.util.SignUtil;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.core.config.WxGroupConfig;
@@ -20,7 +21,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.PrivateKey;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
@@ -92,7 +96,7 @@ public class PayServiceImpl implements IPayService {
         PayDetailBO payDetailBO = new PayDetailBO();
         payDetailBO.setTradeNo(tradeNo);
         payDetailBO.setOpenId(dto.getOpenId());
-        payDetailBO.setTotal(product.getUnitPrice().intValue());
+        payDetailBO.setTotal(MoneyUtil.yuan2fen(product.getUnitPrice()));
         payDetailBO.setDescription("数字藏品-" + dto.getNftId());
         return payDetailBO;
     }
@@ -115,4 +119,12 @@ public class PayServiceImpl implements IPayService {
         tradeMapper.insert(tradeInfo);
     }
 
+    public static void main(String[] args) {
+//        DecimalFormat df = new DecimalFormat("#.00");
+//        price = Double.valueOf(df.format(price));
+//        int money = (int)(price * 100);
+//        return money;
+
+        System.out.println(MoneyUtil.yuan2fen(new BigDecimal("0.01")));
+    }
 }

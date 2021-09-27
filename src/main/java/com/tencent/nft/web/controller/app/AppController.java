@@ -78,13 +78,13 @@ public class AppController {
      * @return
      */
     @RequestMapping(value = "/pay", method = RequestMethod.POST)
-    public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO){
+    public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO) throws Exception {
         System.out.println(payRequestDTO.toString());
-        try {
+//        try {
             PrepayBO prepayBO = payService.prePay(payRequestDTO);
             return ResponseUtil.success(prepayBO);
-        }catch (Exception e){
-            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
-        }
+//        }catch (Exception e){
+//            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+//        }
     }
 }
