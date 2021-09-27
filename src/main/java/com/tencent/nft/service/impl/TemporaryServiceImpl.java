@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 
+/**
+ * @author: yunj
+ * @date: 2021/9/26
+ * @description:
+ */
 @Service
 public class TemporaryServiceImpl implements TemporaryService {
 

@@ -9,6 +9,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
+
+/**
+ * @author: yunj
+ * @date: 2021/9/26
+ * @description:
+ */
 @RestController
 @CrossOrigin
 public class TemporaryController {

@@ -4,7 +4,7 @@ package com.tencent.nft.entity.admin.pojo;
 import lombok.Data;
 import lombok.experimental.Accessors;
 /**
- * @author: yun
+ * @author: yunj
  * @date: 2021/9/26
  * @description:
  */

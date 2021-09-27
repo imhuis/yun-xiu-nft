@@ -9,6 +9,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 
+
+/**
+ * @author: yunj
+ * @date: 2021/9/26
+ * @description:
+ */
 @Data
 @Accessors(chain = true)
 public class FeedBack implements Serializable {

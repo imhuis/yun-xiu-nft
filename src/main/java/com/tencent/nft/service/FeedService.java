@@ -4,6 +4,12 @@ import com.tencent.nft.common.base.FeedBack;
 import java.text.ParseException;
 import java.util.List;
 
+
+/**
+ * @author: yunj
+ * @date: 2021/9/26
+ * @description:
+ */
 public interface FeedService {
     int insert(FeedBack feedBack);
 
