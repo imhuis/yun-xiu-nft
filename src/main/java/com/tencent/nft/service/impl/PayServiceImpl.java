@@ -1,9 +1,12 @@
 package com.tencent.nft.service.impl;
 
 import cn.hutool.core.util.RandomUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tencent.nft.common.util.MoneyUtil;
-import com.tencent.nft.common.util.SignUtil;
 import com.tencent.nft.common.util.UUIDUtil;
+import com.tencent.nft.common.util.WxPayUtil;
 import com.tencent.nft.core.config.WxGroupConfig;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.pay.PayRequestDTO;
@@ -22,12 +25,12 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.security.PrivateKey;
-import java.text.DecimalFormat;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author: imhuis
@@ -48,6 +51,9 @@ public class PayServiceImpl implements IPayService {
 
     @Autowired
     private WxGroupConfig wxGroupConfig;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public PrepayBO prePay(PayRequestDTO dto) throws Exception {
@@ -76,7 +82,7 @@ public class PayServiceImpl implements IPayService {
         ClassPathResource classPathResource = new ClassPathResource("pay/apiclient_key.pem");
         PrivateKey merchantPrivateKey = PemUtil.loadPrivateKey(classPathResource.getInputStream());
 
-        String sign = SignUtil.getPaySign(result, merchantPrivateKey);
+        String sign = WxPayUtil.getPaySign(result, merchantPrivateKey);
 
         // 小程序调起支付API
         PrepayBO prepayBO = new PrepayBO();
@@ -102,7 +108,48 @@ public class PayServiceImpl implements IPayService {
     }
 
     @Override
-    public void wxNotify() {
+    public void notifyApp(String resJson) {
+        // 读取json树
+        JsonNode jsonNode = null;
+        try {
+            jsonNode = objectMapper.readTree(resJson);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        String eventType = jsonNode.get("event_type").asText();
+        /**
+         * {
+         *     "id": "EV-2018022511223320873",
+         *     "create_time": "2015-05-20T13:29:35+08:00",
+         *     "resource_type": "encrypt-resource",
+         *     "event_type": "TRANSACTION.SUCCESS",
+         *     "summary": "支付成功",
+         *     "resource": {
+         *         "original_type": "transaction",
+         *         "algorithm": "AEAD_AES_256_GCM",
+         *         "ciphertext": "",
+         *         "associated_data": "",
+         *         "nonce": ""
+         *     }
+         * }
+         */
+        if (eventType.equals("TRANSACTION.SUCCESS")){
+            JsonNode childField = jsonNode.get("resource");
+            String nonce = childField.get("nonce").asText();
+            String associatedData = childField.get("associated_data").asText();
+            String ciphertext = childField.get("ciphertext").asText();
+            String resourceJson = WxPayUtil.decryptNotifyV3(associatedData, nonce, ciphertext, wxGroupConfig.getApiKey());
+
+            JsonNode resource = jsonNode.get("resource");
+            TradeInfo tradeInfo = new TradeInfo();
+            tradeInfo.setTradeNo(resource.get("out_trade_no").asText());
+            tradeInfo.setTransactionId(resource.get("transaction_id").asText());
+            tradeInfo.setAmount(resource.at("/amount/total").asInt());
+            tradeInfo.setPayer(resource.get("/payer/openid").asText());
+//            DateTimeFormatter dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+            tradeInfo.setSuccessTime(LocalDateTime.parse(resource.get("success_time").asText()));
+            tradeMapper.insert(tradeInfo);
+        }
 
     }
 
@@ -120,11 +167,6 @@ public class PayServiceImpl implements IPayService {
     }
 
     public static void main(String[] args) {
-//        DecimalFormat df = new DecimalFormat("#.00");
-//        price = Double.valueOf(df.format(price));
-//        int money = (int)(price * 100);
-//        return money;
-
         System.out.println(MoneyUtil.yuan2fen(new BigDecimal("0.01")));
     }
 }

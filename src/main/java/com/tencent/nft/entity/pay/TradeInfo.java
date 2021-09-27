@@ -1,5 +1,6 @@
 package com.tencent.nft.entity.pay;
 
+import com.tencent.nft.common.enums.pay.TradeState;
 import com.tencent.nft.entity.BaseEntity;
 
 import java.io.Serializable;
@@ -14,7 +15,7 @@ public class TradeInfo extends BaseEntity implements Serializable {
 
     private String tradeNo;
     // 默认不生效
-    private Integer tradeStatus = 0;
+    private TradeState tradeStatus;
     private String transactionId;
     private String description;
     private int amount;
@@ -29,11 +30,11 @@ public class TradeInfo extends BaseEntity implements Serializable {
         this.tradeNo = tradeNo;
     }
 
-    public Integer getTradeStatus() {
+    public TradeState getTradeStatus() {
         return tradeStatus;
     }
 
-    public void setTradeStatus(Integer tradeStatus) {
+    public void setTradeStatus(TradeState tradeStatus) {
         this.tradeStatus = tradeStatus;
     }
 

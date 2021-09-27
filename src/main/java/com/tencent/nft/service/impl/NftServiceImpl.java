@@ -1,7 +1,6 @@
 package com.tencent.nft.service.impl;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import com.google.common.collect.Lists;
 import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.exception.RecordNotFoundException;
 import com.tencent.nft.core.security.SecurityUtils;
@@ -17,9 +16,7 @@ import com.tencent.nft.service.INftService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

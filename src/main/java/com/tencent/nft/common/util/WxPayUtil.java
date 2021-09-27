@@ -16,9 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.util.Base64;
 
-public class SignUtil {
+public class WxPayUtil {
 
-    static final Logger logger = LoggerFactory.getLogger(SignUtil.class);
+    static final Logger logger = LoggerFactory.getLogger(WxPayUtil.class);
 
     /**
      * 微信证书别名

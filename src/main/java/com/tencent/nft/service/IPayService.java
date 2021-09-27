@@ -12,5 +12,5 @@ public interface IPayService {
 
     PrepayBO prePay(PayRequestDTO dto) throws Exception;
 
-    void wxNotify();
+    void notifyApp(String resJson);
 }
