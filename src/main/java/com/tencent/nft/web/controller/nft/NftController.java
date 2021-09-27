@@ -59,7 +59,12 @@ public class NftController {
      */
     @RequestMapping({"/app/public/market/detail/{nft_id}"})
     public ResponseResult productDetail(@PathVariable(value = "nft_id") String nftId){
-        ProductDetailVO vo = nftService.getProductDetail(nftId);
+        ProductDetailVO vo = null;
+        try {
+            vo = nftService.getProductDetail(nftId);
+        }catch (RecordNotFoundException e){
+            ResponseUtil.fail(ResponseCodeEnum.NFT_4001);
+        }
         return ResponseUtil.success(vo);
     }
 

@@ -2,6 +2,7 @@ package com.tencent.nft.service;
 
 import com.tencent.nft.entity.app.vo.CollectionVO;
 import com.tencent.nft.entity.nft.NFTInfo;
+import com.tencent.nft.entity.nft.vo.MyLibraryVO;
 import com.tencent.nft.entity.pay.PayRequestDTO;
 import com.tencent.nft.entity.pay.bo.PrepayBO;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public interface IAppService {
 
-    List<NFTInfo> myLibrary();
+    List<MyLibraryVO> myLibrary();
 
     CollectionVO collectionDetails(String subId);
 

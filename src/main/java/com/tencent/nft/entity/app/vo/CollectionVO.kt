@@ -8,10 +8,14 @@ import java.io.Serializable
  * @description:
  */
 class CollectionVO : Serializable {
+
     var nftName: String? = null
     var nftFile: String? = null
+    var fileType: Int? = null
     var issuer: String? = null
     var brandOwner: String? = null
+    var coverPic: String? = null
     var price = 0.0
     var blockChainAddress: String? = null
+    var owner: String? = null
 }

@@ -101,7 +101,10 @@ public class NftServiceImpl implements INftService {
     @Override
     public ProductDetailVO getProductDetail(String nftId) {
 
-        NFTInfo nftInfo = nftMapper.selectNftInfoByNftId(nftId).get();
+//        Optional<NFTInfo> nftInfo = nftMapper.selectNftInfoByNftId(nftId);
+        NFTInfo nftInfo = Optional.ofNullable(nftMapper.selectNftInfoByNftId(nftId))
+                .get()
+                .orElseThrow(RecordNotFoundException::new);
 
         ProductDetailVO productDetailVO = new ProductDetailVO();
         productDetailVO.setCoverPicture(nftInfo.getCoverPicture());

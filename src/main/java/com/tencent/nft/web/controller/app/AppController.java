@@ -8,6 +8,7 @@ import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.app.vo.CollectionVO;
 import com.tencent.nft.entity.nft.NFTInfo;
+import com.tencent.nft.entity.nft.vo.MyLibraryVO;
 import com.tencent.nft.entity.pay.PayRequestDTO;
 import com.tencent.nft.entity.pay.bo.PrepayBO;
 import com.tencent.nft.entity.security.WxUser;
@@ -54,7 +55,7 @@ public class AppController {
      */
     @RequestMapping("/me/library")
     public ResponseResult myLibrary(){
-        List<NFTInfo> collectionVOList = appService.myLibrary();
+        List<MyLibraryVO> collectionVOList = appService.myLibrary();
         return ResponseUtil.success(collectionVOList);
     }
 
