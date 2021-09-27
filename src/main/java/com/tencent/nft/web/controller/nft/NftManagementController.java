@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -46,9 +47,8 @@ public class NftManagementController {
                                   @RequestParam(value = "nft_status",required = false) Integer nftStatus,
                                   @RequestBody(required = false) NftListQueryDTO nftListQueryDTO){
 
-        if (nftListQueryDTO == null){
-            nftListQueryDTO = new NftListQueryDTO();
-        }
+        nftListQueryDTO = Optional.ofNullable(nftListQueryDTO).orElse(new NftListQueryDTO());
+
         PageBean nftListVOList = nftManagementService.listNFT(page, size, nftStatus, nftListQueryDTO);
         return ResponseUtil.success(nftListVOList);
     }
@@ -86,11 +86,15 @@ public class NftManagementController {
                                      @PathVariable("superNFT") String superNFTId,
                                      @RequestBody(required = false) SubNFTQueryDTO subNFTQueryDTO){
 
-        if (subNFTQueryDTO == null){
-            subNFTQueryDTO = new SubNFTQueryDTO();
+        subNFTQueryDTO = Optional.ofNullable(subNFTQueryDTO).orElse(new SubNFTQueryDTO());
+
+        try {
+            PageBean nftListVOList = nftManagementService.listSubNFT(page, size, superNFTId, subNFTQueryDTO);
+            return ResponseUtil.success(nftListVOList);
+        }catch (RecordNotFoundException e){
+            return ResponseUtil.fail(ResponseCodeEnum.NFT_4001);
         }
-        PageBean nftListVOList = nftManagementService.listSubNFT(page, size, superNFTId, subNFTQueryDTO);
-        return ResponseUtil.success(nftListVOList);
+
     }
 
     /**
@@ -101,10 +105,9 @@ public class NftManagementController {
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public ResponseResult createNFT(@RequestBody @Validated NftCreateDTO dto, BindingResult bindingResult){
-        // 必要的参数检查
-        //        checkParam();
+        // 参数校验
         if (bindingResult.hasFieldErrors()){
-            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+            return ResponseUtil.fail(ResponseCodeEnum.CC_1004, bindingResult.getFieldErrors().get(0));
         }
 
         if (dto.getDetailPicture().size() > 6){
@@ -136,7 +139,7 @@ public class NftManagementController {
     @RequestMapping(value = "/pre_sale", method = RequestMethod.POST)
     public ResponseResult setSale(@RequestBody @Validated PreSaleDTO n, BindingResult result){
         if (result.hasFieldErrors()){
-            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+            return ResponseUtil.fail(ResponseCodeEnum.CC_1004, result.getFieldErrors().get(0));
         }
 //        if (!n.getReserveEndTime().isAfter(n.getReserveStartTime())){
 //            return ResponseUtil.fail(ResponseCodeEnum.YS_5001);

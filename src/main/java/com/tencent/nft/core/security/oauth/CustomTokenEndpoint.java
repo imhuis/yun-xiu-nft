@@ -4,6 +4,7 @@ import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -28,7 +29,7 @@ public class CustomTokenEndpoint {
 
     @RequestMapping(value = "/app/oauth/token", method= RequestMethod.GET)
     public ResponseResult<OAuth2AccessToken> getAccessToken() {
-        return ResponseUtil.fail(ResponseCodeEnum.METHOD_NOT_ALLOWED);
+        return ResponseUtil.build(HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @RequestMapping(value = "/app/oauth/token", method= RequestMethod.POST)
