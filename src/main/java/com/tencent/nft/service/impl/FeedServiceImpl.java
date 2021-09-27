@@ -43,7 +43,7 @@ public class FeedServiceImpl implements FeedService {
     public List<FeedBack> getByDate(String date) {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDateTime = LocalDate.parse(date, df);
-        return feedbackMapper.getByDate(localDateTime);
+        return feedbackMapper.getByDate(localDateTime.atStartOfDay(), localDateTime.atStartOfDay().plusDays(1));
     }
 
 

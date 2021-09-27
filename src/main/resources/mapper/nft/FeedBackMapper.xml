@@ -17,7 +17,7 @@
     </select>
     
     <select id="getByDate" resultType="com.tencent.nft.common.base.FeedBack">
-        select * FROM t_feedback where date = #{A}
+        select * FROM t_feedback where date between #{param1} and #{param2}
     </select>
 
     <delete id="deleteById" parameterType="com.tencent.nft.common.base.FeedBack">
