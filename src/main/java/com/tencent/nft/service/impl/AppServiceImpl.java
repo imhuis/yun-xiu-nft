@@ -121,7 +121,7 @@ public class AppServiceImpl implements IAppService {
         String prepayId = payHandler.handler(payDetailBO);
 
         // 异步插入数据表
-        createOrder(payDetailBO);
+//        createOrder(payDetailBO);
 
         // 处理下单结果内容，生成前端调起微信支付的sign
         String timestamp = String.valueOf(Instant.now().getEpochSecond());
@@ -133,8 +133,9 @@ public class AppServiceImpl implements IAppService {
         wxPayMap.put("timeStamp", timestamp);
         wxPayMap.put("nonceStr", nonceStr);
         wxPayMap.put("package", packages);
-        wxPayMap.put("signType", "MD5");
+        wxPayMap.put("signType", "RSA");
         String sign = WXPayUtil.generateSignature(wxPayMap, wxGroupConfig.getWxPayKey());
+        System.out.println(sign);
 
 
         // 小程序调起支付API
@@ -144,7 +145,7 @@ public class AppServiceImpl implements IAppService {
         prepayBO.setNonceStr(nonceStr);
         prepayBO.setPrepayId(prepayId);
         prepayBO.setPackageStr(packages);
-        prepayBO.setSignType("MD5");
+        prepayBO.setSignType("RSA");
         prepayBO.setPaySign(sign);
         return prepayBO;
     }

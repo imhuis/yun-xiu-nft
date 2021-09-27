@@ -11,7 +11,7 @@ import java.time.LocalDateTime
  */
 class SubNFTListVO : SubNFT(), Serializable {
 
-    var unitPrice: Int? = null
+    var unitPrice: Double? = null
 
     var reserveStartTime: LocalDateTime? = null
 

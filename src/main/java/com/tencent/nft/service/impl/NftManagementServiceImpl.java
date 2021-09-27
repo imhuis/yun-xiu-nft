@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.tencent.nft.common.base.PageBean;
 import com.tencent.nft.common.enums.NFTSaleStatusEnum;
 import com.tencent.nft.common.enums.NFTStatusEnum;
+import com.tencent.nft.common.enums.NFTTypeEnum;
 import com.tencent.nft.common.exception.RecordNotFoundException;
 import com.tencent.nft.common.util.BusinessIdGenerate;
 import com.tencent.nft.entity.nft.NFTInfo;
@@ -125,7 +126,19 @@ public class NftManagementServiceImpl implements INftManagementService {
         if (subNFTQueryDTO == null){
             subNFTQueryDTO = new SubNFTQueryDTO();
         }
-        SuperNFT superNFTBaseInfo = nftMapper.selectSuperNFTByNftId(parentNftId).get();
+        // 找不到父nft
+        Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(parentNftId);
+        if (superNFTOptional.isEmpty()){
+            throw new RecordNotFoundException();
+        }
+        SuperNFT superNFT = superNFTOptional.get();
+        String nftId = superNFT.getNftId();
+        String nftName = superNFT.getNftName();
+        NFTTypeEnum fileType = superNFT.getNftType();
+        String issuer = superNFT.getIssuer();
+        String brandOwner = superNFT.getBrandOwner();
+        NFTStatusEnum status = superNFT.getNftStatus();
+
 
         PageHelper.startPage(page, size);
         List<SubNFT> subNFTList = nftMapper.selectSubNftList(parentNftId, subNFTQueryDTO);
@@ -134,10 +147,17 @@ public class NftManagementServiceImpl implements INftManagementService {
         subNFTList.stream().forEach(subNFT -> {
             SubNFTListVO tmp = new SubNFTListVO();
             BeanUtils.copyProperties(subNFT, tmp);
-            tmp.setNftName(superNFTBaseInfo.getNftName());
-            tmp.setNftType(superNFTBaseInfo.getNftType());
-            tmp.setIssuer(superNFTBaseInfo.getIssuer());
-            tmp.setUnitPrice(20);
+            tmp.setNftName(nftName);
+            tmp.setNftType(fileType);
+            tmp.setIssuer(issuer);
+            tmp.setBrandOwner(brandOwner);
+            if (status != NFTStatusEnum.WAITING){
+                NFTProduct productInfo = productMapper.selectByNftId(nftId).get();
+                tmp.setReserveStartTime(productInfo.getReserveStartTime());
+                tmp.setSellStartTime(productInfo.getSellStartTime());
+                tmp.setUnitPrice(productInfo.getUnitPrice().doubleValue());
+            }
+
             subNFTListVOList.add(tmp);
         });
 
