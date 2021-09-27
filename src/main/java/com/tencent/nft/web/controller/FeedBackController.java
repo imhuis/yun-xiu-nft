@@ -30,7 +30,7 @@ public class FeedBackController {
      * 接收前端客户的反馈信息
      * 插入数据库
      * */
-    @PostMapping("/feedback")
+    @PostMapping("/app/feedback")
     public SysResult insert(@RequestBody(required=false) FeedBack feedBack){
         feedService.insert(feedBack);
         return SysResult.success("null");
@@ -41,9 +41,8 @@ public class FeedBackController {
      * 并且进行分页
      * 每页数据15条
      * */
-    @PostMapping("/getAllFeedBack")
-    public SysResult getAllFeedBack
-    (Model model, @RequestParam(value = "pageNum",required = false, defaultValue = "1") Integer pageNum,
+    @PostMapping("/admin/getAllFeedBack")
+    public SysResult getAllFeedBack(Model model, @RequestParam(value = "pageNum",required = false, defaultValue = "1") Integer pageNum,
      @RequestParam(value = "pageSize",required = false, defaultValue = "20") Integer pagesize,
      @RequestParam(value = "date", required = false)  String date) throws ParseException {
         PageHelper.startPage(pageNum,pagesize);
@@ -62,7 +61,7 @@ public class FeedBackController {
     /**
      * 根据日期进行查询
      * */
-    @GetMapping("/getByDate/{date}")
+    @GetMapping("/admin/getByDate/{date}")
     public SysResult getByDate(@PathVariable String date){
         List<FeedBack> byDate = feedService.getByDate(date);
         return SysResult.success(byDate);
@@ -80,7 +79,7 @@ public class FeedBackController {
     /**
      * 根据id查询
      * */
-    @GetMapping("/getById/{id}")
+    @GetMapping("/admin/getById/{id}")
     public SysResult getById(@PathVariable Integer id){
         feedService.getById(id);
         return SysResult.success(feedService.getById(id));
