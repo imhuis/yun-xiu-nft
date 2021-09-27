@@ -25,4 +25,9 @@
             #{createTime}, #{updateTime}
         </trim>
     </insert>
+
+    <select id="select" resultType="com.tencent.nft.entity.pay.TradeInfo">
+        SELECT COUNT(*),SUM(amount) FROM t_trade WHERE TO_DAYS(NOW()) - TO_DAYS(success_time) <= 7
+    </select>
+
 </mapper>

@@ -10,7 +10,7 @@ import java.time.LocalDateTime
  * @date: 2020/1/28
  * @description: 微信用户表 s_wx_user
  */
-@JsonIgnoreProperties(value = ["create_time", "update_time"])
+//@JsonIgnoreProperties(value = ["create_time", "update_time"])
 class WxUser() : BaseEntity(), Serializable {
 
     // 用户ID，对应用户表 userId
