@@ -74,10 +74,13 @@ public class NftManagementServiceImpl implements INftManagementService {
         nftInfo.setIssuer(DEFAULT_ISSUER);
         nftInfo.setIntroduce(dto.getIntroduce());
         nftInfo.setNftCreateTime(LocalDateTime.now());
+
+        nftInfo.setNftId(BusinessIdGenerate.generateSuperNftId());
+
         nftInfo.setCoverPicture(dto.getCoverPicture());
         nftInfo.setDetailPicture(dto.getDetailPicture().stream().collect(Collectors.joining(",")));
 
-        nftInfo.setNftId(BusinessIdGenerate.generateSuperNftId());
+        // 事务执行放在一起
         nftMapper.insertSuperNFT(nftInfo);
         nftMapper.insertNftInfo(nftInfo);
 
