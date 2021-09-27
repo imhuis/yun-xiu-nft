@@ -53,7 +53,7 @@ public class NftController {
 
 
     /**
-     * 商品详情
+     * 商品详情（封面图、海报）
      * @param nftId
      * @return
      */
@@ -75,7 +75,7 @@ public class NftController {
      */
     @RequestMapping("/app/public/market/{nft_id}/reservation_amount")
     public ResponseResult getReservationAmount(@PathVariable(value = "nft_id") String nftId){
-        long amount = nftService.getReservationAmount(nftId);
+        long amount = nftService.getProductReservations(nftId);
         return ResponseUtil.success(amount);
     }
 

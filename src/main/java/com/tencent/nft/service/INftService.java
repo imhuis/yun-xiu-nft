@@ -29,7 +29,7 @@ public interface INftService {
      * 获取预约数量
      * @param nftId
      */
-    long getReservationAmount(String nftId);
+    long getProductReservations(String nftId);
 
     Boolean reserveProduct(String nftId);
 }

@@ -295,7 +295,8 @@ public class NftManagementServiceImpl implements INftManagementService {
 
         for (int i = 0; i < number; i++){
             SubNFT subNFT = new SubNFT();
-            subNFT.setNftId(nftId+String.format("%04d", i));
+            int v = atomicInteger.getAndIncrement();
+            subNFT.setNftId(nftId+String.format("%04d", v));
             subNFT.setSuperNFTId(nftId);
             subNFT.setSaleStatus(NFTSaleStatusEnum.NotSold);
             subNFT.setNftCreateTime(LocalDateTime.now());

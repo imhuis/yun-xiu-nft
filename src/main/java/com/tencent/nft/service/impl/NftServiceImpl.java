@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 public class NftServiceImpl implements INftService {
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     @Resource
     private NftMapper nftMapper;
@@ -62,31 +63,34 @@ public class NftServiceImpl implements INftService {
     }
 
     @Override
-    public ProductVO getProductInfo(String nftId) {
+    public ProductVO getProductInfo(String productId) {
         ProductVO productVO = new ProductVO();
 
-        Optional<SuperNFT> superNFTInfo = nftMapper.selectSuperNFTByNftId(nftId);
+        Optional<SuperNFT> superNFTInfo = nftMapper.selectSuperNFTByNftId(productId);
         if (superNFTInfo.isEmpty()){
             throw new RecordNotFoundException("暂无这个商品信息");
         }
         BeanUtils.copyProperties(superNFTInfo.get(), productVO);
         // 设置商品状态
-        NFTStatusEnum productStatus = superNFTInfo.get().getNftStatus();
-        productVO.setStatus(productStatus.getCode());
+        SuperNFT superNFT = superNFTInfo.get();
+        NFTStatusEnum productStatus = superNFT.getNftStatus();
+        productVO.setStatus(superNFT.getNftStatus().getCode());
+        productVO.setNftType(superNFT.getNftType().getCode());
 
 
         if (productStatus == NFTStatusEnum.PROCESSING || productStatus == NFTStatusEnum.RESERVEING){
-            Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(nftId);
+            Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(productId);
             NFTProduct nftProduct = nftProductOptional.get();
             productVO.setPrice(nftProduct.getUnitPrice().doubleValue());
             productVO.setAmount(nftProduct.getCirculation());
         }
 
+
+        BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
         if (SecurityUtils.getCurrentUsername().isPresent()){
-            StringBuilder sb = new StringBuilder("yy:");
-            sb.append(nftId.toLowerCase());
-            // 判断是否预约过
-            if (redisTemplate.opsForSet().isMember(sb.toString(), SecurityUtils.getCurrentUsername().get()) == true){
+            // 在数组中表示预约过
+            String phone = SecurityUtils.getCurrentUsername().get();
+            if (bso.isMember(phone)){
                 productVO.setPersonStatus(1);
             }
             // 判断是否购买过
@@ -113,31 +117,35 @@ public class NftServiceImpl implements INftService {
     }
 
     @Override
-    public long getReservationAmount(String nftId) {
-        StringBuilder sb = new StringBuilder("yy:");
-        sb.append(nftId.toLowerCase());
-        String key = sb.toString();
-        BoundSetOperations<String,String> bso = redisTemplate.boundSetOps(key);
+    public long getProductReservations(String productId) {
+        BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
         return bso.size();
     }
 
     @Override
-    public Boolean reserveProduct(String nftId) {
+    public Boolean reserveProduct(String productId) {
         // 查询商品是否存在
-        StringBuilder sb = new StringBuilder("yy:");
-        sb.append(nftId.toLowerCase());
-        String key = sb.toString();
-        BoundSetOperations<String,String> bso = redisTemplate.boundSetOps(key);
+        BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
 
         String phone = SecurityUtils.getCurrentUsername().get();
-
         if (bso.isMember(phone)){
-            // 存在，不需要预约
+            // 存在，重复预约
             return false;
         }else {
             bso.add(phone);
             return true;
         }
+    }
+
+    /**
+     * 获取预约键的key
+     * @param productId
+     * @return
+     */
+    protected String getReserveChar(String productId){
+        StringBuilder sb = new StringBuilder("yy:");
+        sb.append(productId.trim().toLowerCase());
+        return sb.toString();
     }
 
 }
