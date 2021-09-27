@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class BusinessIdGenerate {
 
-    public static String generateNftId(){
+    public static String generateSuperNftId(){
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         StringBuilder sb = new StringBuilder("YX");
         sb.append(dtf.format(LocalDateTime.now()));

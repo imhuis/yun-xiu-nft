@@ -22,10 +22,11 @@ public class WxGroupConfig {
     private String wxPayKey;
     // 微信支付 商户id
     private String wxPayMchId;
+    private String serialNumber;
     // 微信支付 支付回调地址
     private String callBack;
-    // 微信支付 密钥
-    private String appSecret;
+    // api v3 key
+    private String apiKey;
 
     public String getAppletAppId() {
         return appletAppId;
@@ -59,6 +60,14 @@ public class WxGroupConfig {
         this.wxPayMchId = wxPayMchId;
     }
 
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
     public String getCallBack() {
         return callBack;
     }
@@ -67,11 +76,11 @@ public class WxGroupConfig {
         this.callBack = callBack;
     }
 
-    public String getAppSecret() {
-        return appSecret;
+    public String getApiKey() {
+        return apiKey;
     }
 
-    public void setAppSecret(String appSecret) {
-        this.appSecret = appSecret;
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
     }
 }

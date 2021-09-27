@@ -110,21 +110,10 @@ public class NftManagementController {
         if (dto.getDetailPicture().size() > 6){
             return ResponseUtil.fail(ResponseCodeEnum.NFT_4003);
         }
-        NFTInfo nftInfo = new NFTInfo();
-        nftInfo.setNftName(dto.getNftName());
-        nftInfo.setNftType(ICommonEnum.getEnum(dto.getNftType(), NFTTypeEnum.class));
-        nftInfo.setNftStatus(NFTStatusEnum.WAITING);
-        nftInfo.setNftFile(dto.getNftFile());
-        nftInfo.setBrandOwner(dto.getIssuer());
-        nftInfo.setIssuer("安凰领御");
-        nftInfo.setIntroduce(dto.getIntroduce());
-        nftInfo.setNftCreateTime(LocalDateTime.now());
-        nftInfo.setCoverPicture(dto.getCoverPicture());
-        nftInfo.setDetailPicture(dto.getDetailPicture().stream().collect(Collectors.joining(",")));
 
         try {
-            nftInfo = nftManagementService.createNFT(nftInfo);
-            return ResponseUtil.success(nftInfo);
+            NFTInfo nftInfoResult = nftManagementService.createNFT(dto);
+            return ResponseUtil.success(nftInfoResult);
         }catch (Exception e){
             return ResponseUtil.fail(ResponseCodeEnum.NFT_4002);
         }

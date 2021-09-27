@@ -19,5 +19,4 @@ public interface IAppService {
 
     CollectionVO collectionDetails(String subId);
 
-    PrepayBO prePay(PayRequestDTO dto) throws Exception;
 }

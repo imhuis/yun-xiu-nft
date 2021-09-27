@@ -2,8 +2,10 @@ package com.tencent.nft.common.util;
 
 import com.tencent.nft.common.constant.WXPayConstants;
 import com.tencent.nft.common.enums.pay.SignType;
+import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -18,7 +20,9 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -218,6 +222,33 @@ public class WXPayUtil {
         }
     }
 
+    /**
+     * 生成签名. 注意，若含有sign_type字段，必须和signType参数保持一致。
+     *
+     * @param data 待签名数据
+     * @param key API密钥
+     * @param signType 签名方式
+     * @return 签名
+     */
+    public static String generateSignature2(final Map<String, String> data, String key, SignType signType) throws Exception {
+        ClassPathResource classPathResource = new ClassPathResource("pay/apiclient_key.pem");
+//        PrivateKey merchantPrivateKey = PemUtil.loadPrivateKey(new FileInputStream("D:\\data\\pay\\apiclient_key.pem"));
+        PrivateKey merchantPrivateKey = PemUtil.loadPrivateKey(classPathResource.getInputStream());
+        StringBuilder sb = new StringBuilder();
+        sb.append(data.get("appId")+"\n");
+        sb.append(data.get("timeStamp")+"\n");
+        sb.append(data.get("nonceStr")+"\n");
+        sb.append(data.get("package")+"\n");
+
+        String result = sb.toString();
+        if (SignType.MD5.equals(signType)) {
+            return Base64.getEncoder().encodeToString(MD5(result).toUpperCase().getBytes(StandardCharsets.UTF_8));
+        } else if (SignType.HMACSHA256.equals(signType)) {
+            return Base64.getEncoder().encodeToString(HMACSHA256(result, merchantPrivateKey.getEncoded().toString()).getBytes(StandardCharsets.UTF_8));
+        } else {
+            throw new Exception(String.format("Invalid sign_type: %s", signType));
+        }
+    }
 
     /**
      * 获取随机字符串 Nonce Str

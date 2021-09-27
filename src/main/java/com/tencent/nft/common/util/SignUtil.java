@@ -1,118 +1,121 @@
 package com.tencent.nft.common.util;
 
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.asymmetric.Sign;
-import cn.hutool.crypto.asymmetric.SignAlgorithm;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
-import org.apache.commons.collections.map.LinkedMap;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
-import java.io.ByteArrayInputStream;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.PrivateKey;
-import java.time.Instant;
-import java.util.*;
+import java.security.*;
+import java.util.Base64;
 
 public class SignUtil {
 
-    public static String createSignUrl(String characterEncoding, SortedMap<Object,Object> parameters, String key){
-        StringBuffer sb = new StringBuffer();
-        StringBuffer sbkey = new StringBuffer();
-        Set es = parameters.entrySet();  //所有参与传参的参数按照accsii排序（升序）
-        Iterator it = es.iterator();
-        while(it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String k = (String)entry.getKey();
-            Object v = entry.getValue();
-            //空值不传递，不参与签名组串
-            if(null != v && !"".equals(v)) {
-                sb.append(k + "=" + v + "&");
-                sbkey.append(k + "=" + v + "&");
-            }
-        }
-        //System.out.println("字符串:"+sb.toString());
-        sbkey.deleteCharAt(sb.length() - 1);
-        sbkey=sbkey.append(key);
-        System.out.println("字符串:"+ sbkey);
-        //MD5加密,结果转换为大写字符
-        String sign = MD5Util.MD5Encode(sbkey.toString(), characterEncoding).toUpperCase();
-        System.out.println("MD5加密值:"+sign);
-        return sb +"sign="+sign;
-    }
+    static final Logger logger = LoggerFactory.getLogger(SignUtil.class);
 
     /**
-     *
-     * @param characterEncoding 指定字符集UTF-8
-     * @param parameters 参与签名的参数
-     * @param key MD5签名KEY
-     * @return
+     * 微信证书别名
      */
-    public static String createSign(String characterEncoding, SortedMap<String,String> parameters, String key){
-        StringBuffer sb = new StringBuffer();
-        StringBuffer sbkey = new StringBuffer();
-        Set es = parameters.entrySet();  //所有参与传参的参数按照accsii排序（升序）
-        Iterator it = es.iterator();
-        while(it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String k = (String)entry.getKey();
-            Object v = entry.getValue();
-            //空值不传递，不参与签名组串
-            if(null != v && !"".equals(v)) {
-                sb.append(k + "=" + v + "&");
-                sbkey.append(k + "=" + v + "&");
-            }
+    private static final String KEY_ALIAS = "Tenpay Certificate";
+    /**
+     * 微信数据解密方式
+     */
+    private static final String ALGORITHM = "AES";
+    /**
+     * 微信数据解密方式V2
+     */
+    private static final String ALGORITHM_MODE_PADDING_V2 = "AES/ECB/PKCS7Padding";
+    /**
+     * 微信数据解密方式V3
+     */
+    private static final String ALGORITHM_MODE_PADDING_V3 = "AES/GCM/NoPadding";
+    /**
+     * APIV3Key长度
+     */
+    private static final int APIV3_KEY_LENGTH_BYTE = 32;
+    /**
+     * 身份验证标记长度
+     */
+    private static final int TAG_LENGTH_BIT = 128;
+
+
+    /**
+     * 获取商户私钥
+     *
+     * @param keyPath 商户私钥证书路径
+     * @return 商户私钥
+     * @throws Exception 解析 key 异常
+     */
+    public static String getPrivateKey(String keyPath) throws Exception {
+        ClassPathResource classPathResource = new ClassPathResource("pay/apiclient_key.pem");
+        PrivateKey merchantPrivateKey = PemUtil.loadPrivateKey(
+                new FileInputStream(classPathResource.getFile()));
+
+        return "";
+    }
+
+
+    public static String getPaySign(String msg, PrivateKey privateKey){
+        try {
+            Signature sign = Signature.getInstance("SHA256withRSA");
+            sign.initSign(privateKey);
+            sign.update(msg.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(sign.sign());
+        }catch (Exception e){
+            throw new RuntimeException();
         }
-        //System.out.println("字符串:"+sb.toString());
-        sbkey.deleteCharAt(sb.length() - 1);
-        System.out.println("字符串:" + sbkey);
-        //MD5加密,结果转换为大写字符
-        String sign = MD5Util.MD5Encode(sbkey.toString(), characterEncoding).toUpperCase();
-        return sign;
+
+//        catch (NoSuchAlgorithmException e) {
+//            logger.error("paySign", "微信支付 - 支付签名失败", "当前Java环境不支持SHA256withRSA");
+//            throw new WechatPayRuntimeException("当前Java环境不支持SHA256withRSA", e);
+//        } catch (SignatureException e) {
+//            logger.error("paySign", "微信支付 - 支付签名失败", "签名计算失败");
+//            throw new WechatPayRuntimeException("签名计算失败", e);
+//        } catch (InvalidKeyException e) {
+//            logger.error("paySign", "微信支付 - 支付签名失败", "无效的私钥");
+//            throw new WechatPayRuntimeException("无效的私钥", e);
+//        } catch (SignatureException e) {
+//            e.printStackTrace();
+//        }
     }
 
-    public static String sign() throws FileNotFoundException {
-        List<String> strings = new LinkedList<>();
-        strings.add("wxb3982d59b8a5e644" + "\n");
-        strings.add(Instant.now().getEpochSecond() + "\n");
-        strings.add(RandomUtil.randomString(32) + "\n");
-        strings.add("prepay_id=wx201410272009395522657a690389285100" + "\n");
-        StringBuilder builder = new StringBuilder();
-        for (String string : strings) {
-            builder.append(string);
+
+    /**
+     * 解密回调数据V3版
+     *
+     * @param associatedData 附加数据
+     * @param nonce          随机字符串
+     * @param ciphertext     数据密文
+     * @param apiV3Key       V3秘钥
+     * @return 解密后的JSON数据
+     */
+    public static String decryptNotifyV3(String associatedData, String nonce, String ciphertext, String apiV3Key) {
+        byte[] nonceBytes = nonce.getBytes(StandardCharsets.UTF_8);
+        byte[] apiV3KeyBytes = apiV3Key.getBytes(StandardCharsets.UTF_8);
+        if (apiV3KeyBytes.length != APIV3_KEY_LENGTH_BYTE) {
+            throw new IllegalArgumentException("无效的ApiV3Key，长度必须为32个字节");
         }
-
-        PrivateKey merchantPrivateKey = PemUtil.loadPrivateKey(new FileInputStream("D:\\data\\pay\\apiclient_key.pem"));
-        Sign sign = SecureUtil.sign(SignAlgorithm.SHA256withRSA);
-
-        sign.setPrivateKey(merchantPrivateKey);
-
-        byte[] signData = sign.sign(builder.toString().getBytes(StandardCharsets.UTF_8));
-
-        return Base64.getEncoder().encodeToString(signData);
+        try {
+            Cipher cipher = Cipher.getInstance(ALGORITHM_MODE_PADDING_V3);
+            SecretKeySpec key = new SecretKeySpec(apiV3KeyBytes, ALGORITHM);
+            GCMParameterSpec spec = new GCMParameterSpec(TAG_LENGTH_BIT, nonceBytes);
+            cipher.init(Cipher.DECRYPT_MODE, key, spec);
+            cipher.updateAAD(associatedData.getBytes());
+            return new String(cipher.doFinal(Base64.getDecoder().decode(ciphertext)), StandardCharsets.UTF_8);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            logger.error("decryptNotifyV3", "微信支付 - 解密V3回调数据失败", e.getMessage());
+            throw new IllegalStateException(e);
+        } catch (InvalidKeyException | InvalidAlgorithmParameterException | BadPaddingException | IllegalBlockSizeException e) {
+            logger.error("decryptNotifyV3", "微信支付 - 解密V3回调数据失败", e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
     }
 
-    public static void main(String[] args) throws IOException {
-
-//        String timestamp = String.valueOf(Instant.now().getEpochSecond());
-//        String noStr = RandomUtil.randomString(32);
-//
-//        SortedMap<String,String> parameters = new TreeMap<>();
-//        parameters.put("appId", "wxb3982d59b8a5e644");
-//        parameters.put("nonceStr", noStr);
-//        parameters.put("timeStamp", timestamp);
-//        parameters.put("package", "prepay_id=wx201410272009395522657a690389285100");
-//
-//        System.out.println("parameters " + parameters);
-//
-//        System.out.println("json " + new ObjectMapper().writeValueAsString(parameters));
-//        String sign = createSign("UTF-8", parameters,"da51a11a-4893-44e9-87dc-29b2890ec770");
-//        System.out.println("签名：" + sign);
-
-        System.out.println(sign());
-
-    }
 }

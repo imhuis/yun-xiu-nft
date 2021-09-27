@@ -20,5 +20,6 @@ public class EncryptPassword {
     @Test
     public void encryptor(){
         System.out.println(stringEncryptor.encrypt("AhBcosDb_1!$"));
+        System.out.println(stringEncryptor.encrypt("password"));
     }
 }

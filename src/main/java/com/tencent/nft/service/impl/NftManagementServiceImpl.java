@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.tencent.nft.common.base.PageBean;
+import com.tencent.nft.common.enums.ICommonEnum;
 import com.tencent.nft.common.enums.NFTSaleStatusEnum;
 import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.enums.NFTTypeEnum;
@@ -13,6 +14,7 @@ import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SubNFT;
 import com.tencent.nft.entity.nft.SuperNFT;
+import com.tencent.nft.entity.nft.dto.NftCreateDTO;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.PreSaleDTO;
 import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
@@ -55,21 +57,35 @@ public class NftManagementServiceImpl implements INftManagementService {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    final String DEFAULT_ISSUER  = "安凰领御";
+
 
     @Transactional
     @Override
-    public NFTInfo createNFT(NFTInfo dto) {
+    public NFTInfo createNFT(NftCreateDTO dto) {
         // 生成nft id
+        NFTInfo nftInfo = new NFTInfo();
+        nftInfo.setNftName(dto.getNftName());
+        nftInfo.setNftType(ICommonEnum.getEnum(dto.getNftType(), NFTTypeEnum.class));
+        // 创建nft 状态只为待发行
+        nftInfo.setNftStatus(NFTStatusEnum.WAITING);
+        nftInfo.setNftFile(dto.getNftFile());
+        nftInfo.setBrandOwner(dto.getBrandOwner());
+        nftInfo.setIssuer(DEFAULT_ISSUER);
+        nftInfo.setIntroduce(dto.getIntroduce());
+        nftInfo.setNftCreateTime(LocalDateTime.now());
+        nftInfo.setCoverPicture(dto.getCoverPicture());
+        nftInfo.setDetailPicture(dto.getDetailPicture().stream().collect(Collectors.joining(",")));
 
-        dto.setNftId(BusinessIdGenerate.generateNftId());
-        nftMapper.insertSuperNFT(dto);
-        nftMapper.insertNftInfo(dto);
+        nftInfo.setNftId(BusinessIdGenerate.generateSuperNftId());
+        nftMapper.insertSuperNFT(nftInfo);
+        nftMapper.insertNftInfo(nftInfo);
 
         // 调用上链接口 返回nft在区块链中的地址
 
 
 
-        return dto;
+        return nftInfo;
     }
 
     @Transactional

@@ -13,10 +13,10 @@ spring:
   session:
     timeout: 7200
   rabbitmq:
-    host: localhost
+    host: 42.192.10.206
     port: 5672
-    username: guest
-    password: guest
+    username: admin
+    password: ENC(uLxFmbGFt2+wmntsuahXKmgA1fR/T9tvWTSYJ4oAcKelJ9ZrouJ/0HaitDS9JzPq)
     virtual-host: /nft
     # 开启发布者发送失败退回
     publisher-returns: true
