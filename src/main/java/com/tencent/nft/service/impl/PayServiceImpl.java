@@ -4,10 +4,12 @@ import cn.hutool.core.util.RandomUtil;
 import com.tencent.nft.common.util.SignUtil;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.core.config.WxGroupConfig;
+import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.pay.PayRequestDTO;
 import com.tencent.nft.entity.pay.TradeInfo;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import com.tencent.nft.entity.pay.bo.PrepayBO;
+import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.mapper.TradeMapper;
 import com.tencent.nft.service.IPayService;
 import com.tencent.nft.service.handler.WechatPayHandler;
@@ -32,6 +34,9 @@ import java.util.Map;
 public class PayServiceImpl implements IPayService {
 
     @Resource
+    private NftProductMapper productMapper;
+
+    @Resource
     private TradeMapper tradeMapper;
 
     @Autowired
@@ -42,43 +47,32 @@ public class PayServiceImpl implements IPayService {
 
     @Override
     public PrepayBO prePay(PayRequestDTO dto) throws Exception {
-//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
-//        String dateStr = dtf.format(LocalDateTime.now());
+        // 首先判断是否有购买资格，已经预约，或者购买买过一次的不能购买第二次
+
         final String tradeNo = UUIDUtil.generateUUID();
-        PayDetailBO payDetailBO = new PayDetailBO();
-        payDetailBO.setTotal(1);
-        payDetailBO.setDescription("数字藏品-" + dto.getNftId());
-        payDetailBO.setTradeNo(tradeNo);
-        payDetailBO.setOpenId(dto.getOpenId());
+        PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
+        System.out.println(payDetailBO.getTotal());
+        // 生成prepay_id
         String prepayId = payHandler.handler(payDetailBO);
 
         // 异步插入数据表
 //        createOrder(payDetailBO);
 
-        // 处理下单结果内容，生成前端调起微信支付的sign
         String timestamp = String.valueOf(Instant.now().getEpochSecond());
         final String nonceStr = RandomUtil.randomString(32);
         final String packages = "prepay_id=" + prepayId;
 
-        Map<String, String> wxPayMap = new HashMap<>();
-        wxPayMap.put("appId", wxGroupConfig.getAppletAppId());
-        wxPayMap.put("timeStamp", timestamp);
-        wxPayMap.put("nonceStr", nonceStr);
-        wxPayMap.put("package", packages);
-
         StringBuilder sb = new StringBuilder();
-        sb.append(wxGroupConfig.getAppletAppId() + "\n");
-        sb.append(timestamp + "\n");
-        sb.append(nonceStr + "\n");
-        sb.append(packages + "\n");
+        sb.append(wxGroupConfig.getAppletAppId() + "\n")
+                .append(timestamp + "\n")
+                .append(nonceStr + "\n")
+                .append(packages + "\n");
+        String result = sb.toString();
 
         ClassPathResource classPathResource = new ClassPathResource("pay/apiclient_key.pem");
         PrivateKey merchantPrivateKey = PemUtil.loadPrivateKey(classPathResource.getInputStream());
 
-        String result = sb.toString();
-//        String sign = WXPayUtil.generateSignature2(wxPayMap, wxGroupConfig.getWxPayKey(), SignType.HMACSHA256);
         String sign = SignUtil.getPaySign(result, merchantPrivateKey);
-        System.out.println("sign" + sign);
 
         // 小程序调起支付API
         PrepayBO prepayBO = new PrepayBO();
@@ -90,6 +84,17 @@ public class PayServiceImpl implements IPayService {
         prepayBO.setSignType("RSA");
         prepayBO.setPaySign(sign);
         return prepayBO;
+    }
+
+    private PayDetailBO createPayDetailBO(String tradeNo, PayRequestDTO dto) {
+        // 查询商品信息
+        NFTProduct product = productMapper.selectByNftId(dto.getNftId()).get();
+        PayDetailBO payDetailBO = new PayDetailBO();
+        payDetailBO.setTradeNo(tradeNo);
+        payDetailBO.setOpenId(dto.getOpenId());
+        payDetailBO.setTotal(product.getUnitPrice().intValue());
+        payDetailBO.setDescription("数字藏品-" + dto.getNftId());
+        return payDetailBO;
     }
 
     @Override

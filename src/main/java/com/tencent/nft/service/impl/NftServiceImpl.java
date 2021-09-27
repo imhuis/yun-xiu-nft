@@ -90,7 +90,7 @@ public class NftServiceImpl implements INftService {
         if (SecurityUtils.getCurrentUsername().isPresent()){
             // 在数组中表示预约过
             String phone = SecurityUtils.getCurrentUsername().get();
-            if (bso.isMember(phone)){
+            if (bso.isMember(phone) == true){
                 productVO.setPersonStatus(1);
             }
             // 判断是否购买过

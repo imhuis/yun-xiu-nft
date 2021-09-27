@@ -79,6 +79,7 @@ public class AppController {
      */
     @RequestMapping(value = "/pay", method = RequestMethod.POST)
     public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO){
+        System.out.println(payRequestDTO.toString());
         try {
             PrepayBO prepayBO = payService.prePay(payRequestDTO);
             return ResponseUtil.success(prepayBO);

@@ -51,7 +51,6 @@ public class WechatPayHandler {
         httpPost.addHeader("Content-type","application/json; charset=utf-8");
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//        ObjectMapper objectMapper = new ObjectMapper();
 
         ObjectNode rootNode = objectMapper.createObjectNode();
         rootNode.put("mchid",wxGroupConfig.getWxPayMchId())

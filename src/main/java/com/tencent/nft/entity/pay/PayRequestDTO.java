@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class PayRequestDTO implements Serializable {
 
     private String nftId;
-    private double price;
+    private Double price;
     // 支付者
     private String openId;
 
@@ -22,11 +22,11 @@ public class PayRequestDTO implements Serializable {
         this.nftId = nftId;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -36,5 +36,14 @@ public class PayRequestDTO implements Serializable {
 
     public void setOpenId(String openId) {
         this.openId = openId;
+    }
+
+    @Override
+    public String toString() {
+        return "PayRequestDTO{" +
+                "nftId='" + nftId + '\'' +
+                ", price=" + price +
+                ", openId='" + openId + '\'' +
+                '}';
     }
 }
