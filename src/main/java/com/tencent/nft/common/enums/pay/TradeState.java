@@ -11,11 +11,11 @@ public enum TradeState implements ICommonEnum {
 
     SUCCESS(1, "支付成功"),
     REFUND(-1, "转入退款"),
-    NOTPAY(-1, "未支付"),
-    CLOSED(-1, "已关闭"),
-    REVOKED(-1, "已撤销"),
-    USERPAYING(-1, "用户支付中"),
-    PAYERROR(-1, "支付失败");
+    NOTPAY(-2, "未支付"),
+    CLOSED(-3, "已关闭"),
+    REVOKED(-4, "已撤销"),
+    USERPAYING(-5, "用户支付中"),
+    PAYERROR(-6, "支付失败");
 
     final int code;
     final String value;

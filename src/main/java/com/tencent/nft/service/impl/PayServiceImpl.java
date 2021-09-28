@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tencent.nft.common.enums.pay.TradeState;
 import com.tencent.nft.common.util.MoneyUtil;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.common.util.WxPayUtil;
@@ -74,8 +75,8 @@ public class PayServiceImpl implements IPayService {
         // 生成prepay_id
         String prepayId = payHandler.handler(payDetailBO);
 
-        // 异步插入数据表
-//        createOrder(payDetailBO);
+        // 生产预订单。插入数据表
+        createOrder(payDetailBO);
 
         String timestamp = String.valueOf(Instant.now().getEpochSecond());
         final String nonceStr = RandomUtil.randomString(32);
@@ -118,6 +119,7 @@ public class PayServiceImpl implements IPayService {
 
     @Override
     public void notifyApp(String resJson) {
+
         /**
          * {
          *     "id": "311fe73f-c397-5e5a-9c8f-9fc94afb387b",
@@ -184,23 +186,29 @@ public class PayServiceImpl implements IPayService {
                 e.printStackTrace();
             }
             logger.info("resource \n {}", tradeDetail.toString());
-            TradeInfo tradeInfo = new TradeInfo();
-            tradeInfo.setTradeNo(tradeDetail.get("out_trade_no").asText());
+
+            // 外部订单号码
+            String outTradeNo = tradeDetail.get("out_trade_no").asText();
+
+            TradeInfo tradeInfo = tradeMapper.selectByTradeNo(outTradeNo);
+            if (tradeInfo.getTradeStatus() == TradeState.SUCCESS){
+                return;
+            }
+            tradeInfo = new TradeInfo();
+            tradeInfo.setTradeNo(outTradeNo);
             tradeInfo.setTransactionId(tradeDetail.get("transaction_id").asText());
             // 设置价格，单位为分
             tradeInfo.setAmount(tradeDetail.at("/amount/total").asInt());
             tradeInfo.setPayerTotal(tradeDetail.at("/amount/payer_total").asInt());
-
+            // 支付人
             tradeInfo.setPayer(tradeDetail.at("/payer/openid").asText());
-//            DateTimeFormatter dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-//            tradeInfo.setSuccessTime(LocalDateTime.parse(resource.get("success_time").asText()));
-            tradeMapper.insert(tradeInfo);
+            tradeInfo.setTradeStatus(TradeState.SUCCESS);
+            tradeMapper.updateByTradeNo(tradeInfo);
+
+//            tradeMapper.insert(tradeInfo);
             // 发送消息
 
-            amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.ON_CHAIN_ROUTE_KEY, "xxxxxx");
-
-            updateUserLibrary();
-
+            amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.ON_CHAIN_ROUTE_KEY, "用户购买成功 >> 执行后续操作");
         }
 
     }
@@ -218,9 +226,10 @@ public class PayServiceImpl implements IPayService {
 
     @Async
     public void createOrder(PayDetailBO payDetailBO){
-        // 默认新增状态为无效订单
+        // 默认新增状态为未付款状态订单
         TradeInfo tradeInfo = new TradeInfo();
         tradeInfo.setTradeNo(payDetailBO.getTradeNo());
+        tradeInfo.setTradeStatus(TradeState.NOTPAY);
         // 分 >> 元
         tradeInfo.setAmount(payDetailBO.getTotal());
         tradeInfo.setDescription(payDetailBO.getDescription());
