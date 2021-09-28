@@ -1,7 +1,5 @@
 package com.tencent.nft.web.controller;
 
-
-
 import com.tencent.nft.entity.nft.vo.SysResult;
 import com.tencent.nft.entity.security.Temporarysave;
 import com.tencent.nft.service.TemporaryService;
@@ -18,6 +16,7 @@ import javax.annotation.Resource;
 @RestController
 @CrossOrigin
 public class TemporaryController {
+
       @Resource
       private TemporaryService temporaryService;
 

@@ -9,7 +9,7 @@ import com.tencent.nft.common.util.MoneyUtil;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.common.util.WxPayUtil;
 import com.tencent.nft.core.config.RabbitmqConfig;
-import com.tencent.nft.core.config.WxGroupConfig;
+import com.tencent.nft.common.properties.WxGroupProperties;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.pay.dto.PayRequestDTO;
 import com.tencent.nft.entity.pay.TradeInfo;
@@ -51,7 +51,7 @@ public class PayServiceImpl implements IPayService {
     private WechatPayHandler payHandler;
 
     @Autowired
-    private WxGroupConfig wxGroupConfig;
+    private WxGroupProperties wxGroupProperties;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -83,7 +83,7 @@ public class PayServiceImpl implements IPayService {
         final String packages = "prepay_id=" + prepayId;
 
         StringBuilder sb = new StringBuilder();
-        sb.append(wxGroupConfig.getAppletAppId() + "\n")
+        sb.append(wxGroupProperties.getAppletAppId() + "\n")
                 .append(timestamp + "\n")
                 .append(nonceStr + "\n")
                 .append(packages + "\n");
@@ -96,7 +96,7 @@ public class PayServiceImpl implements IPayService {
 
         // 小程序调起支付API
         PrepayBO prepayBO = new PrepayBO();
-        prepayBO.setAppId(wxGroupConfig.getAppId());
+        prepayBO.setAppId(wxGroupProperties.getAppId());
         prepayBO.setTimeStamp(timestamp);
         prepayBO.setNonceStr(nonceStr);
         prepayBO.setPrepayId(prepayId);
@@ -177,7 +177,7 @@ public class PayServiceImpl implements IPayService {
             String nonce = childField.get("nonce").asText();
             String associatedData = childField.get("associated_data").asText();
             String ciphertext = childField.get("ciphertext").asText();
-            String resourceJson = WxPayUtil.decryptNotifyV3(associatedData, nonce, ciphertext, wxGroupConfig.getApiKey());
+            String resourceJson = WxPayUtil.decryptNotifyV3(associatedData, nonce, ciphertext, wxGroupProperties.getApiKey());
 
             JsonNode tradeDetail = null;
             try {

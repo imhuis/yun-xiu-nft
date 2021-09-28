@@ -4,12 +4,30 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.google.common.base.Strings;
 import com.rabbitmq.client.Channel;
+import com.tencent.nft.common.properties.ChainProperties;
+import com.tencent.nft.common.util.CodeUtil;
+import com.tencent.nft.entity.chain.GetAccessTokenResult;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URI;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author: imhuis
@@ -17,6 +35,12 @@ import java.io.IOException;
  * @description: 消息队列上链服务
  */
 public class OnChainHandler {
+
+    @Autowired
+    private ChainProperties chainProperties;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     Logger log = LoggerFactory.getLogger(OnChainHandler.class);
 
@@ -62,6 +86,78 @@ public class OnChainHandler {
         String address = MD5.create().digestHex(RandomUtil.randomString(50));
         System.out.println(address);
 
+    }
+
+
+    public String getChainAddress(){
+        // 先从缓存获取token, 如果未登录调用 getAccessToken()
+
+        // 上链操作
+
+        return "";
+    }
+
+    private String onChain(String evidenceType,
+                                  String evidenceId,
+                                  String hashType,
+                                  String evidenceInfo,
+                                  String accessToken) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+
+        long currentTime = System.currentTimeMillis();
+        String noncestr = "0123456789012345678901234567890123456789";
+
+        Map<String, String> map = new HashMap();
+        map.put("evidenceType", evidenceType);
+        map.put("evidenceId", evidenceId);
+        map.put("hashType", hashType);
+        map.put("evidenceInfo", evidenceInfo);
+        map.put("appId", "");
+        map.put("noncestr", noncestr);
+        map.put("timestamp", String.valueOf(currentTime));
+        System.out.println(map);
+        String sign = CodeUtil.createSignature(map, chainProperties.getClientSecret());
+        System.out.println(sign);
+
+        RequestBody requestBody = new FormBody.Builder()
+                .add("evidenceType", evidenceType)
+                .add("evidenceId", evidenceId)
+                .add("hashType", hashType)
+                .add("evidenceInfo", evidenceInfo)
+                .add("appId", "")
+                .add("noncestr", noncestr)
+                .add("timestamp", String.valueOf(currentTime))
+                .add("sign", sign).build();
+
+        URI uri = UriComponentsBuilder.fromUriString("" + "/v1/onchain/evidence").build().toUri();
+        RequestEntity<Void> requestEntity = RequestEntity
+                .post(uri)
+                .header("Authorization", "bearer " + accessToken)
+                .accept(MediaType.APPLICATION_JSON)
+                .build();
+
+        ResponseEntity<String> responseBody = restTemplate.exchange(requestEntity, String.class);
+        return responseBody.getBody();
+    }
+
+
+    private String getAccessToken(String scope) throws IOException {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("client_id", chainProperties.getClientId())
+                .add("client_secret", chainProperties.getClientSecret())
+                .add("grant_type", "client_credentials")
+                .add("scope", scope).build();
+
+        URI uri = UriComponentsBuilder.fromUriString("" + "/oauth/token").build().toUri();
+        RequestEntity<Void> requestEntity = RequestEntity
+                .post(uri)
+                .accept(MediaType.APPLICATION_JSON)
+                .build();
+
+        ResponseEntity<GetAccessTokenResult> result = restTemplate.exchange(requestEntity, GetAccessTokenResult.class);
+        if (result.getStatusCode().is2xxSuccessful()){
+            return result.getBody().getAccessToken();
+        }
+        return "";
     }
 
 }

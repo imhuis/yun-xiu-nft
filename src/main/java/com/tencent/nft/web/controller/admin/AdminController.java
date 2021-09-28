@@ -1,4 +1,4 @@
-package com.tencent.nft.web.controller;
+package com.tencent.nft.web.controller.admin;
 
 import com.tencent.nft.entity.admin.pojo.Adminpojo;
 import com.tencent.nft.entity.nft.vo.SysResult;

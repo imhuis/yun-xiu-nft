@@ -1,18 +1,18 @@
-package com.tencent.nft.core.config;
+package com.tencent.nft.common.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 
 /**
  * @author zwq
  * @version 2.0
  * @date 2020-4-11 10:29:06
  */
-@Component
-@PropertySource("classpath:properties/wxpay.properties")
-@ConfigurationProperties(prefix = "wx.pay", ignoreUnknownFields = false)
-public class WxGroupConfig {
+@Configuration
+@PropertySource("classpath:properties/wx-pay.properties")
+@ConfigurationProperties(prefix = "wx.pay", ignoreUnknownFields = true)
+public class WxGroupProperties {
 
     // 小程序APP_ID
     private String appletAppId;

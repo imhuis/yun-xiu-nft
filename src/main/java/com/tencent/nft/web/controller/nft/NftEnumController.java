@@ -24,13 +24,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin/nft/enum")
 public class NftEnumController {
 
-//    @Autowired
-//    private RedisTemplate redisTemplate;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
-    // nft类型
+    // nft类型枚举
     @RequestMapping("/nft_type")
     public ResponseResult getNftType(){
 //        Set<NFTTypeEnum> nftTypeEnumSet = Arrays.asList(NFTTypeEnum.values()).stream().collect(Collectors.toSet());
+//        redisTemplate.opsForValue()
         Set<BoxLabelVO> boxLabelVOSet = Arrays.asList(NFTTypeEnum.values())
                 .stream()
                 .map(x -> new BoxLabelVO(x.getCode(), x.getValue()))
@@ -38,7 +39,7 @@ public class NftEnumController {
         return ResponseUtil.success(boxLabelVOSet);
     }
 
-    // nft状态
+    // nft状态枚举
     @RequestMapping("/nft_status")
     public ResponseResult getNftStatus(){
         Set<BoxLabelVO> boxLabelVOSet = Arrays.asList(NFTStatusEnum.values())
@@ -48,7 +49,7 @@ public class NftEnumController {
         return ResponseUtil.success(boxLabelVOSet);
     }
 
-    // 子nft状态
+    // 子nft状态枚举
     @RequestMapping("/nft_sale_status")
     public ResponseResult getSubNftType(){
         Set<BoxLabelVO> boxLabelVOSet = Arrays.asList(NFTSaleStatusEnum.values())

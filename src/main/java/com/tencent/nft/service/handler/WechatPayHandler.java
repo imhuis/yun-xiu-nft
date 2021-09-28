@@ -2,7 +2,7 @@ package com.tencent.nft.service.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.tencent.nft.core.config.WxGroupConfig;
+import com.tencent.nft.common.properties.WxGroupProperties;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import net.sf.json.JSONObject;
 import org.apache.http.HttpResponse;
@@ -35,7 +35,7 @@ public class WechatPayHandler {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private WxGroupConfig wxGroupConfig;
+    private WxGroupProperties wxGroupProperties;
 
     private final String JS_API = "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi";
 
@@ -53,10 +53,10 @@ public class WechatPayHandler {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
         ObjectNode rootNode = objectMapper.createObjectNode();
-        rootNode.put("mchid",wxGroupConfig.getWxPayMchId())
-                .put("appid", wxGroupConfig.getAppletAppId())
+        rootNode.put("mchid", wxGroupProperties.getWxPayMchId())
+                .put("appid", wxGroupProperties.getAppletAppId())
                 .put("description", bo.getDescription())
-                .put("notify_url", wxGroupConfig.getCallBack())
+                .put("notify_url", wxGroupProperties.getCallBack())
                 .put("out_trade_no", bo.getTradeNo());
         rootNode.putObject("amount")
                 .put("total", bo.getTotal());
