@@ -57,10 +57,11 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public List<FeedBack> getAll(String date) throws ParseException {
         FeedBack feedBack=new FeedBack();
-        if(!StringUtil.isEmpty(date)){
-            DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate localDateTime = LocalDate.parse(date, df);
-            return feedbackMapper.getByDate(localDateTime.atStartOfDay(), localDateTime.atStartOfDay().plusDays(1));
+        if(!StringUtil.isEmpty(date) && date != null) {
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate localDateTime = LocalDate.parse(date, df);
+                return feedbackMapper.getByDate(localDateTime.atStartOfDay(), localDateTime.atStartOfDay().plusDays(1));
+
         }
 
         return feedbackMapper.getAll(feedBack);
