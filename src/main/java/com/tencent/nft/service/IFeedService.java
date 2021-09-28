@@ -11,7 +11,8 @@ import java.util.List;
  * @date: 2021/9/26
  * @description:
  */
-public interface FeedService {
+public interface IFeedService {
+
     int insert(FeedBack feedBack);
 
     List<FeedBack> getByDate(String date);

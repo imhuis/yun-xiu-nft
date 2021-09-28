@@ -6,13 +6,12 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.tencent.nft.common.base.FeedBack;
 import com.tencent.nft.entity.nft.vo.SysResult;
-import com.tencent.nft.service.FeedService;
+import com.tencent.nft.service.IFeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -27,17 +26,7 @@ import java.util.List;
 public class FeedBackController {
 
     @Autowired
-    private FeedService feedService;
-
-    /**
-     * 接收前端客户的反馈信息
-     * 插入数据库
-     */
-    @PostMapping("/app/feedback")
-    public SysResult insert(@RequestBody(required = false) FeedBack feedBack) {
-        feedService.insert(feedBack);
-        return SysResult.success("null");
-    }
+    private IFeedService IFeedService;
 
     /**
      * 查询所有用户反馈信息
@@ -51,7 +40,7 @@ public class FeedBackController {
         PageHelper.startPage(pageNum, pagesize);
         List<FeedBack> list = null;
         try {
-            list = feedService.getAll(date);
+            list = IFeedService.getAll(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -66,7 +55,7 @@ public class FeedBackController {
      */
     @GetMapping("/admin/getByDate/{date}")
     public SysResult getByDate(@PathVariable String date) {
-        List<FeedBack> byDate = feedService.getByDate(date);
+        List<FeedBack> byDate = IFeedService.getByDate(date);
         return SysResult.success(byDate);
     }
 
@@ -75,7 +64,7 @@ public class FeedBackController {
      */
     @DeleteMapping("/admin/delete/{id}")
     public SysResult deleteById(@PathVariable Integer id) {
-        feedService.deleteById(id);
+        IFeedService.deleteById(id);
         return SysResult.success();
     }
 
@@ -84,8 +73,8 @@ public class FeedBackController {
      */
     @GetMapping("/admin/getById/{id}")
     public SysResult getById(@PathVariable Integer id) {
-        feedService.getById(id);
-        return SysResult.success(feedService.getById(id));
+        IFeedService.getById(id);
+        return SysResult.success(IFeedService.getById(id));
     }
 
 }

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author: imhuis
  * @date: 2021/9/17
- * @description:
+ * @description: 数字商品市场
  */
 @RestController
 public class MarketController {
@@ -50,7 +50,6 @@ public class MarketController {
         }
     }
 
-
     /**
      * 商品详情（封面图、海报）
      * @param nftId
@@ -77,7 +76,6 @@ public class MarketController {
         long amount = marketService.getProductReservations(nftId);
         return ResponseUtil.success(amount);
     }
-
 
     /**
      * 对指定商品预约

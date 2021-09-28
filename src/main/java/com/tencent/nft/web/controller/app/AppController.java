@@ -1,14 +1,17 @@
 package com.tencent.nft.web.controller.app;
 
+import com.tencent.nft.common.base.FeedBack;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.app.vo.CollectionVO;
 import com.tencent.nft.entity.nft.vo.MyLibraryVO;
+import com.tencent.nft.entity.nft.vo.SysResult;
 import com.tencent.nft.entity.pay.dto.PayRequestDTO;
 import com.tencent.nft.entity.pay.bo.PrepayBO;
 import com.tencent.nft.entity.security.WxUser;
+import com.tencent.nft.service.IFeedService;
 import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.IAppService;
 import com.tencent.nft.service.IPayService;
@@ -22,7 +25,7 @@ import java.util.List;
 /**
  * @author: imhuis
  * @date: 2021/9/23
- * @description:
+ * @description: 小程序界面接口
  */
 @RestController
 @RequestMapping("/app")
@@ -36,6 +39,9 @@ public class AppController {
 
     @Autowired
     private IPayService payService;
+
+    @Autowired
+    private IFeedService IFeedService;
 
     /**
      * 个人信息
@@ -88,4 +94,15 @@ public class AppController {
             return ResponseUtil.fail(ResponseCodeEnum.FAILD);
         }
     }
+
+    /**
+     * 接收前端客户的反馈信息
+     * 插入数据库
+     */
+    @PostMapping("/feedback")
+    public SysResult insert(@RequestBody(required = false) FeedBack feedBack) {
+        IFeedService.insert(feedBack);
+        return SysResult.success("null");
+    }
+
 }

@@ -3,29 +3,52 @@
 <mapper namespace="com.tencent.nft.mapper.FeedbackMapper">
 
     <insert id="insert" parameterType="com.tencent.nft.common.base.FeedBack">
-        INSERT into t_feedback (name,phone,date,picture,message) value (#{name},#{phone},now(),#{picture},#{message})
+        <!-- insert into t_feedback (name,phone,date,picture,message) value (#{name},#{phone},now(),#{picture},#{message}) -->
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="date != null">date,</if>
+            <if test="picture != null">picture,</if>
+            <if test="message != null">message,</if>
+            create_time, update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="date != null">now(),</if>
+            <if test="picture != null">#{picture},</if>
+            <if test="message != null">#{message},</if>
+            #{createTime}, #{updateTime}
+        </trim>
     </insert>
 
-    <select id="getAll" parameterType="com.tencent.nft.common.base.FeedBack" resultType="com.tencent.nft.common.base.FeedBack">
+    <select id="getAll" parameterType="com.tencent.nft.common.base.FeedBack"
+            resultType="com.tencent.nft.common.base.FeedBack">
         select * from t_feedback
         <where>
-        <if test="date != null">
-            and date between #{param1} and #{param2}
-        </if>
+            <if test="date != null">
+                and date between #{param1} and #{param2}
+            </if>
         </where>
         order by date desc
     </select>
-    
+
     <select id="getByDate" resultType="com.tencent.nft.common.base.FeedBack">
-        select * FROM t_feedback where date between #{param1} and #{param2}
+        select *
+        FROM t_feedback
+        where date between #{param1} and #{param2}
     </select>
 
     <delete id="deleteById" parameterType="com.tencent.nft.common.base.FeedBack">
-        DELETE from t_feedback where id = #{id}
+        DELETE
+        from t_feedback
+        where id = #{id}
     </delete>
 
     <select id="getById" resultType="com.tencent.nft.common.base.FeedBack">
-        select * from t_feedback where id =#{id}
+        select *
+        from t_feedback
+        where id = #{id}
     </select>
 
 </mapper>

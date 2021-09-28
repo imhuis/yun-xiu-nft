@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * @author: imhuis
  * @date: 2021/9/1
- * @description:
+ * @description: nft管理后台api
  */
 @RestController
 @RequestMapping("/admin/nft")
@@ -51,6 +51,7 @@ public class NftManagementController {
 
     /**
      * 获取NFT详情
+     * @param nftId
      * @return
      */
     @RequestMapping(value = "/{nftId}", method = RequestMethod.GET)
@@ -126,6 +127,12 @@ public class NftManagementController {
         }
     }
 
+    /**
+     * 删除数字藏品（只能删除状态为待发行中的nft）
+     * @param nftDeleteDTO
+     * @param result
+     * @return
+     */
     @RequestMapping(value = "/delete.action", method = RequestMethod.POST)
     public ResponseResult deleteNFT(@RequestBody @Validated NftDeleteDTO nftDeleteDTO, BindingResult result){
         if (result.hasFieldErrors()){
@@ -138,7 +145,9 @@ public class NftManagementController {
     }
 
     /**
-     * 预售设置，相当于发布商品
+     * 预售设置（相当于发布商品）
+     * @param n
+     * @param result
      * @return
      */
     @RequestMapping(value = "/pre_sale", method = RequestMethod.POST)
@@ -173,6 +182,7 @@ public class NftManagementController {
 
     /**
      * 商品下架
+     * @param nftId
      * @return
      */
     @RequestMapping(value = "/off_shelf", method = RequestMethod.POST)

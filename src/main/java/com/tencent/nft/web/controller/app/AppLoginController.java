@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author: imhuis
  * @date: 2021/9/17
- * @description:
+ * @description: 小程序登录操作
  */
 @RestController
 @RequestMapping("/app/public")
@@ -42,7 +42,6 @@ public class AppLoginController {
         appAuthService.updateWxUserProfile(wxUserProfileFormDTO);
         return ResponseUtil.success();
     }
-
 
     /**
      * 获取手机号登录，返回token
