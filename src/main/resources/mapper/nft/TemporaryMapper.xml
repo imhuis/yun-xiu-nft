@@ -17,7 +17,7 @@
         where c_key = #{key}
     </update>
 
-    <select id="selectByKeyWord" resultMap="BaseResultMap">
+    <select id="selectByKeyWord" resultType="string">
         SELECT record
         FROM t_temp
         where c_key = #{key}
