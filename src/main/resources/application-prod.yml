@@ -3,7 +3,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://172.17.0.20:3306/nft_test?serverTimezone=Asia/Shanghai
-    username: nft_test_user
+    username: nft_dev_user
     password: ENC(1ghIt29Y+jzKLpgeaBFLCShMLNpoWeh68jy8VZJE9wxCewdQdjx7pmOL1IrdmA6lv1u7+AUZtXlq0zBmZIY/bA==)
     hikari:
       connection-timeout: 60000
