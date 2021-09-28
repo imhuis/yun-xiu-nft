@@ -21,5 +21,6 @@ public class EncryptPassword {
     public void encryptor(){
         System.out.println(stringEncryptor.encrypt("AhBcosDb_1!$"));
         System.out.println(stringEncryptor.encrypt("password"));
+        System.out.println(stringEncryptor.encrypt("GbPeB9cAGNNuT+5_HMRm"));
     }
 }

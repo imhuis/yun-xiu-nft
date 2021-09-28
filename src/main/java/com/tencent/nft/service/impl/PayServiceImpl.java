@@ -18,6 +18,8 @@ import com.tencent.nft.mapper.TradeMapper;
 import com.tencent.nft.service.IPayService;
 import com.tencent.nft.service.handler.WechatPayHandler;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Async;
@@ -39,6 +41,8 @@ import java.util.Optional;
  */
 @Service
 public class PayServiceImpl implements IPayService {
+
+    final Logger logger = LoggerFactory.getLogger(PayServiceImpl.class);
 
     @Resource
     private NftProductMapper productMapper;
@@ -140,15 +144,22 @@ public class PayServiceImpl implements IPayService {
             String ciphertext = childField.get("ciphertext").asText();
             String resourceJson = WxPayUtil.decryptNotifyV3(associatedData, nonce, ciphertext, wxGroupConfig.getApiKey());
 
-            JsonNode resource = jsonNode.get("resource");
+            JsonNode tradeDetail = null;
+            try {
+                tradeDetail = objectMapper.readTree(resourceJson);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            logger.info("resource{}\n", tradeDetail.toString());
             TradeInfo tradeInfo = new TradeInfo();
-            tradeInfo.setTradeNo(resource.get("out_trade_no").asText());
-            tradeInfo.setTransactionId(resource.get("transaction_id").asText());
-            tradeInfo.setAmount(resource.at("/amount/total").asInt());
-            tradeInfo.setPayer(resource.get("/payer/openid").asText());
+            tradeInfo.setTradeNo(tradeDetail.get("out_trade_no").asText());
+            tradeInfo.setTransactionId(tradeDetail.get("transaction_id").asText());
+            tradeInfo.setAmount(tradeDetail.at("/amount/total").asInt());
+            tradeInfo.setPayer(tradeDetail.get("/payer/openid").asText());
 //            DateTimeFormatter dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-            tradeInfo.setSuccessTime(LocalDateTime.parse(resource.get("success_time").asText()));
+//            tradeInfo.setSuccessTime(LocalDateTime.parse(resource.get("success_time").asText()));
             tradeMapper.insert(tradeInfo);
+            logger.info("订单信息插入成功");
         }
 
     }

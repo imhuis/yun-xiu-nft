@@ -1,0 +1,58 @@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.17.0.20:3306/nft_test?serverTimezone=Asia/Shanghai
+    username: nft_test_user
+    password: ENC(1ghIt29Y+jzKLpgeaBFLCShMLNpoWeh68jy8VZJE9wxCewdQdjx7pmOL1IrdmA6lv1u7+AUZtXlq0zBmZIY/bA==)
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 20
+      max-lifetime: 60000
+
+  session:
+    timeout: 7200
+  rabbitmq:
+    host: 42.192.10.206
+    port: 5672
+    username: admin
+    password: ENC(uLxFmbGFt2+wmntsuahXKmgA1fR/T9tvWTSYJ4oAcKelJ9ZrouJ/0HaitDS9JzPq)
+    virtual-host: /nft
+    # 开启发布者发送失败退回
+    publisher-returns: true
+    # 开启ACK手动确认
+    listener:
+      simple:
+        acknowledge-mode: manual
+      direct:
+        acknowledge-mode: manual
+    template:
+      # 参数设为 true 时，交换器无法根据自身的类型和路由键找到一个符合条件的队列，
+      # 那么 RabbitMQ 会调用 Basic.Return 命令将消息返回给生产者
+      mandatory: true
+      # 开启rabbitmq的生产端重试机制,默认是false,默认重试3次
+      retry:
+        enabled: true
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+mybatis:
+  type-aliases-package: com.tencent.nft.entity
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/**/*.xml
+  config-location: classpath:mybatis-config.xml
+pagehelper:
+  reasonable: true
+  row-bounds-with-count: true
+
+alicos:
+  endpoint:
+  SecretId: AKIDMVQijTxA6l9G6fxzlFSP5VeX8SUFkxtY
+  SecretKey: PYPzIK6btue7JFuIOEm32kByUjhOnvoQ
+  region: ap-shanghai
+  appid: 1257367141
+
+oauth2:
+  basic: 'Basic YzY0YTAwMDUtYWFmNi00NmEyLWE0NTItYzAwMDA3MDU0NTliOmRmOGEwYTFiLTJkYjUtNGFlOC1iNTE3LTM3M2MxNWU3MTQ4Mw=='
