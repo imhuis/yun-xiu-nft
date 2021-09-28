@@ -26,6 +26,16 @@ public class PrepayBO implements Serializable {
     // 签名-必填
     private String paySign;
 
+    // 系统内部业务码
+    private int code;
+
+    public PrepayBO() {
+    }
+
+    public PrepayBO(int code) {
+        this.code = code;
+    }
+
     public String getAppId() {
         return appId;
     }
@@ -80,5 +90,13 @@ public class PrepayBO implements Serializable {
 
     public void setPaySign(String paySign) {
         this.paySign = paySign;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }

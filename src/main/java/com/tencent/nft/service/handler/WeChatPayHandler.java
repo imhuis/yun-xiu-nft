@@ -24,9 +24,9 @@ import java.io.IOException;
  * @description:
  */
 @Component
-public class WechatPayHandler {
+public class WeChatPayHandler {
 
-    final Logger logger = LoggerFactory.getLogger(WechatPayHandler.class);
+    final Logger logger = LoggerFactory.getLogger(WeChatPayHandler.class);
 
     @Autowired
     private HttpClient wechatPayHttpClient;

@@ -19,9 +19,14 @@ public class RabbitmqConfig {
     /**
      * 交换机名称
      */
+    // 微信支付异步通知
     public static final String WX_NOTIFY_QUEUE_NAME = "wx-notify-queue";
-    public static final String ON_CHAIN_QUEUE_NAME = "on-chain-queue";
 
+    // 小程序通知，售卖通知
+    public static final String YS_NOTIFY_QUEUE_NAME = "wx-ys-message-queue";
+
+    // 上链队列
+    public static final String ON_CHAIN_QUEUE_NAME = "on-chain-queue";
 
     public static final String DEFAULT_EXCHANGE_NAME = "default-exchange";
 
@@ -51,6 +56,11 @@ public class RabbitmqConfig {
     @Bean
     public Queue wxNotifyQueue(){
         return new Queue(WX_NOTIFY_QUEUE_NAME);
+    }
+
+    @Bean
+    public Queue wxYsQueue(){
+        return new Queue(YS_NOTIFY_QUEUE_NAME);
     }
 
     @Bean

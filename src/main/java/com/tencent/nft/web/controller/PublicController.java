@@ -35,11 +35,12 @@ public class PublicController {
 
     /**
      * 微信支付成功回调接口
+     *
      * @return
      */
     @RequestMapping(value = "/public/notify/wxpay/pay.yy", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<WxNotifyResult> notifyAction(HttpServletRequest request){
+    public ResponseEntity<WxNotifyResult> notifyAction(HttpServletRequest request) {
         String resJson = "";
         try {
             InputStream inputStream = request.getInputStream();
@@ -62,11 +63,11 @@ public class PublicController {
             resJson = sb.toString();
             logger.info(resJson);
             payService.notifyApp(resJson);
-            return ResponseEntity.ok(new WxNotifyResult("SUCCESS","成功"));
+            return ResponseEntity.ok(new WxNotifyResult("SUCCESS", "成功"));
         } catch (Exception e) {
             System.out.println("微信手机支付失败:" + e.getMessage());
 //            String result = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>" + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new WxNotifyResult("FAIL",""));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new WxNotifyResult("FAIL", ""));
         }
     }
 }

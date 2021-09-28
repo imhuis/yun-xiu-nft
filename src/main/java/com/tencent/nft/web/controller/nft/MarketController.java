@@ -8,6 +8,9 @@ import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.vo.ProductDetailVO;
 import com.tencent.nft.entity.nft.vo.ProductVO;
 import com.tencent.nft.service.IMarketService;
+import com.tencent.nft.service.impl.PayServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,8 @@ import java.util.List;
  */
 @RestController
 public class MarketController {
+
+    final Logger log = LoggerFactory.getLogger(MarketController.class);
 
     @Autowired
     private IMarketService marketService;
@@ -46,7 +51,7 @@ public class MarketController {
             ProductVO productDetail = marketService.getProductInfo(nftId);
             return ResponseUtil.success(productDetail);
         }catch (RecordNotFoundException e){
-            return ResponseUtil.fail(ResponseCodeEnum.CC_1003);
+            return ResponseUtil.fail(ResponseCodeEnum.Record_NoFound);
         }
     }
 

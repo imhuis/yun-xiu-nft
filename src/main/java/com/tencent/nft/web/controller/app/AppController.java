@@ -15,6 +15,9 @@ import com.tencent.nft.service.IFeedService;
 import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.IAppService;
 import com.tencent.nft.service.IPayService;
+import com.tencent.nft.web.controller.nft.MarketController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +34,8 @@ import java.util.List;
 @RequestMapping("/app")
 public class AppController {
 
+    final Logger log = LoggerFactory.getLogger(AppController.class);
+
     @Autowired
     private IAppAuthService appAuthService;
 
@@ -41,7 +46,7 @@ public class AppController {
     private IPayService payService;
 
     @Autowired
-    private IFeedService IFeedService;
+    private IFeedService feedService;
 
     /**
      * 个人信息
@@ -51,7 +56,7 @@ public class AppController {
     public ResponseResult my(){
         String p = SecurityUtils.getCurrentUsername().get();
         if (p == null){
-            return ResponseUtil.fail(ResponseCodeEnum.CC_1003);
+            return ResponseUtil.fail(ResponseCodeEnum.Record_NoFound);
         }
         WxUser wxUser = appAuthService.getMyInformation(p);
         return ResponseUtil.success(wxUser);
@@ -84,9 +89,10 @@ public class AppController {
     @RequestMapping(value = "/pay", method = RequestMethod.POST)
     public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO, BindingResult result) {
         if (result.hasFieldErrors()){
+            // 参数校验失败
             return ResponseUtil.fail(ResponseCodeEnum.Validation_Error, result.getAllErrors().get(0));
         }
-        System.out.println(payRequestDTO.toString());
+        log.debug("api-/pay: requestBody: \n{}", payRequestDTO.toString());
         try {
             PrepayBO prepayBO = payService.prePay(payRequestDTO);
             return ResponseUtil.success(prepayBO);
@@ -101,7 +107,7 @@ public class AppController {
      */
     @PostMapping("/feedback")
     public SysResult insert(@RequestBody(required = false) FeedBack feedBack) {
-        IFeedService.insert(feedBack);
+        feedService.insert(feedBack);
         return SysResult.success("null");
     }
 

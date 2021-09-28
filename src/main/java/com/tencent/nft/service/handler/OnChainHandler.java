@@ -36,13 +36,13 @@ import java.util.Map;
  */
 public class OnChainHandler {
 
+    Logger log = LoggerFactory.getLogger(OnChainHandler.class);
+
     @Autowired
     private ChainProperties chainProperties;
 
     @Autowired
     private RestTemplate restTemplate;
-
-    Logger log = LoggerFactory.getLogger(OnChainHandler.class);
 
     // 监听上链消息
     @RabbitListener(queues = {"on-chain-queue-sxl"})

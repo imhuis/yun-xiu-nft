@@ -1,8 +1,9 @@
 package com.tencent.nft.web.controller;
 
-import com.tencent.nft.entity.nft.vo.SysResult;
-import com.tencent.nft.entity.security.Temporarysave;
-import com.tencent.nft.service.TemporaryService;
+import com.tencent.nft.common.base.ResponseResult;
+import com.tencent.nft.common.base.ResponseUtil;
+import com.tencent.nft.entity.admin.TemporaryRecord;
+import com.tencent.nft.service.ITemporaryService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,18 +18,30 @@ import javax.annotation.Resource;
 @CrossOrigin
 public class TemporaryController {
 
-      @Resource
-      private TemporaryService temporaryService;
+    @Resource
+    private ITemporaryService temporaryService;
 
-      @PostMapping("/linshiinsert")
-      public SysResult linshi(@RequestBody Temporarysave temporarysave){
-          temporaryService.linshi(temporarysave);
-          return SysResult.success();
-      }
+    /**
+     * 设置临时记录
+     *
+     * @param temporaryRecord
+     * @return
+     */
+    @PostMapping("/linshiinsert")
+    public ResponseResult setupTemporaryRecord(@RequestBody TemporaryRecord temporaryRecord) {
+        temporaryService.setupTemporaryRecord(temporaryRecord);
+        return ResponseUtil.success();
+    }
 
-      @GetMapping("/public/selectlinshi")
-      public SysResult selecttemporarysave(Temporarysave temporarysave){
-          temporaryService.selectlinshi(temporarysave);
-          return SysResult.success(temporaryService.selectlinshi(temporarysave));
-      }
+    /**
+     * 根据指定值查询临时记录
+     *
+     * @param temporaryRecord
+     * @return
+     */
+    @GetMapping("/public/selectlinshi")
+    public ResponseResult queryTemporaryRecord(String temporaryRecord) {
+        String record = temporaryService.selectByKeyWord(temporaryRecord);
+        return ResponseUtil.success(record);
+    }
 }

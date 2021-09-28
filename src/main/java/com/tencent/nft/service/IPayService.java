@@ -27,4 +27,9 @@ public interface IPayService {
      * 退款
      */
     void refund();
+
+    /**
+     * 下载账单
+     */
+    void downloadBill();
 }

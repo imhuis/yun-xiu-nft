@@ -2,12 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tencent.nft.mapper.TemporaryMapper">
 
-    <update id="linshi" parameterType="com.tencent.nft.entity.security.Temporarysave">
-        UPDATE temporarysave SET save =#{save};
+    <resultMap id="BaseResultMap" type="com.tencent.nft.entity.admin.TemporaryRecord">
+        <result column="c_key" jdbcType="VARCHAR" property="key"/>
+        <result column="record" jdbcType="VARCHAR" property="record"/>
+    </resultMap>
+
+    <update id="insert" parameterType="com.tencent.nft.entity.admin.TemporaryRecord">
+        INSERT INTO t_temp (c_key, record) values (#{key}, #{record})
     </update>
 
-    <select id="selectlinshi" resultType="com.tencent.nft.entity.security.Temporarysave">
-        SELECT * FROM temporarysave
+    <update id="update">
+        UPDATE t_temp
+        SET record = #{record}
+        where c_key = #{key}
+    </update>
+
+    <select id="selectByKeyWord" resultMap="BaseResultMap">
+        SELECT record
+        FROM t_temp
+        where c_key = #{key}
     </select>
 
 </mapper>

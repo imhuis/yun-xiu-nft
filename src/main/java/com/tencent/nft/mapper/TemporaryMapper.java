@@ -1,10 +1,7 @@
 package com.tencent.nft.mapper;
 
-import com.tencent.nft.entity.security.Temporarysave;
+import com.tencent.nft.entity.admin.TemporaryRecord;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
-
 
 /**
  * @author: yunj
@@ -15,7 +12,9 @@ import java.util.List;
 public interface TemporaryMapper {
 
     //接收前端发送的字符串，加入到数据库中
-   int linshi(Temporarysave temporarysave);
+    int insert(TemporaryRecord temporaryRecord);
 
-    List<Temporarysave> selectlinshi(Temporarysave temporarysave);
+    int update(TemporaryRecord temporaryRecord);
+
+    String selectByKeyWord(String temporaryRecord);
 }

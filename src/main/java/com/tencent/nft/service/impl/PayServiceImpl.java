@@ -19,7 +19,7 @@ import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.mapper.TradeMapper;
 import com.tencent.nft.mapper.UserLibraryMapper;
 import com.tencent.nft.service.IPayService;
-import com.tencent.nft.service.handler.WechatPayHandler;
+import com.tencent.nft.service.handler.WeChatPayHandler;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,13 +42,13 @@ import java.time.Instant;
 @Service
 public class PayServiceImpl implements IPayService {
 
-    final Logger logger = LoggerFactory.getLogger(PayServiceImpl.class);
+    final Logger log = LoggerFactory.getLogger(PayServiceImpl.class);
 
     @Resource
     private TradeMapper tradeMapper;
 
     @Autowired
-    private WechatPayHandler payHandler;
+    private WeChatPayHandler payHandler;
 
     @Autowired
     private WxGroupProperties wxGroupProperties;
@@ -68,6 +68,13 @@ public class PayServiceImpl implements IPayService {
     @Override
     public PrepayBO prePay(PayRequestDTO dto) throws Exception {
         // 首先判断是否有购买资格，已经预约，或者购买买过一次的不能购买第二次
+        if (false){
+            /**
+             * 内部业务码：
+             *  -1 已经购买，不可二次购买
+             */
+            return new PrepayBO(-1);
+        }
 
         final String tradeNo = UUIDUtil.generateUUID();
         PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
@@ -185,7 +192,7 @@ public class PayServiceImpl implements IPayService {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            logger.info("resource \n {}", tradeDetail.toString());
+            log.info("resource \n {}", tradeDetail.toString());
 
             // 外部订单号码
             String outTradeNo = tradeDetail.get("out_trade_no").asText();
@@ -218,6 +225,11 @@ public class PayServiceImpl implements IPayService {
 
     }
 
+    @Override
+    public void downloadBill() {
+
+    }
+
     @Transactional
     @Async
     void updateUserLibrary() {
@@ -242,7 +254,4 @@ public class PayServiceImpl implements IPayService {
         tradeMapper.insert(tradeInfo);
     }
 
-//    public static void main(String[] args) {
-//        System.out.println(MoneyUtil.yuan2fen(new BigDecimal("0.01")));
-//    }
 }
