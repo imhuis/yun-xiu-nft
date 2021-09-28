@@ -4,7 +4,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://sh-cdb-16vlbtty.sql.tencentcdb.com:59526/nft_test?serverTimezone=Asia/Shanghai
     username: nft_dev_user
-    password: ENC(1ghIt29Y+jzKLpgeaBFLCShMLNpoWeh68jy8VZJE9wxCewdQdjx7pmOL1IrdmA6lv1u7+AUZtXlq0zBmZIY/bA==)
+    password: ENC(MBNVX4J2UIixdPwfKLvzfAdHE+Y+EQfkdmH33Mq/AkUVY1YAILNQfowh1aajmMMBBZD0fRTlI9kHA5UKUuYSLQ==)
     hikari:
       connection-timeout: 60000
       maximum-pool-size: 20
