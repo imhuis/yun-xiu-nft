@@ -5,10 +5,9 @@ import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.common.exception.RecordNotFoundException;
 import com.tencent.nft.entity.nft.NFTInfo;
-import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.vo.ProductDetailVO;
 import com.tencent.nft.entity.nft.vo.ProductVO;
-import com.tencent.nft.service.INftService;
+import com.tencent.nft.service.IMarketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,10 +19,10 @@ import java.util.List;
  * @description:
  */
 @RestController
-public class NftController {
+public class MarketController {
 
     @Autowired
-    private INftService nftService;
+    private IMarketService marketService;
 
     /**
      * nft市场
@@ -32,7 +31,7 @@ public class NftController {
      */
     @RequestMapping({"/app/public/market"})
     public ResponseResult market(@RequestParam(value = "status", defaultValue = "0") Integer status){
-        List<NFTInfo> marketList = nftService.getMarketList(status);
+        List<NFTInfo> marketList = marketService.getMarketList(status);
         return ResponseUtil.success(marketList);
     }
 
@@ -44,7 +43,7 @@ public class NftController {
     @RequestMapping({"/app/public/market/{nft_id}"})
     public ResponseResult productInfo(@PathVariable(value = "nft_id") String nftId){
         try {
-            ProductVO productDetail = nftService.getProductInfo(nftId);
+            ProductVO productDetail = marketService.getProductInfo(nftId);
             return ResponseUtil.success(productDetail);
         }catch (RecordNotFoundException e){
             return ResponseUtil.fail(ResponseCodeEnum.CC_1003);
@@ -61,7 +60,7 @@ public class NftController {
     public ResponseResult productDetail(@PathVariable(value = "nft_id") String nftId){
         ProductDetailVO vo = null;
         try {
-            vo = nftService.getProductDetail(nftId);
+            vo = marketService.getProductDetail(nftId);
         }catch (RecordNotFoundException e){
             ResponseUtil.fail(ResponseCodeEnum.NFT_4001);
         }
@@ -75,7 +74,7 @@ public class NftController {
      */
     @RequestMapping("/app/public/market/{nft_id}/reservation_amount")
     public ResponseResult getReservationAmount(@PathVariable(value = "nft_id") String nftId){
-        long amount = nftService.getProductReservations(nftId);
+        long amount = marketService.getProductReservations(nftId);
         return ResponseUtil.success(amount);
     }
 
@@ -89,7 +88,7 @@ public class NftController {
     public ResponseResult reserve(@PathVariable(value = "nft_id") String nftId){
         try {
             // 预约商品
-            boolean flag = nftService.reserveProduct(nftId);
+            boolean flag = marketService.reserveProduct(nftId);
             if (!flag){
                 return ResponseUtil.fail(ResponseCodeEnum.YY_6000);
             }

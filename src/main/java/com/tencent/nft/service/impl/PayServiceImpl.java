@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tencent.nft.common.util.MoneyUtil;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.common.util.WxPayUtil;
+import com.tencent.nft.core.config.RabbitmqConfig;
 import com.tencent.nft.core.config.WxGroupConfig;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.pay.PayRequestDTO;
@@ -20,6 +21,7 @@ import com.tencent.nft.service.handler.WechatPayHandler;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Async;
@@ -58,6 +60,9 @@ public class PayServiceImpl implements IPayService {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Override
     public PrepayBO prePay(PayRequestDTO dto) throws Exception {
@@ -113,6 +118,22 @@ public class PayServiceImpl implements IPayService {
 
     @Override
     public void notifyApp(String resJson) {
+        /**
+         * {
+         *     "id": "311fe73f-c397-5e5a-9c8f-9fc94afb387b",
+         *     "create_time": "2021-09-28T13:50:48+08:00",
+         *     "resource_type": "encrypt-resource",
+         *     "event_type": "TRANSACTION.SUCCESS",
+         *     "summary": "支付成功",
+         *     "resource": {
+         *         "original_type": "transaction",
+         *         "algorithm": "AEAD_AES_256_GCM",
+         *         "ciphertext": "Ay25zutpHN+uMAaO6mqOeZvePpU3VR7wfY4GWlbI+bifz58DbR0BSrpI+kAmE/WnMbgwG5rBQKPzjZcfCIPILVGUMWMaPnGI7CzQ2RHuMXUzGugYH4iJZOjYVmxEJDB3J1OAPJoZC5Xu7b8aFrFbY/WqQ+pUWZnfBEkdyQPx7yHU06b8UEtYZjlbyPPP4XGe42DM6nuWiOmVvDxPtAO4XyZKqzW6WteLzHbF/kqa8f5VzkhXsJV25ytfV9/JM7/KW3nLOgz6KWfsK3K4UmlExK5OewSTGiTjM6pApyXuBSBLSMsI6efhQ6RVRcfcWs8lyDIXsc1BxW+Axvv4Y5NGfsSbBoxF1NhJT+8EScFwrMdOcO2prPFtLzNTsxjsPYTd/OGA2c1mgImjsJBMhSe/vkZW0bmXXsU/M/EBpzu72aXHbj/yVhjtJeG9k/RGT7ez7Z0m3+nIaViareifSm//IG/pHzAtCrULK+npNNHrvUajFKum4gYSMksiSq5RRmvQIs+vzg0DvsZXAP19w02/uNV8G5SefTXk5q5Z+JM5dYaWM7sP0TNDkWHssD9j0xZlnhZTWsBM/7Vmw3R0nvZR",
+         *         "associated_data": "transaction",
+         *         "nonce": "HipFwys1ToyA"
+         *     }
+         * }
+         */
         // 读取json树
         JsonNode jsonNode = null;
         try {
@@ -120,23 +141,35 @@ public class PayServiceImpl implements IPayService {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        String eventType = jsonNode.get("event_type").asText();
+
         /**
-         * {
-         *     "id": "EV-2018022511223320873",
-         *     "create_time": "2015-05-20T13:29:35+08:00",
-         *     "resource_type": "encrypt-resource",
-         *     "event_type": "TRANSACTION.SUCCESS",
-         *     "summary": "支付成功",
-         *     "resource": {
-         *         "original_type": "transaction",
-         *         "algorithm": "AEAD_AES_256_GCM",
-         *         "ciphertext": "",
-         *         "associated_data": "",
-         *         "nonce": ""
+         *
+         *  {
+         *     "mchid": "1503971171",
+         *     "appid": "wxb3982d59b8a5e644",
+         *     "out_trade_no": "751b1db31b6240748aefc580cd674307",
+         *     "transaction_id": "4200001121202109282704065018",
+         *     "trade_type": "JSAPI",
+         *     "trade_state": "SUCCESS",
+         *     "trade_state_desc": "支付成功",
+         *     "bank_type": "OTHERS",
+         *     "attach": "",
+         *     "success_time": "2021-09-28T13:50:48+08:00",
+         *     "payer": {
+         *         "openid": "oQ13L5K2HVK3rLYcIlw_n2va7Tcs"
+         *     },
+         *     "amount": {
+         *         "total": 1,
+         *         "payer_total": 1,
+         *         "currency": "CNY",
+         *         "payer_currency": "CNY"
          *     }
          * }
+         *
          */
+
+        String eventType = jsonNode.get("event_type").asText();
+        // 支付成功
         if (eventType.equals("TRANSACTION.SUCCESS")){
             JsonNode childField = jsonNode.get("resource");
             String nonce = childField.get("nonce").asText();
@@ -150,16 +183,21 @@ public class PayServiceImpl implements IPayService {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            logger.info("resource{}\n", tradeDetail.toString());
+            logger.info("resource \n {}", tradeDetail.toString());
             TradeInfo tradeInfo = new TradeInfo();
             tradeInfo.setTradeNo(tradeDetail.get("out_trade_no").asText());
             tradeInfo.setTransactionId(tradeDetail.get("transaction_id").asText());
+            // 设置价格，单位为分
             tradeInfo.setAmount(tradeDetail.at("/amount/total").asInt());
-            tradeInfo.setPayer(tradeDetail.get("/payer/openid").asText());
+            tradeInfo.setPayerTotal(tradeDetail.at("/amount/payer_total").asInt());
+
+            tradeInfo.setPayer(tradeDetail.at("/payer/openid").asText());
 //            DateTimeFormatter dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 //            tradeInfo.setSuccessTime(LocalDateTime.parse(resource.get("success_time").asText()));
             tradeMapper.insert(tradeInfo);
-            logger.info("订单信息插入成功");
+            // 发送消息
+
+            amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.ON_CHAIN_ROUTE_KEY, "xxxxxx");
         }
 
     }
@@ -177,7 +215,7 @@ public class PayServiceImpl implements IPayService {
         tradeMapper.insert(tradeInfo);
     }
 
-    public static void main(String[] args) {
-        System.out.println(MoneyUtil.yuan2fen(new BigDecimal("0.01")));
-    }
+//    public static void main(String[] args) {
+//        System.out.println(MoneyUtil.yuan2fen(new BigDecimal("0.01")));
+//    }
 }

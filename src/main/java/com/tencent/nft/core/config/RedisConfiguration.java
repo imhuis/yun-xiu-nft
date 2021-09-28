@@ -33,11 +33,6 @@ public class RedisConfiguration {
 
     @Bean(destroyMethod = "destroy")
     public LettuceConnectionFactory lettuceConnectionFactory(){
-//        RedisClusterConfiguration redisClusterConnection = new RedisClusterConfiguration();
-//        redisClusterConnection.addClusterNode(new RedisNode("redis1",26379));
-//        redisClusterConnection.addClusterNode(new RedisNode("redis2",26379));
-//        redisClusterConnection.addClusterNode(new RedisNode("redis3",26379));
-//        redisClusterConnection.setMaxRedirects(3);
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisProperties.getHost());
         redisStandaloneConfiguration.setPort(redisProperties.getPort());
@@ -87,4 +82,5 @@ public class RedisConfiguration {
     public static ConfigureRedisAction configureRedisAction() {
         return ConfigureRedisAction.NO_OP;
     }
+
 }

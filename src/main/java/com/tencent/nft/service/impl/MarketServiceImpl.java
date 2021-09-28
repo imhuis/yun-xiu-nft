@@ -1,6 +1,5 @@
 package com.tencent.nft.service.impl;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.exception.RecordNotFoundException;
 import com.tencent.nft.core.security.SecurityUtils;
@@ -12,7 +11,7 @@ import com.tencent.nft.entity.nft.vo.ProductDetailVO;
 import com.tencent.nft.entity.nft.vo.ProductVO;
 import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.NftProductMapper;
-import com.tencent.nft.service.INftService;
+import com.tencent.nft.service.IMarketService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
  * @description:
  */
 @Service
-public class NftServiceImpl implements INftService {
+public class MarketServiceImpl implements IMarketService {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -42,7 +41,6 @@ public class NftServiceImpl implements INftService {
     @Resource
     private NftProductMapper productMapper;
 
-    @JsonView
     @Override
     public List<NFTInfo> getMarketList(Integer status) {
         List<SuperNFT> superNFTS = nftMapper.selectSuperNFTList(new NftListQueryDTO(null, null, null, status));

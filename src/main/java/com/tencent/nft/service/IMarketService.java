@@ -12,7 +12,7 @@ import java.util.List;
  * @date: 2021/9/24
  * @description:
  */
-public interface INftService {
+public interface IMarketService {
 
     /**
      * 市场展示还需要封面

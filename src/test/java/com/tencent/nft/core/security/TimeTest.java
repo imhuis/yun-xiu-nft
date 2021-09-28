@@ -5,6 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -14,14 +15,12 @@ public class TimeTest {
     @Test
     public void test(){
         Duration expires = Duration.ofMillis(30);
-        System.out.println(expires.getSeconds());
+//        System.out.println(expires.getSeconds());
 
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'");
 
-        System.out.println(fmt.format(LocalDateTime.now()));
+        System.out.println(fmt.parse("2021-09-28T05:33:45.000Z"));
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-DD'T'HH:mm:ss+TIMEZONE");
-        LocalDateTime dateTime = LocalDateTime.parse("2018-06-08T10:34:56+08:00", dateTimeFormatter);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tencent.nft.service.impl;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Lists;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.core.security.SecurityUtils;
@@ -8,18 +9,21 @@ import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SubNFT;
 import com.tencent.nft.entity.nft.SuperNFT;
+import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.vo.MyLibraryVO;
 import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.mapper.UserLibraryMapper;
 import com.tencent.nft.mapper.WxUserMapper;
 import com.tencent.nft.service.IAppService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author: imhuis

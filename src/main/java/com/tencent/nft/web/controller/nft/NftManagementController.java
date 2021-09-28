@@ -14,6 +14,7 @@ import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.*;
 import com.tencent.nft.service.INftManagementService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/admin/nft")
+@Slf4j
 public class NftManagementController {
 
     @Autowired
@@ -138,9 +140,9 @@ public class NftManagementController {
      */
     @RequestMapping(value = "/pre_sale", method = RequestMethod.POST)
     public ResponseResult setSale(@RequestBody @Validated PreSaleDTO n, BindingResult result){
-        if (result.hasFieldErrors()){
-            return ResponseUtil.fail(ResponseCodeEnum.CC_1004, result.getFieldErrors().get(0));
-        }
+//        if (result.hasFieldErrors()){
+//            return ResponseUtil.fail(ResponseCodeEnum.CC_1004, result.getFieldErrors().get(0));
+//        }
 //        if (!n.getReserveEndTime().isAfter(n.getReserveStartTime())){
 //            return ResponseUtil.fail(ResponseCodeEnum.YS_5001);
 //        }
@@ -148,12 +150,14 @@ public class NftManagementController {
 //            return ResponseUtil.fail(ResponseCodeEnum.YS_5002);
 //        }
         LocalDateTime now = LocalDateTime.now();
-        if (n.getReserveStartTime().isBefore(now) || n.getSellStartTime().isBefore(now)){
-            return ResponseUtil.fail(ResponseCodeEnum.YS_5004);
-        }
-        if (!n.getSellStartTime().isAfter(n.getReserveStartTime())){
-            return ResponseUtil.fail(ResponseCodeEnum.YS_5003);
-        }
+        log.info("预约开始时间 {}", n.getReserveStartTime());
+        log.info("预约开始时间 {}", n.getSellStartTime());
+//        if (n.getReserveStartTime().isBefore(now) || n.getSellStartTime().isBefore(now)){
+//            return ResponseUtil.fail(ResponseCodeEnum.YS_5004);
+//        }
+//        if (!n.getSellStartTime().isAfter(n.getReserveStartTime())){
+//            return ResponseUtil.fail(ResponseCodeEnum.YS_5003);
+//        }
         try {
             nftManagementService.setPreSale(n);
         }catch (RecordNotFoundException e){

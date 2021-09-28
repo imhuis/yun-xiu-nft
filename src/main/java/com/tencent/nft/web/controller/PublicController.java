@@ -2,6 +2,8 @@ package com.tencent.nft.web.controller;
 
 import com.tencent.nft.entity.pay.WxNotifyResult;
 import com.tencent.nft.service.IPayService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ import java.nio.charset.StandardCharsets;
  */
 @RestController
 public class PublicController {
+
+    final Logger logger = LoggerFactory.getLogger(PublicController.class);
 
     @Autowired
     private IPayService payService;
@@ -55,6 +59,8 @@ public class PublicController {
                     e.printStackTrace();
                 }
             }
+            resJson = sb.toString();
+            logger.info(resJson);
             payService.notifyApp(resJson);
             return ResponseEntity.ok(new WxNotifyResult("SUCCESS","成功"));
         } catch (Exception e) {
