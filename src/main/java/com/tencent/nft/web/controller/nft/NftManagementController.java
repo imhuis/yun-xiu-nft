@@ -76,6 +76,14 @@ public class NftManagementController {
         return ResponseUtil.success(nftManagementService.getPosterPic(nftId));
     }
 
+    /**
+     * 查询nft子列表
+     * @param page
+     * @param size
+     * @param superNFTId
+     * @param subNFTQueryDTO
+     * @return
+     */
     @RequestMapping(value = "/sub/{superNFT}", method = RequestMethod.GET)
     public ResponseResult subNftList(@RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
                                      @RequestParam(value = "per_page",required = false, defaultValue = "20") Integer size,

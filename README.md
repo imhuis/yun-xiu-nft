@@ -10,4 +10,10 @@ https://modao.cc/app/43a2e887d5f2b50b76228fb633cfa73429e150ba#screen=sksi85z757y
 </dependency>
 ```
 
-## 
+## 接口设计
+
+### 小程序数字藏品展示
+
+- 品牌方、发行方
+- 区块链地址、nft编号（子编号）
+- 哈希值

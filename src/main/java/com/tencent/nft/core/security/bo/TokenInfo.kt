@@ -7,7 +7,6 @@ import java.io.Serializable
  * @date: 2020/1/28
  * @description:
  */
-@kotlin.Deprecated(message = "")
 class TokenInfo : Serializable {
 
     var token: String? = null

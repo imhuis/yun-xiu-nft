@@ -53,6 +53,7 @@ public class LoginController {
 
     @RequestMapping("/public/star")
     public void star(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("UTF-8");
         final ServletOutputStream outputStream = response.getOutputStream();
         try {
             outputStream.println("感谢各项目成员在此做出的贡献！！！");
