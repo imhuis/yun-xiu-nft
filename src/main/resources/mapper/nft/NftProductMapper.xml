@@ -15,12 +15,12 @@
     <select id="selectByNftId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from t_nft_product
+        from t_product
         where nft_id = #{nftId}
     </select>
 
     <insert id="insertNftProduct" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        insert into t_nft_product
+        insert into t_product
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="nftId != null">nft_id,</if>
             <if test="nftName != null">nft_name,</if>
@@ -49,12 +49,12 @@
 
     <delete id="deleteByNftId">
         delete from
-        t_nft_product
+        t_product
         where nft_id = #{nftId}
     </delete>
 
     <update id="updateByNftId">
-        update t_nft_product
+        update t_product
         <set>
             <if test="nftStatus != null">nft_status = #{nftStatus},</if>
             <if test="unitPrice != null">unit_price = #{unitPrice},</if>
@@ -63,14 +63,15 @@
             <if test="sellStartTime != null">sell_start_time = #{sellStartTime},</if>
             update_time = #{updateTime}
         </set>
-        WHERE nft_id = #{nftId}
+        where nft_id = #{nftId}
     </update>
 
-
-    <select id="selectSubNftIdByUserId" resultType="java.lang.Long">
-        select nft_id
-        from t_user_nft
-        where user_id = #{userId}
-    </select>
+    <update id="updateStockByProductId">
+        update t_product_stock
+        <set>
+            <if test="stock != null">stock = #{stock},</if>
+        </set>
+        where product_id = #{productId}
+    </update>
 
 </mapper>

@@ -1,15 +1,12 @@
 package com.tencent.nft.web.controller.app;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.app.vo.CollectionVO;
-import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.vo.MyLibraryVO;
-import com.tencent.nft.entity.pay.PayRequestDTO;
+import com.tencent.nft.entity.pay.dto.PayRequestDTO;
 import com.tencent.nft.entity.pay.bo.PrepayBO;
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.service.IAppAuthService;

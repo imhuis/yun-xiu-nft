@@ -1,6 +1,6 @@
 package com.tencent.nft.web.controller;
 
-import com.tencent.nft.entity.pay.WxNotifyResult;
+import com.tencent.nft.entity.pay.bo.WxNotifyResult;
 import com.tencent.nft.service.IPayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

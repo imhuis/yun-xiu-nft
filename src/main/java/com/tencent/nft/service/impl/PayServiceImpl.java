@@ -10,12 +10,13 @@ import com.tencent.nft.common.util.WxPayUtil;
 import com.tencent.nft.core.config.RabbitmqConfig;
 import com.tencent.nft.core.config.WxGroupConfig;
 import com.tencent.nft.entity.nft.NFTProduct;
-import com.tencent.nft.entity.pay.PayRequestDTO;
+import com.tencent.nft.entity.pay.dto.PayRequestDTO;
 import com.tencent.nft.entity.pay.TradeInfo;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import com.tencent.nft.entity.pay.bo.PrepayBO;
 import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.mapper.TradeMapper;
+import com.tencent.nft.mapper.UserLibraryMapper;
 import com.tencent.nft.service.IPayService;
 import com.tencent.nft.service.handler.WechatPayHandler;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
@@ -26,15 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.security.PrivateKey;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author: imhuis
@@ -45,9 +42,6 @@ import java.util.Optional;
 public class PayServiceImpl implements IPayService {
 
     final Logger logger = LoggerFactory.getLogger(PayServiceImpl.class);
-
-    @Resource
-    private NftProductMapper productMapper;
 
     @Resource
     private TradeMapper tradeMapper;
@@ -63,6 +57,12 @@ public class PayServiceImpl implements IPayService {
 
     @Autowired
     private AmqpTemplate amqpTemplate;
+
+    @Resource
+    private NftProductMapper productMapper;
+
+    @Resource
+    private UserLibraryMapper libraryMapper;
 
     @Override
     public PrepayBO prePay(PayRequestDTO dto) throws Exception {
@@ -198,7 +198,20 @@ public class PayServiceImpl implements IPayService {
             // 发送消息
 
             amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.ON_CHAIN_ROUTE_KEY, "xxxxxx");
+
+            updateUserLibrary();
+
         }
+
+    }
+
+    @Transactional
+    @Async
+    void updateUserLibrary() {
+
+        // 更新数量
+//        productMapper.updateStockByProductId();
+//        libraryMapper.selectNftIdByPhone();
 
     }
 

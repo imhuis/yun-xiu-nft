@@ -1,4 +1,4 @@
-package com.tencent.nft.entity.pay;
+package com.tencent.nft.entity.pay.dto;
 
 import java.io.Serializable;
 

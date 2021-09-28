@@ -1,7 +1,7 @@
 package com.tencent.nft.service.impl;
 
 import com.tencent.nft.entity.nft.vo.SysResult;
-import com.tencent.nft.service.FileService;
+import com.tencent.nft.service.IFileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,16 +9,13 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 /**
  * @author: yunj
  * @date: 2021/9/26
  * @description:
  */
 @Service
-public class FileServicelmpl implements FileService {
-
-
+public class FileServiceImpl implements IFileService {
 
     @Override
     public SysResult upload(MultipartFile file) {

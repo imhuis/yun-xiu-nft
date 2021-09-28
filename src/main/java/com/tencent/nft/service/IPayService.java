@@ -1,6 +1,6 @@
 package com.tencent.nft.service;
 
-import com.tencent.nft.entity.pay.PayRequestDTO;
+import com.tencent.nft.entity.pay.dto.PayRequestDTO;
 import com.tencent.nft.entity.pay.bo.PrepayBO;
 
 /**

@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @date: 2021/9/26
  * @description:
  */
-public interface FileService {
+public interface IFileService {
 
    SysResult upload(MultipartFile file);
 

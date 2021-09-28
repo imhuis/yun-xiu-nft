@@ -49,9 +49,6 @@ public class AppAuthServiceImpl implements IAppAuthService {
     private static Logger LOG = LoggerFactory.getLogger(AppAuthServiceImpl.class);
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private WeChatOpenIdByJsCodeLoader weChatOpenIdByJsCodeLoader;
 
     @Resource

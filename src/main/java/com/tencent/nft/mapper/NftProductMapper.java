@@ -1,6 +1,7 @@
 package com.tencent.nft.mapper;
 
 import com.tencent.nft.entity.nft.NFTProduct;
+import com.tencent.nft.entity.pay.ProductStock;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -22,10 +23,5 @@ public interface NftProductMapper {
 
     int updateByNftId(NFTProduct nftProduct);
 
-    /**
-     * 根据userid查询出子nftid
-     * @param userId
-     * @return
-     */
-    List<Long> selectSubNftIdByUserId(String userId);
+    int updateStockByProductId(ProductStock productStock);
 }
