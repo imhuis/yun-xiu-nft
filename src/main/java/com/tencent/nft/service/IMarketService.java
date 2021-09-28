@@ -1,7 +1,6 @@
 package com.tencent.nft.service;
 
 import com.tencent.nft.entity.nft.NFTInfo;
-import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.vo.ProductDetailVO;
 import com.tencent.nft.entity.nft.vo.ProductVO;
 

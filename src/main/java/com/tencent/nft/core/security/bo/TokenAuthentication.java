@@ -10,6 +10,7 @@ import java.util.Collection;
  * @date: 2020/1/28
  * @description:
  */
+@Deprecated
 public class TokenAuthentication implements Authentication {
 
     private String token;

@@ -1,7 +1,6 @@
 package com.tencent.nft.service;
 
 import com.tencent.nft.entity.app.vo.CollectionVO;
-import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.vo.MyLibraryVO;
 
 import java.util.List;

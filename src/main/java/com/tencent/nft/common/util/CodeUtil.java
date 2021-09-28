@@ -18,12 +18,13 @@ import java.util.*;
  * @date 2020/10/30
  */
 public class CodeUtil {
+
     /**
      * 按字典排序签名
      *
-     * @param paramMap 字典
+     * @param paramMap  字典
      * @param secretKey
-     * @return 
+     * @return
      */
     public static String createSignature(Map<String, String> paramMap, String secretKey) throws NoSuchAlgorithmException, InvalidKeyException {
         Set<String> paramKeys = paramMap.keySet();

@@ -10,8 +10,6 @@ class BoxLabelVO {
     var value = 0
     var label: String? = null
 
-    constructor() {}
-
     constructor(value: Int, label: String?) {
         this.value = value
         this.label = label

@@ -7,6 +7,7 @@ import java.io.Serializable;
  * @date: 2020/1/28
  * @description:
  */
+@Deprecated
 public class LoginDetails implements Serializable {
 
     private String username;

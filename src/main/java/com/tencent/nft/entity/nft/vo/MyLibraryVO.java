@@ -9,11 +9,9 @@ import java.io.Serializable;
  */
 public class MyLibraryVO implements Serializable {
 
-
     private String nftId;
     private String nftName;
     // 封面图片
-
     private String coverPicture;
     private String owner;
 

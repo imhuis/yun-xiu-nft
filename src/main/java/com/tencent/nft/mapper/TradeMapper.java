@@ -1,6 +1,5 @@
 package com.tencent.nft.mapper;
 
-import com.tencent.nft.common.enums.pay.TradeState;
 import com.tencent.nft.entity.pay.TradeInfo;
 import org.apache.ibatis.annotations.Mapper;
 

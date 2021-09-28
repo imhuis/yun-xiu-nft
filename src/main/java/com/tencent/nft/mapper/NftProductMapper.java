@@ -4,7 +4,6 @@ import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.pay.ProductStock;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

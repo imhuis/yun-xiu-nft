@@ -5,7 +5,6 @@
  */
 package com.tencent.nft.service.handler;
 
-import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

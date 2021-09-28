@@ -36,7 +36,7 @@ public class ProductWebSocket {
      * 连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("name") String name) {
+    public void onOpen(Session session, @PathParam("nft_id") String name) {
         this.session = session;
         this.name = name;
 //        webSocketSet.put(name, this);

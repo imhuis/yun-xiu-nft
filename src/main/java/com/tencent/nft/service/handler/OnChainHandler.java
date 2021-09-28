@@ -89,7 +89,7 @@ public class OnChainHandler {
     }
 
 
-    public String getChainAddress(){
+    public String getChainAddress() {
         // 先从缓存获取token, 如果未登录调用 getAccessToken()
 
         // 上链操作
@@ -98,10 +98,10 @@ public class OnChainHandler {
     }
 
     private String onChain(String evidenceType,
-                                  String evidenceId,
-                                  String hashType,
-                                  String evidenceInfo,
-                                  String accessToken) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+                           String evidenceId,
+                           String hashType,
+                           String evidenceInfo,
+                           String accessToken) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
 
         long currentTime = System.currentTimeMillis();
         String noncestr = "0123456789012345678901234567890123456789";
@@ -154,7 +154,7 @@ public class OnChainHandler {
                 .build();
 
         ResponseEntity<GetAccessTokenResult> result = restTemplate.exchange(requestEntity, GetAccessTokenResult.class);
-        if (result.getStatusCode().is2xxSuccessful()){
+        if (result.getStatusCode().is2xxSuccessful()) {
             return result.getBody().getAccessToken();
         }
         return "";
