@@ -7,9 +7,9 @@
         <result column="record" jdbcType="VARCHAR" property="record"/>
     </resultMap>
 
-    <update id="insert" parameterType="com.tencent.nft.entity.admin.TemporaryRecord">
+    <insert id="insert">
         INSERT INTO t_temp (c_key, record) values (#{key}, #{record})
-    </update>
+    </insert>
 
     <update id="update">
         UPDATE t_temp

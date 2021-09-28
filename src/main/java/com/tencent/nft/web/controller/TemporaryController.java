@@ -36,12 +36,11 @@ public class TemporaryController {
     /**
      * 根据指定值查询临时记录
      *
-     * @param temporaryRecord
      * @return
      */
     @GetMapping("/public/selectlinshi")
-    public ResponseResult queryTemporaryRecord(String temporaryRecord) {
-        String record = temporaryService.selectByKeyWord(temporaryRecord);
+    public ResponseResult queryTemporaryRecord() {
+        String record = temporaryService.selectByKeyWord("");
         return ResponseUtil.success(record);
     }
 }

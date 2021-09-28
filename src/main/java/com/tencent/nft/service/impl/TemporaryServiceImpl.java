@@ -36,7 +36,7 @@ public class TemporaryServiceImpl implements ITemporaryService {
     }
 
     @Override
-    public String selectByKeyWord(String temporaryRecord) {
+    public String selectByKeyWord(String key) {
         String keyWord = "index-nftId";
         StringBuilder sb = new StringBuilder("temp:");
         String redisKey = sb.append(keyWord).toString();
