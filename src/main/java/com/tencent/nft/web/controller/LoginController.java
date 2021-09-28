@@ -1,7 +1,10 @@
 package com.tencent.nft.web.controller;
 
+import cn.hutool.Hutool;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ShearCaptcha;
+import com.tencent.nft.common.base.ResponseResult;
+import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.constant.SecurityConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +44,23 @@ public class LoginController {
             outputStream.flush();
             outputStream.close();
         }
+    }
+
+    @RequestMapping("/public/forget_pwd")
+    public ResponseResult forgetPassword(){
+        return ResponseUtil.success("开发中，敬请期待！");
+    }
+
+    @RequestMapping("/public/star")
+    public void star(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        final ServletOutputStream outputStream = response.getOutputStream();
+        try {
+            outputStream.println("感谢各项目成员在此做出的贡献！！！");
+        }finally {
+            outputStream.flush();
+            outputStream.close();
+        }
+//        ImageIO.write(captcha.getImage(), "png", outputStream);
     }
 
 }

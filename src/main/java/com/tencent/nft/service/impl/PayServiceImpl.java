@@ -213,6 +213,11 @@ public class PayServiceImpl implements IPayService {
 
     }
 
+    @Override
+    public void refund() {
+
+    }
+
     @Transactional
     @Async
     void updateUserLibrary() {

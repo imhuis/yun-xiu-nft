@@ -13,6 +13,7 @@ import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.IAppService;
 import com.tencent.nft.service.IPayService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,7 +76,10 @@ public class AppController {
      * @return
      */
     @RequestMapping(value = "/pay", method = RequestMethod.POST)
-    public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO) throws Exception {
+    public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO, BindingResult result) {
+        if (result.hasFieldErrors()){
+            return ResponseUtil.fail(ResponseCodeEnum.Validation_Error, result.getAllErrors().get(0));
+        }
         System.out.println(payRequestDTO.toString());
         try {
             PrepayBO prepayBO = payService.prePay(payRequestDTO);

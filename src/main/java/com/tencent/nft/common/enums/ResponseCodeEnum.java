@@ -13,7 +13,7 @@ public enum ResponseCodeEnum {
     PARAMETER_MISSING(1001, "没有请求参数"),
     REQUEST_BODY_MISSING(1002, "请求体缺失"),
     CC_1003(1003, "未查询到该条记录"),
-    CC_1004(1004, "参数校验异常"),
+    Validation_Error(1004, "参数校验异常"),
 
     NFT_4001(4001, "记录不存在"),
     NFT_4002(4002, "创建失败"),

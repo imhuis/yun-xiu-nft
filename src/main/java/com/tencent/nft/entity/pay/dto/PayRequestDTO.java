@@ -1,5 +1,7 @@
 package com.tencent.nft.entity.pay.dto;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -9,8 +11,13 @@ import java.io.Serializable;
  */
 public class PayRequestDTO implements Serializable {
 
+    // 商品id
+    @NotNull(message = "商品id不能为空")
     private String nftId;
-    private Double price;
+    // 价格
+
+    @DecimalMin(value = "0.01",message = "最低金额0.01")
+    private double price;
     // 支付者
     private String openId;
 

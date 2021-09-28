@@ -30,8 +30,6 @@ public class NftEnumController {
     // nft类型枚举
     @RequestMapping("/nft_type")
     public ResponseResult getNftType(){
-//        Set<NFTTypeEnum> nftTypeEnumSet = Arrays.asList(NFTTypeEnum.values()).stream().collect(Collectors.toSet());
-//        redisTemplate.opsForValue()
         Set<BoxLabelVO> boxLabelVOSet = Arrays.asList(NFTTypeEnum.values())
                 .stream()
                 .map(x -> new BoxLabelVO(x.getCode(), x.getValue()))

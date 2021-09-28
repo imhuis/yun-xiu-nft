@@ -3,14 +3,9 @@ package com.tencent.nft.web.controller.nft;
 import com.tencent.nft.common.base.PageBean;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
-import com.tencent.nft.common.enums.ICommonEnum;
-import com.tencent.nft.common.enums.NFTStatusEnum;
-import com.tencent.nft.common.enums.NFTTypeEnum;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
 import com.tencent.nft.common.exception.RecordNotFoundException;
-import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.entity.nft.NFTInfo;
-import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.*;
 import com.tencent.nft.service.INftManagementService;
@@ -22,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author: imhuis
@@ -102,14 +96,14 @@ public class NftManagementController {
     /**
      * 创建新的nft
      * @param dto
-     * @param bindingResult
+     * @param result
      * @return
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public ResponseResult createNFT(@RequestBody @Validated NftCreateDTO dto, BindingResult bindingResult){
-        // 参数校验
-        if (bindingResult.hasFieldErrors()){
-            return ResponseUtil.fail(ResponseCodeEnum.CC_1004, bindingResult.getFieldErrors().get(0));
+    public ResponseResult createNFT(@RequestBody @Validated NftCreateDTO dto, BindingResult result){
+        if (result.hasFieldErrors()){
+            // 参数校验异常
+            return ResponseUtil.fail(ResponseCodeEnum.Validation_Error, result.getFieldErrors().get(0));
         }
 
         if (dto.getDetailPicture().size() > 6){
@@ -127,7 +121,8 @@ public class NftManagementController {
     @RequestMapping(value = "/delete.action", method = RequestMethod.POST)
     public ResponseResult deleteNFT(@RequestBody @Validated NftDeleteDTO nftDeleteDTO, BindingResult result){
         if (result.hasFieldErrors()){
-            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+            // 参数校验异常
+            return ResponseUtil.fail(ResponseCodeEnum.Validation_Error, result.getFieldErrors().get(0));
         }
         String nftId = nftDeleteDTO.getNftId().trim().toLowerCase();
         nftManagementService.deleteNft(nftId);
@@ -140,9 +135,10 @@ public class NftManagementController {
      */
     @RequestMapping(value = "/pre_sale", method = RequestMethod.POST)
     public ResponseResult setSale(@RequestBody @Validated PreSaleDTO n, BindingResult result){
-//        if (result.hasFieldErrors()){
-//            return ResponseUtil.fail(ResponseCodeEnum.CC_1004, result.getFieldErrors().get(0));
-//        }
+        if (result.hasFieldErrors()){
+            // 参数校验异常
+            return ResponseUtil.fail(ResponseCodeEnum.Validation_Error, result.getFieldErrors().get(0));
+        }
 //        if (!n.getReserveEndTime().isAfter(n.getReserveStartTime())){
 //            return ResponseUtil.fail(ResponseCodeEnum.YS_5001);
 //        }

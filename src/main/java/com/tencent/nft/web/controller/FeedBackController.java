@@ -22,31 +22,33 @@ import java.util.List;
  * @description:
  */
 @RestController
+// 跨域支持
 @CrossOrigin
 public class FeedBackController {
+
     @Autowired
     private FeedService feedService;
 
     /**
      * 接收前端客户的反馈信息
      * 插入数据库
-     * */
+     */
     @PostMapping("/app/feedback")
-    public SysResult insert(@RequestBody(required=false) FeedBack feedBack){
+    public SysResult insert(@RequestBody(required = false) FeedBack feedBack) {
         feedService.insert(feedBack);
         return SysResult.success("null");
     }
 
     /**
-     *查询所有用户反馈信息
+     * 查询所有用户反馈信息
      * 并且进行分页
      * 每页数据15条
-     * */
+     */
     @PostMapping("/admin/getAllFeedBack")
-    public SysResult getAllFeedBack(Model model, @RequestParam(value = "pageNum",required = false, defaultValue = "1") Integer pageNum,
-     @RequestParam(value = "pageSize",required = false, defaultValue = "20") Integer pagesize,
-     @RequestParam(value = "date", required = false) String date) throws ParseException {
-        PageHelper.startPage(pageNum,pagesize);
+    public SysResult getAllFeedBack(Model model, @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
+                                    @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pagesize,
+                                    @RequestParam(value = "date", required = false) String date) throws ParseException {
+        PageHelper.startPage(pageNum, pagesize);
         List<FeedBack> list = null;
         try {
             list = feedService.getAll(date);
@@ -54,34 +56,34 @@ public class FeedBackController {
             e.printStackTrace();
         }
         PageInfo<FeedBack> pageInfo = new PageInfo<FeedBack>(list);
-        model.addAttribute("pageInfo",pageInfo);
+        model.addAttribute("pageInfo", pageInfo);
         return SysResult.success(pageInfo);
     }
 
 
     /**
      * 根据日期进行查询
-     * */
+     */
     @GetMapping("/admin/getByDate/{date}")
-    public SysResult getByDate(@PathVariable String date){
+    public SysResult getByDate(@PathVariable String date) {
         List<FeedBack> byDate = feedService.getByDate(date);
         return SysResult.success(byDate);
     }
 
     /**
      * 根据用户的id删除反馈记录
-     * */
+     */
     @DeleteMapping("/admin/delete/{id}")
-    public SysResult deleteById(@PathVariable Integer id){
+    public SysResult deleteById(@PathVariable Integer id) {
         feedService.deleteById(id);
         return SysResult.success();
     }
 
     /**
      * 根据id查询
-     * */
+     */
     @GetMapping("/admin/getById/{id}")
-    public SysResult getById(@PathVariable Integer id){
+    public SysResult getById(@PathVariable Integer id) {
         feedService.getById(id);
         return SysResult.success(feedService.getById(id));
     }
