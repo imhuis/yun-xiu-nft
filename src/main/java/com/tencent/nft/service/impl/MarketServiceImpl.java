@@ -1,7 +1,7 @@
 package com.tencent.nft.service.impl;
 
 import com.tencent.nft.common.enums.NFTStatusEnum;
-import com.tencent.nft.common.exception.RecordNotFoundException;
+import com.tencent.nft.common.exception.business.RecordNotFoundException;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.NFTProduct;

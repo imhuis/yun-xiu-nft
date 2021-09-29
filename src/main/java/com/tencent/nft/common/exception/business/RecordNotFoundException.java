@@ -1,4 +1,6 @@
-package com.tencent.nft.common.exception;
+package com.tencent.nft.common.exception.business;
+
+import com.tencent.nft.common.exception.CustomizeException;
 
 /**
  * @author: imhuis

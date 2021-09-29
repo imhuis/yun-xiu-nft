@@ -8,7 +8,8 @@ import com.tencent.nft.common.enums.ICommonEnum;
 import com.tencent.nft.common.enums.NFTSaleStatusEnum;
 import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.enums.NFTTypeEnum;
-import com.tencent.nft.common.exception.RecordNotFoundException;
+import com.tencent.nft.common.exception.business.NftManageException;
+import com.tencent.nft.common.exception.business.RecordNotFoundException;
 import com.tencent.nft.common.util.BusinessIdGenerate;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.entity.nft.NFTInfo;
@@ -116,15 +117,18 @@ public class NftManagementServiceImpl implements INftManagementService {
         PageHelper.startPage(page, size);
         List<SuperNFT> superNFTList = nftMapper.selectSuperNFTList(nftListQueryDTO);
         List<NFTListVO> nftListVOList = Lists.newArrayList();
-//        Collections.copy(superNFTList, nftListVOList);
         superNFTList.stream().forEach(c -> {
             NFTListVO tmp = new NFTListVO();
             BeanUtils.copyProperties(c, tmp);
             // 如果不是待发行，则显示金额和发行量
             if (c.getNftStatus() != NFTStatusEnum.WAITING){
-                NFTProduct nftProduct = productMapper.selectByNftId(c.getNftId()).get();
-                tmp.setUnitPrice(nftProduct.getUnitPrice().doubleValue());
-                tmp.setCirculation(nftProduct.getCirculation());
+                Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(c.getNftId());
+                if (nftProductOptional.isPresent()){
+                    NFTProduct product = nftProductOptional.get();
+                    tmp.setUnitPrice(product.getUnitPrice().doubleValue());
+                    tmp.setCirculation(product.getCirculation());
+                }
+
             }else {
                 // others
             }
@@ -138,8 +142,6 @@ public class NftManagementServiceImpl implements INftManagementService {
         });
 
         PageBean<List<NFTListVO>> pageBean = new PageBean<>(new PageInfo(superNFTList));
-//        pageBean.setPages(pageInfo.getPages());
-//        pageBean.setTotal(pageInfo.getTotal());
         pageBean.setData(nftListVOList);
 
         return pageBean;
@@ -150,7 +152,7 @@ public class NftManagementServiceImpl implements INftManagementService {
         if (subNFTQueryDTO == null){
             subNFTQueryDTO = new SubNFTQueryDTO();
         }
-        // 找不到父nft
+        // 找不到父nft记录
         Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(parentNftId);
         if (superNFTOptional.isEmpty()){
             throw new RecordNotFoundException();
@@ -251,13 +253,14 @@ public class NftManagementServiceImpl implements INftManagementService {
         SuperNFT superNFTInfo;
         NFTProduct nftProduct = new NFTProduct();
         if (superNFTOptional.isEmpty()){
-            // 未找到这条记录
-            throw new RecordNotFoundException();
-            // 重复预售
-
+            throw new RecordNotFoundException("未找到这条记录");
 
         }else {
             superNFTInfo = superNFTOptional.get();
+            // 重复预售
+            if (superNFTInfo.getNftStatus() == NFTStatusEnum.UP || superNFTInfo.getNftStatus() == NFTStatusEnum.APPOINTMENT){
+                throw new NftManageException("重复更改状态");
+            }
             BeanUtils.copyProperties(n, nftProduct);
             nftProduct.setNftName(superNFTInfo.getNftName());
             nftProduct.setNftStatus(NFTStatusEnum.APPOINTMENT);

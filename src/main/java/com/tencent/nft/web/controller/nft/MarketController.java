@@ -3,7 +3,7 @@ package com.tencent.nft.web.controller.nft;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
-import com.tencent.nft.common.exception.RecordNotFoundException;
+import com.tencent.nft.common.exception.business.RecordNotFoundException;
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.vo.ProductDetailVO;
 import com.tencent.nft.entity.nft.vo.ProductVO;
