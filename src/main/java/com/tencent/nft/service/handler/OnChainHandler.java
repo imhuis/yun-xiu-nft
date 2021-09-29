@@ -91,19 +91,25 @@ public class OnChainHandler {
     }
 
 
-    public String getChainAddress() {
+    public String getChainAddress(String evidenceId, String evidenceInfo) {
         // 先从缓存获取token, 如果未登录调用 getAccessToken()
-
-        // 上链操作
-
-        return "";
+        String accessToken = getAccessToken("read");
+        String chainAddress = null;
+        try {
+            chainAddress = onChain("0", evidenceId, "0", evidenceInfo, accessToken);
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return chainAddress;
     }
 
     private String onChain(String evidenceType,
                            String evidenceId,
                            String hashType,
                            String evidenceInfo,
-                           String accessToken) throws IOException, InvalidKeyException, NoSuchAlgorithmException {
+                           String accessToken) throws InvalidKeyException, NoSuchAlgorithmException {
 
         long currentTime = System.currentTimeMillis();
         String noncestr = "0123456789012345678901234567890123456789";
@@ -142,7 +148,7 @@ public class OnChainHandler {
     }
 
 
-    private String getAccessToken(String scope) throws IOException {
+    private String getAccessToken(String scope) {
         RequestBody requestBody = new FormBody.Builder()
                 .add("client_id", chainProperties.getClientId())
                 .add("client_secret", chainProperties.getClientSecret())

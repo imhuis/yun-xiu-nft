@@ -75,9 +75,9 @@ public class MarketController {
      * @param nftId
      * @return
      */
-    @RequestMapping("/app/public/market/{nft_id}/reservation_amount")
+    @RequestMapping("/app/public/market/{nft_id}/amount")
     public ResponseResult getReservationAmount(@PathVariable(value = "nft_id") String nftId){
-        long amount = marketService.getProductReservations(nftId);
+        long amount = marketService.getProductAmount(nftId);
         return ResponseUtil.success(amount);
     }
 

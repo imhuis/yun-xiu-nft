@@ -24,6 +24,7 @@ import com.tencent.nft.entity.nft.vo.SubNFTListVO;
 import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.service.INftManagementService;
+import com.tencent.nft.service.handler.OnChainHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,9 @@ public class NftManagementServiceImpl implements INftManagementService {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private OnChainHandler onChainHandler;
+
     final String DEFAULT_ISSUER  = "安凰领御";
 
 
@@ -75,18 +79,19 @@ public class NftManagementServiceImpl implements INftManagementService {
         nftInfo.setIntroduce(dto.getIntroduce());
         nftInfo.setNftCreateTime(LocalDateTime.now());
 
-        nftInfo.setNftId(BusinessIdGenerate.generateSuperNftId());
+        String id = BusinessIdGenerate.generateSuperNftId();
+        nftInfo.setNftId(id);
 
         nftInfo.setCoverPicture(dto.getCoverPicture());
         nftInfo.setDetailPicture(dto.getDetailPicture().stream().collect(Collectors.joining(",")));
 
+        // 调用上链接口 返回nft在区块链中的地址
+        String address = onChainHandler.getChainAddress(id, id);
+        nftInfo.setChainAddress(address);
+
         // 事务执行放在一起
         nftMapper.insertSuperNFT(nftInfo);
         nftMapper.insertNftInfo(nftInfo);
-
-        // 调用上链接口 返回nft在区块链中的地址
-
-
 
         return nftInfo;
     }

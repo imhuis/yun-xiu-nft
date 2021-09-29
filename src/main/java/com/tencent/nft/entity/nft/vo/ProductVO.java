@@ -3,6 +3,7 @@ package com.tencent.nft.entity.nft.vo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author: imhuis
@@ -32,6 +33,8 @@ public class ProductVO implements Serializable {
     private double price;
     // 发行量
     private int amount;
+
+    private LocalDateTime sellStartTime;
 
     // 区块链地址
     private String chainAddress;
@@ -120,6 +123,14 @@ public class ProductVO implements Serializable {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public LocalDateTime getSellStartTime() {
+        return sellStartTime;
+    }
+
+    public void setSellStartTime(LocalDateTime sellStartTime) {
+        this.sellStartTime = sellStartTime;
     }
 
     public String getChainAddress() {

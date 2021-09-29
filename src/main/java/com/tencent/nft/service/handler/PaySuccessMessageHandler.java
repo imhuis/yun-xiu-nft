@@ -46,7 +46,7 @@ public class PaySuccessMessageHandler {
     private NftMapper nftMapper;
 
     // 监听上链消息
-    @RabbitListener(queues = {"pay-notify-queue"})
+//    @RabbitListener(queues = {"pay-notify-queue"})
     public void onChain(Message message, Channel channel) throws IOException {
 
         try {

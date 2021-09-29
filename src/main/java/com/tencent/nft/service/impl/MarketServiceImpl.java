@@ -76,13 +76,15 @@ public class MarketServiceImpl implements IMarketService {
         NFTStatusEnum productStatus = superNFT.getNftStatus();
         productVO.setStatus(superNFT.getNftStatus().getCode());
         productVO.setNftType(superNFT.getNftType().getCode());
+        productVO.setChainAddress(superNFT.getChainAddress());
 
 
-        if (productStatus == NFTStatusEnum.UP || productStatus == NFTStatusEnum.APPOINTMENT){
+        if (productStatus == NFTStatusEnum.APPOINTMENT || productStatus == NFTStatusEnum.UP){
             Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(productId);
             NFTProduct nftProduct = nftProductOptional.get();
             productVO.setPrice(nftProduct.getUnitPrice().doubleValue());
             productVO.setAmount(nftProduct.getCirculation());
+            productVO.setSellStartTime(nftProduct.getSellStartTime());
         }
 
 
@@ -94,7 +96,8 @@ public class MarketServiceImpl implements IMarketService {
             // 判断是否预约过
             if (productStatus == NFTStatusEnum.APPOINTMENT){
                 BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
-                if (bso.isMember(phone) == Boolean.TRUE){
+                System.out.println(bso.isMember(phone));
+                if (bso.isMember(phone) == false){
                     productVO.setPersonStatus(1);
                 }
             }
@@ -122,9 +125,16 @@ public class MarketServiceImpl implements IMarketService {
     }
 
     @Override
-    public long getProductReservations(String productId) {
-        BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
-        return bso.size();
+    public long getProductAmount(String productId) {
+        NFTProduct nftProduct = productMapper.selectByNftId(productId).get();
+        NFTStatusEnum statusEnum = nftProduct.getNftStatus();
+        if (statusEnum == NFTStatusEnum.APPOINTMENT){
+            return getProductReservationAmount(productId);
+        }
+        if (statusEnum == NFTStatusEnum.UP){
+            return getProductPurchaseAmount(productId);
+        }
+        return 0;
     }
 
     @Override
@@ -142,12 +152,35 @@ public class MarketServiceImpl implements IMarketService {
         }
     }
 
+    @Override
+    public long getProductReservationAmount(String productId) {
+        BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
+        return bso.size();
+    }
+
+    @Override
+    public long getProductPurchaseAmount(String productId) {
+        BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReservesChar(productId));
+        return bso.size();
+    }
+
     /**
      * 获取预约键的key
      * @param productId
      * @return
      */
     protected String getReserveChar(String productId){
+        StringBuilder sb = new StringBuilder("yy:");
+        sb.append(productId.trim().toLowerCase());
+        return sb.toString();
+    }
+
+    /**
+     * 获取购买数量键的key
+     * @param productId
+     * @return
+     */
+    protected String getReservesChar(String productId){
         StringBuilder sb = new StringBuilder("yy:");
         sb.append(productId.trim().toLowerCase());
         return sb.toString();

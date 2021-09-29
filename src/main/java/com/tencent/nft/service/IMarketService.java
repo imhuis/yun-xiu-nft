@@ -24,11 +24,20 @@ public interface IMarketService {
 
     ProductDetailVO getProductDetail(String nftId);
 
+    long getProductAmount(String nftId);
+
+    Boolean reserveProduct(String nftId);
+
+
     /**
      * 获取预约数量
      * @param nftId
      */
-    long getProductReservations(String nftId);
+    long getProductReservationAmount(String nftId);
 
-    Boolean reserveProduct(String nftId);
+    /**
+     * 获取数量
+     * @param nftId
+     */
+    long getProductPurchaseAmount(String nftId);
 }

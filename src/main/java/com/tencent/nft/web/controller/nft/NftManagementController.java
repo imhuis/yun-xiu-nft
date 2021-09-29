@@ -122,12 +122,12 @@ public class NftManagementController {
             return ResponseUtil.fail(ResponseCodeEnum.NFT_4003);
         }
 
-        try {
+//        try {
             NFTInfo nftInfoResult = nftManagementService.createNFT(dto);
             return ResponseUtil.success(nftInfoResult);
-        }catch (Exception e){
-            return ResponseUtil.fail(ResponseCodeEnum.NFT_4002);
-        }
+//        }catch (Exception e){
+//            return ResponseUtil.fail(ResponseCodeEnum.NFT_4002);
+//        }
     }
 
     /**
