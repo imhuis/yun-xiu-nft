@@ -53,7 +53,11 @@ public interface NftMapper {
 
     int insertSubNft(SubNFT subNFT);
 
+    int updateSubNft(SubNFT subNFT);
+
     SubNFT selectSubNftByNftId(String subId);
 
     SubNFT selectSubNftById(Long id);
+
+    SubNFT selectSubBftByStatus(String superNftId);
 }

@@ -4,17 +4,26 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
+import com.tencent.nft.common.enums.NFTSaleStatusEnum;
+import com.tencent.nft.common.util.UUIDUtil;
+import com.tencent.nft.entity.nft.SubNFT;
+import com.tencent.nft.entity.nft.UserLibrary;
 import com.tencent.nft.entity.pay.bo.OrderMessageBO;
+import com.tencent.nft.entity.security.WxUser;
+import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.UserLibraryMapper;
+import com.tencent.nft.mapper.WxUserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 /**
  * @author: imhuis
@@ -32,6 +41,12 @@ public class PaySuccessMessageHandler {
     @Resource
     private UserLibraryMapper libraryMapper;
 
+    @Resource
+    private WxUserMapper wxUserMapper;
+
+    @Resource
+    private NftMapper nftMapper;
+
     // 监听上链消息
     @RabbitListener(queues = {"pay-notify-queue"})
     public void onChain(Message message, Channel channel) throws IOException {
@@ -44,12 +59,15 @@ public class PaySuccessMessageHandler {
             log.info(messageData);
             /** {"trade_no":"2bcdf9cbfa1940f8913bec7599114176","open_id":"oQ13L5K2HVK3rLYcIlw_n2va7Tcs","product_id":"YX20210929131719"} **/
             OrderMessageBO messageBO = objectMapper.readValue(messageData, OrderMessageBO.class);
-            String openId = messageBO.getOpenId();
             String tradeNo = messageBO.getTradeNo();
-            String productId = messageBO.getProductId();
 
-            libraryMapper.();
+            UserLibrary userLibrary = libraryMapper.selectByTradeNo(tradeNo);
+            if (userLibrary == null){
+                createNew(messageBO);
 
+            }else {
+                return;
+            }
 
         } catch (Exception e) {
 //            long retryCount = getRetryCount(message.getMessageProperties());
@@ -77,6 +95,30 @@ public class PaySuccessMessageHandler {
              */
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         }
+
+    }
+
+    @Transactional
+    void createNew(OrderMessageBO messageBO){
+        String openId = messageBO.getOpenId();
+        String tradeNo = messageBO.getTradeNo();
+        String productId = messageBO.getProductId();
+
+        WxUser wxUser = wxUserMapper.selectFullByOpenId(openId).get();
+        SubNFT newSubNFT = nftMapper.selectSubBftByStatus(productId);
+
+        UserLibrary userLibrary = new UserLibrary();
+        userLibrary.setTradeNo(tradeNo);
+        userLibrary.setUserId(wxUser.getUserId());
+        userLibrary.setPhone(wxUser.getPhone());
+        userLibrary.setOpenId(openId);
+        userLibrary.setNftId(newSubNFT.getNftId());
+        libraryMapper.insert(userLibrary);
+
+        newSubNFT.setChainAddress(UUIDUtil.generateUUID());
+        newSubNFT.setSoldTime(LocalDateTime.now());
+        newSubNFT.setSaleStatus(NFTSaleStatusEnum.Sold);
+        nftMapper.updateSubNft(newSubNFT);
 
     }
 

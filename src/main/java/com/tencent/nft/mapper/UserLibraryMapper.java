@@ -15,6 +15,8 @@ public interface UserLibraryMapper {
 
     int insert(UserLibrary userLibrary);
 
+    UserLibrary selectByTradeNo(String tradeNo);
+
     List<Long> selectNftIdByPhone(String phone);
 
 }

@@ -185,6 +185,20 @@
         </trim>
     </insert>
 
+    <update id="updateSubNft">
+        update t_sub_nft
+        <set>
+            <if test="nftId != null">#{nftId},</if>
+            <if test="superNFTId != null">#{superNFTId},</if>
+            <if test="saleStatus != null">#{saleStatus},</if>
+            <if test="chainAddress != null">#{chainAddress},</if>
+            <if test="nftCreateTime != null">#{nftCreateTime},</if>
+            <if test="soldTime != null">#{soldTime},</if>
+            update_time = #{updateTime}
+        </set>
+        WHERE sub_id = #{nftId}
+    </update>
+
     <select id="selectSubNftByNftId" resultMap="SubNFTResultMap">
         select
         <include refid="SubNFT_Column_List"/>
@@ -197,6 +211,13 @@
         <include refid="SubNFT_Column_List"/>
         from t_sub_nft
         where id = #{id}
+    </select>
+
+    <select id="selectSubBftByStatus" resultMap="SubNFTResultMap">
+        select
+        <include refid="SubNFT_Column_List"/>
+        from t_sub_nft
+        where super_id = #{superNftId} and sale_status = 2 order by nft_create_time limit 1
     </select>
 
 </mapper>

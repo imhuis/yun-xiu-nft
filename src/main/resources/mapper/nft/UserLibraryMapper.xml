@@ -5,9 +5,34 @@
 <!--        <id column="id" jdbcType="BIGINT" property="id"/>-->
 <!--    </resultMap>-->
 
-    <sql id="SuperNFT_Column_List">
-
+    <sql id="Base_Column_List">
+        user_id, open_id, phone, nft_id, trade_no, create_time, update_time
     </sql>
+    <insert id="insert">
+        insert into t_user_library
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="openId != null">open_id,</if>
+            <if test="phone != null">phone,</if>
+            <if test="nftId != null">nft_id,</if>
+            <if test="tradeNo != null">trade_no,</if>
+            create_time, update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="openId != null">#{openId},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="nftId != null">#{nftType},</if>
+            <if test="tradeNo != null">#{tradeNo},</if>
+            #{createTime}, #{updateTime}
+        </trim>
+    </insert>
+
+    <select id="selectByTradeNo">
+        select <include refid="Base_Column_List"/>
+        from t_user_library
+        where trade_no = #{tradeNo}
+    </select>
 
     <select id="selectNftIdByPhone" resultType="java.lang.Long">
         select nft_id

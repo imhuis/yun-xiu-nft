@@ -10,7 +10,8 @@ public class UserLibrary {
     private String userId;
     private String openId;
     private String phone;
-    private Long nftId;
+    private String nftId;
+    private String tradeNo;
 
     public String getUserId() {
         return userId;
@@ -36,11 +37,19 @@ public class UserLibrary {
         this.phone = phone;
     }
 
-    public Long getNftId() {
+    public String getNftId() {
         return nftId;
     }
 
-    public void setNftId(Long nftId) {
+    public void setNftId(String nftId) {
         this.nftId = nftId;
+    }
+
+    public String getTradeNo() {
+        return tradeNo;
+    }
+
+    public void setTradeNo(String tradeNo) {
+        this.tradeNo = tradeNo;
     }
 }
