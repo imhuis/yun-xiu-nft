@@ -9,13 +9,12 @@ import com.tencent.nft.entity.app.vo.CollectionVO;
 import com.tencent.nft.entity.nft.vo.MyLibraryVO;
 import com.tencent.nft.entity.nft.vo.SysResult;
 import com.tencent.nft.entity.pay.dto.PayRequestDTO;
-import com.tencent.nft.entity.pay.bo.PrepayBO;
+import com.tencent.nft.entity.pay.bo.PrepayVO;
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.service.IFeedService;
 import com.tencent.nft.service.IAppAuthService;
 import com.tencent.nft.service.IAppService;
 import com.tencent.nft.service.IPayService;
-import com.tencent.nft.web.controller.nft.MarketController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,8 +93,8 @@ public class AppController {
         }
         log.debug("api-/pay: requestBody: \n{}", payRequestDTO.toString());
         try {
-            PrepayBO prepayBO = payService.prePay(payRequestDTO);
-            return ResponseUtil.success(prepayBO);
+            PrepayVO prepayVO = payService.prePay(payRequestDTO);
+            return ResponseUtil.success(prepayVO);
         }catch (Exception e){
             return ResponseUtil.fail(ResponseCodeEnum.FAILD);
         }

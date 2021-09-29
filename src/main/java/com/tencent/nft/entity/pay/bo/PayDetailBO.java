@@ -18,6 +18,9 @@ public class PayDetailBO implements Serializable {
     // 支付者
     private String openId;
 
+    // 商品编号
+    private String productNo;
+
     public String getTradeNo() {
         return tradeNo;
     }
@@ -48,5 +51,13 @@ public class PayDetailBO implements Serializable {
 
     public void setOpenId(String openId) {
         this.openId = openId;
+    }
+
+    public String getProductNo() {
+        return productNo;
+    }
+
+    public void setProductNo(String productNo) {
+        this.productNo = productNo;
     }
 }

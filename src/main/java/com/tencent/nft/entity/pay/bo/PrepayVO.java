@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @date: 2021/9/26
  * @description:
  */
-public class PrepayBO implements Serializable {
+public class PrepayVO implements Serializable {
 
     // 小程序id-必填
     private String appId;
@@ -29,10 +29,10 @@ public class PrepayBO implements Serializable {
     // 系统内部业务码
     private int code;
 
-    public PrepayBO() {
+    public PrepayVO() {
     }
 
-    public PrepayBO(int code) {
+    public PrepayVO(int code) {
         this.code = code;
     }
 

@@ -7,21 +7,20 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id, trade_no, transaction_id, description, description, payer, amount_total, payer_total, trade_type, success_time,
-        trade_status, create_time, update_time
+        id, trade_no, product_no, price, payer, create_time, update_time
     </sql>
 
     <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
-        insert into t_trade
+        insert into t_pre_order
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="tradeNo != null and tradeNo != ''">trade_no,</if>
-            <if test="productNo != null">product_No,</if>
+            <if test="productNo != null">product_no,</if>
             <if test="price != null">price,</if>
             <if test="payer != null">payer,</if>
             create_time, update_time
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="tradeNo != null and tradeNo != ''">#{tradeno},</if>
+            <if test="tradeNo != null and tradeNo != ''">#{tradeNo},</if>
             <if test="productNo != null">#{productNo},</if>
             <if test="price != null">#{price},</if>
             <if test="payer != null">#{payer},</if>
@@ -31,7 +30,7 @@
 
     <select id="selectByTradeNo" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/>
-        from t_trade
+        from t_pre_order
         where trade_no = #{tradeNo}
     </select>
 

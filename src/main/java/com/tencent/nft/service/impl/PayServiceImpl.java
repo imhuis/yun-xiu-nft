@@ -11,11 +11,13 @@ import com.tencent.nft.common.util.WxPayUtil;
 import com.tencent.nft.core.config.RabbitmqConfig;
 import com.tencent.nft.common.properties.WxGroupProperties;
 import com.tencent.nft.entity.nft.NFTProduct;
+import com.tencent.nft.entity.pay.PreOrder;
 import com.tencent.nft.entity.pay.dto.PayRequestDTO;
 import com.tencent.nft.entity.pay.TradeInfo;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
-import com.tencent.nft.entity.pay.bo.PrepayBO;
+import com.tencent.nft.entity.pay.bo.PrepayVO;
 import com.tencent.nft.mapper.NftProductMapper;
+import com.tencent.nft.mapper.pay.OrderMapper;
 import com.tencent.nft.mapper.pay.TradeMapper;
 import com.tencent.nft.mapper.UserLibraryMapper;
 import com.tencent.nft.service.IPayService;
@@ -47,6 +49,9 @@ public class PayServiceImpl implements IPayService {
     @Resource
     private TradeMapper tradeMapper;
 
+    @Resource
+    private OrderMapper orderMapper;
+
     @Autowired
     private WeChatPayHandler payHandler;
 
@@ -66,16 +71,17 @@ public class PayServiceImpl implements IPayService {
     private UserLibraryMapper libraryMapper;
 
     @Override
-    public PrepayBO prePay(PayRequestDTO dto) throws Exception {
+    public PrepayVO prePay(PayRequestDTO dto) throws Exception {
         // 首先判断是否有购买资格，已经预约，或者购买买过一次的不能购买第二次
         if (false){
             /**
              * 内部业务码：
              *  -1 已经购买，不可二次购买
              */
-            return new PrepayBO(-1);
+            return new PrepayVO(-1);
         }
 
+        // 内部业务流水
         final String tradeNo = UUIDUtil.generateUUID();
         PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
         System.out.println(payDetailBO.getTotal());
@@ -100,17 +106,18 @@ public class PayServiceImpl implements IPayService {
         PrivateKey merchantPrivateKey = PemUtil.loadPrivateKey(classPathResource.getInputStream());
 
         String sign = WxPayUtil.getPaySign(result, merchantPrivateKey);
+        log.info("PaySign {}", sign);
 
         // 小程序调起支付API
-        PrepayBO prepayBO = new PrepayBO();
-        prepayBO.setAppId(wxGroupProperties.getAppId());
-        prepayBO.setTimeStamp(timestamp);
-        prepayBO.setNonceStr(nonceStr);
-        prepayBO.setPrepayId(prepayId);
-        prepayBO.setPackageStr(packages);
-        prepayBO.setSignType("RSA");
-        prepayBO.setPaySign(sign);
-        return prepayBO;
+        PrepayVO prepayVO = new PrepayVO();
+        prepayVO.setAppId(wxGroupProperties.getAppId());
+        prepayVO.setTimeStamp(timestamp);
+        prepayVO.setNonceStr(nonceStr);
+        prepayVO.setPrepayId(prepayId);
+        prepayVO.setPackageStr(packages);
+        prepayVO.setSignType("RSA");
+        prepayVO.setPaySign(sign);
+        return prepayVO;
     }
 
     private PayDetailBO createPayDetailBO(String tradeNo, PayRequestDTO dto) {
@@ -121,6 +128,8 @@ public class PayServiceImpl implements IPayService {
         payDetailBO.setOpenId(dto.getOpenId());
         payDetailBO.setTotal(MoneyUtil.yuan2fen(product.getUnitPrice()));
         payDetailBO.setDescription("数字藏品-" + dto.getNftId());
+        // 重要
+        payDetailBO.setProductNo(product.getNftId());
         return payDetailBO;
     }
 
@@ -243,15 +252,22 @@ public class PayServiceImpl implements IPayService {
 
     @Async
     public void createPreOrder(PayDetailBO payDetailBO){
+        // 预订单默认未付款的订单
+        PreOrder preOrder = new PreOrder();
+        preOrder.setTradeNo(payDetailBO.getTradeNo());
+        preOrder.setProductNo(payDetailBO.getProductNo());
+        preOrder.setPrice(payDetailBO.getTotal());
+        preOrder.setPayer(payDetailBO.getOpenId());
+        orderMapper.insert(preOrder);
+
         // 默认新增状态为未付款状态订单
-        TradeInfo tradeInfo = new TradeInfo();
-        tradeInfo.setTradeNo(payDetailBO.getTradeNo());
-        tradeInfo.setTradeStatus(TradeState.NOTPAY);
-        // 分 >> 元
-        tradeInfo.setAmount(payDetailBO.getTotal());
-        tradeInfo.setDescription(payDetailBO.getDescription());
-        tradeInfo.setPayer(payDetailBO.getOpenId());
-        tradeMapper.insert(tradeInfo);
+//        TradeInfo tradeInfo = new TradeInfo();
+//        tradeInfo.setTradeNo(payDetailBO.getTradeNo());
+//        tradeInfo.setTradeStatus(TradeState.NOTPAY);
+//        tradeInfo.setAmount(payDetailBO.getTotal());
+//        tradeInfo.setDescription(payDetailBO.getDescription());
+//        tradeInfo.setPayer(payDetailBO.getOpenId());
+//        tradeMapper.insert(tradeInfo);
     }
 
 }

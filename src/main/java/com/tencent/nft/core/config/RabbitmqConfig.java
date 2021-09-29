@@ -25,6 +25,9 @@ public class RabbitmqConfig {
     // 小程序通知，售卖通知
     public static final String YS_NOTIFY_QUEUE_NAME = "wx-ys-message-queue";
 
+    // 小程序通知，支付成功
+    public static final String WX_PAY_NOTIFY_QUEUE_NAME = "wx-pay-message-queue";
+
     // 上链队列
     public static final String ON_CHAIN_QUEUE_NAME = "on-chain-queue";
 
@@ -64,9 +67,17 @@ public class RabbitmqConfig {
     }
 
     @Bean
+    public Queue wxPayQueue(){
+        return new Queue(WX_PAY_NOTIFY_QUEUE_NAME);
+    }
+
+    @Bean
     public Queue onChain(){
         return new Queue(ON_CHAIN_QUEUE_NAME);
     }
+
+
+
 
     @Bean
     public Binding topicBinding1(@Qualifier("wxNotifyQueue") Queue queue, @Qualifier("defaultExchange") TopicExchange topicExchange){
@@ -74,7 +85,17 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public Binding topicBinding2(@Qualifier("onChain") Queue queue, @Qualifier("defaultExchange") TopicExchange topicExchange){
+    public Binding topicBinding2(@Qualifier("wxYsQueue") Queue queue, @Qualifier("defaultExchange") TopicExchange topicExchange){
+        return BindingBuilder.bind(queue).to(topicExchange).with(ON_CHAIN_ROUTE_KEY);
+    }
+
+    @Bean
+    public Binding topicBinding3(@Qualifier("wxPayQueue") Queue queue, @Qualifier("defaultExchange") TopicExchange topicExchange){
+        return BindingBuilder.bind(queue).to(topicExchange).with(ON_CHAIN_ROUTE_KEY);
+    }
+
+    @Bean
+    public Binding topicBinding4(@Qualifier("onChain") Queue queue, @Qualifier("defaultExchange") TopicExchange topicExchange){
         return BindingBuilder.bind(queue).to(topicExchange).with(ON_CHAIN_ROUTE_KEY);
     }
 

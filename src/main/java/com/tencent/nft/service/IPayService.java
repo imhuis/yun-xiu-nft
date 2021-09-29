@@ -1,7 +1,7 @@
 package com.tencent.nft.service;
 
 import com.tencent.nft.entity.pay.dto.PayRequestDTO;
-import com.tencent.nft.entity.pay.bo.PrepayBO;
+import com.tencent.nft.entity.pay.bo.PrepayVO;
 
 /**
  * @author: imhuis
@@ -16,7 +16,7 @@ public interface IPayService {
      * @return
      * @throws Exception
      */
-    PrepayBO prePay(PayRequestDTO dto) throws Exception;
+    PrepayVO prePay(PayRequestDTO dto) throws Exception;
 
     /**
      * 支付通知
