@@ -10,6 +10,7 @@ import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.enums.NFTTypeEnum;
 import com.tencent.nft.common.exception.RecordNotFoundException;
 import com.tencent.nft.common.util.BusinessIdGenerate;
+import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SubNFT;
@@ -86,8 +87,8 @@ public class NftManagementServiceImpl implements INftManagementService {
         nftInfo.setDetailPicture(dto.getDetailPicture().stream().collect(Collectors.joining(",")));
 
         // 调用上链接口 返回nft在区块链中的地址
-        String address = onChainHandler.getChainAddress(id, id);
-        nftInfo.setChainAddress(address);
+//        String address = onChainHandler.getChainAddress(id, id);
+        nftInfo.setChainAddress(UUIDUtil.generateUUID());
 
         // 事务执行放在一起
         nftMapper.insertSuperNFT(nftInfo);

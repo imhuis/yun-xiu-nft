@@ -37,7 +37,7 @@
         where trade_no = #{tradeNo}
     </select>
 
-    <select id="selectNftIdByPhone" resultType="java.lang.Long">
+    <select id="selectNftIdByPhone" resultType="string">
         select nft_id
         from t_user_library
         where phone = #{phone}

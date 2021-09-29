@@ -49,9 +49,9 @@ public class AppServiceImpl implements IAppService {
     public List<MyLibraryVO> myLibrary() {
         String p = SecurityUtils.getCurrentUsername().get();
         List<MyLibraryVO> collectionVOList = Lists.newLinkedList();
-        List<Long> subNftList = userLibraryMapper.selectNftIdByPhone(p);
+        List<String> subNftList = userLibraryMapper.selectNftIdByPhone(p);
         subNftList.stream().forEach(s -> {
-            SubNFT subNFT = nftMapper.selectSubNftById(s);
+            SubNFT subNFT = nftMapper.selectSubNftByNftId(s);
             NFTInfo nftInfo = nftMapper.selectNftInfoByNftId(subNFT.getSuperNFTId()).get();
             MyLibraryVO libraryVO = new MyLibraryVO();
 

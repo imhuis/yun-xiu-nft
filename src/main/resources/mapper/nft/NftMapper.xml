@@ -87,6 +87,7 @@
             <if test="issuer != null">#{issuer},</if>
             <if test="brandOwner != null">#{brandOwner},</if>
             <if test="introduce != null">#{introduce},</if>
+            <if test="chainAddress != null">#{chainAddress},</if>
             <if test="nftCreateTime != null">#{nftCreateTime},</if>
             #{createTime}, #{updateTime}
         </trim>

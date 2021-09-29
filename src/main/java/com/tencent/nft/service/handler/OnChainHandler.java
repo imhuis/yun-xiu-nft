@@ -136,7 +136,7 @@ public class OnChainHandler {
                 .add("timestamp", String.valueOf(currentTime))
                 .add("sign", sign).build();
 
-        URI uri = UriComponentsBuilder.fromUriString("" + "/v1/onchain/evidence").build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString("https://btoe.tusi.tencent-cloud.net" + "/v1/onchain/evidence").build().toUri();
         RequestEntity<Void> requestEntity = RequestEntity
                 .post(uri)
                 .header("Authorization", "bearer " + accessToken)
@@ -155,7 +155,7 @@ public class OnChainHandler {
                 .add("grant_type", "client_credentials")
                 .add("scope", scope).build();
 
-        URI uri = UriComponentsBuilder.fromUriString("" + "/oauth/token").build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString("https://btoe.tusi.tencent-cloud.net" + "/oauth/token").build().toUri();
         RequestEntity<Void> requestEntity = RequestEntity
                 .post(uri)
                 .accept(MediaType.APPLICATION_JSON)

@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-
 /**
  * @author: yunj
  * @date: 2021/9/26
@@ -19,7 +18,7 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 public class FeedBack extends BaseEntity implements Serializable {
-    private Integer id; //ID主键自增
+
     private String name;
     private String phone;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

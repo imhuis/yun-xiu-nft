@@ -94,10 +94,12 @@ public class MarketServiceImpl implements IMarketService {
         // 该用户存在
         if (StringUtils.isNoneBlank(phone)){
             // 判断是否预约过
+            // 1 - 已经购买
+            // 2 - 未购买
             if (productStatus == NFTStatusEnum.APPOINTMENT){
                 BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
                 System.out.println(bso.isMember(phone));
-                if (bso.isMember(phone) == false){
+                if (bso.isMember(phone) == true){
                     productVO.setPersonStatus(1);
                 }
             }
@@ -126,8 +128,11 @@ public class MarketServiceImpl implements IMarketService {
 
     @Override
     public long getProductAmount(String productId) {
-        NFTProduct nftProduct = productMapper.selectByNftId(productId).get();
-        NFTStatusEnum statusEnum = nftProduct.getNftStatus();
+        Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(productId);
+        if (nftProductOptional.isEmpty()){
+            return 0;
+        }
+        NFTStatusEnum statusEnum = nftProductOptional.get().getNftStatus();
         if (statusEnum == NFTStatusEnum.APPOINTMENT){
             return getProductReservationAmount(productId);
         }

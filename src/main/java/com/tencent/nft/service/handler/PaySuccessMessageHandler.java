@@ -95,7 +95,7 @@ public class PaySuccessMessageHandler {
 
     }
 
-    @Transactional
+//    @Transactional
     public void createNew(OrderMessageBO messageBO){
         String openId = messageBO.getOpenId();
         String tradeNo = messageBO.getTradeNo();
@@ -115,7 +115,7 @@ public class PaySuccessMessageHandler {
         newSubNFT.setSoldTime(LocalDateTime.now());
         newSubNFT.setSaleStatus(NFTSaleStatusEnum.Sold);
         userLibraryMapper.insertUserLibrary(userLibrary);
-        nftMapper.updateSubNft(newSubNFT);
+//        nftMapper.updateSubNft(newSubNFT);
 
     }
 

@@ -17,6 +17,11 @@ public interface UserLibraryMapper {
 
     UserLibrary selectByTradeNo(String tradeNo);
 
-    List<Long> selectNftIdByPhone(String phone);
+    /**
+     * 查询该用户的藏品
+     * @param phone
+     * @return
+     */
+    List<String> selectNftIdByPhone(String phone);
 
 }
