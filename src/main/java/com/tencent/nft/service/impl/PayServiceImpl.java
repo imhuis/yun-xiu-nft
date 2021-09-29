@@ -16,7 +16,7 @@ import com.tencent.nft.entity.pay.TradeInfo;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import com.tencent.nft.entity.pay.bo.PrepayBO;
 import com.tencent.nft.mapper.NftProductMapper;
-import com.tencent.nft.mapper.TradeMapper;
+import com.tencent.nft.mapper.pay.TradeMapper;
 import com.tencent.nft.mapper.UserLibraryMapper;
 import com.tencent.nft.service.IPayService;
 import com.tencent.nft.service.handler.WeChatPayHandler;
@@ -83,7 +83,7 @@ public class PayServiceImpl implements IPayService {
         String prepayId = payHandler.handler(payDetailBO);
 
         // 生产预订单。插入数据表
-        createOrder(payDetailBO);
+        createPreOrder(payDetailBO);
 
         String timestamp = String.valueOf(Instant.now().getEpochSecond());
         final String nonceStr = RandomUtil.randomString(32);
@@ -242,7 +242,7 @@ public class PayServiceImpl implements IPayService {
 
 
     @Async
-    public void createOrder(PayDetailBO payDetailBO){
+    public void createPreOrder(PayDetailBO payDetailBO){
         // 默认新增状态为未付款状态订单
         TradeInfo tradeInfo = new TradeInfo();
         tradeInfo.setTradeNo(payDetailBO.getTradeNo());

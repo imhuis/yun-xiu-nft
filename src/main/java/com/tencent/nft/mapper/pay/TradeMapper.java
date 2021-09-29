@@ -1,4 +1,4 @@
-package com.tencent.nft.mapper;
+package com.tencent.nft.mapper.pay;
 
 import com.tencent.nft.entity.pay.TradeInfo;
 import org.apache.ibatis.annotations.Mapper;

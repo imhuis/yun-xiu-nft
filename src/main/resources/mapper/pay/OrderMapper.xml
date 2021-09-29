@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tencent.nft.mapper.pay.OrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.tencent.nft.entity.pay.PreOrder">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, trade_no, transaction_id, description, description, payer, amount_total, payer_total, trade_type, success_time,
+        trade_status, create_time, update_time
+    </sql>
+
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        insert into t_trade
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tradeNo != null and tradeNo != ''">trade_no,</if>
+            <if test="transactionId != null and transactionId != ''">transaction_id,</if>
+            <if test="description != null">description,</if>
+            <if test="payer != null">payer,</if>
+            <if test="amount != null">amount_total,</if>
+            <if test="payerTotal != null">payer_total,</if>
+            <if test="successTime != null">success_time,</if>
+            <if test="tradeStatus != null">trade_status,</if>
+            create_time, update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tradeNo != null and tradeNo != ''">#{tradeNo},</if>
+            <if test="transactionId != null and transactionId != ''">#{transactionId},</if>
+            <if test="description != null">#{description},</if>
+            <if test="payer != null">#{payer},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="payerTotal != null">#{payerTotal},</if>
+            <if test="successTime != null">#{successTime},</if>
+            <if test="tradeStatus != null">#{tradeStatus},</if>
+            #{createTime}, #{updateTime}
+        </trim>
+    </insert>
+
+    <select id="selectByTradeNo" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from t_trade
+        where trade_no = #{tradeNo}
+    </select>
+
+<!--    <update id="updateByTradeNo">-->
+<!--        update t_trade-->
+<!--        <set>-->
+<!--            &lt;!&ndash;            <if test="tradeNo != null and tradeNo != ''">trade_no = #{tradeNo},</if>&ndash;&gt;-->
+<!--            <if test="transactionId != null and transactionId != ''">transaction_id = #{transactionId},</if>-->
+<!--            <if test="description != null">description = #{description},</if>-->
+<!--            <if test="payer != null">payer = #{payer},</if>-->
+<!--            <if test="amount != null">amount_total= #{amount},</if>-->
+<!--            <if test="payerTotal != null">payer_total = #{payerTotal},</if>-->
+<!--            <if test="successTime != null">success_time = #{successTime},</if>-->
+<!--            <if test="tradeStatus != null">trade_status = #{tradeStatus},</if>-->
+<!--            update_time = #{updateTime}-->
+<!--        </set>-->
+<!--        WHERE trade_no = #{tradeNo}-->
+<!--    </update>-->
+
+</mapper>
