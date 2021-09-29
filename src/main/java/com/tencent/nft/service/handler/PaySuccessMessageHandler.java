@@ -12,6 +12,7 @@ import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.UserLibraryMapper;
 import com.tencent.nft.mapper.WxUserMapper;
+import com.tencent.nft.mapper.pay.ProductMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -47,6 +48,9 @@ public class PaySuccessMessageHandler {
 
     @Resource
     private NftMapper nftMapper;
+
+    @Resource
+    private ProductMapper productMapper;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -127,6 +131,7 @@ public class PaySuccessMessageHandler {
         userLibraryMapper.insertUserLibrary(userLibrary);
         nftMapper.updateSubNft(newSubNFT);
 
+//        productMapper.minusStockByProductId(productId);
     }
 
 }

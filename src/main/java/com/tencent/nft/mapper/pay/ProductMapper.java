@@ -1,8 +1,9 @@
-package com.tencent.nft.mapper;
+package com.tencent.nft.mapper.pay;
 
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.pay.ProductStock;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Optional;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
  * @description:
  */
 @Mapper
-public interface NftProductMapper {
+public interface ProductMapper {
 
     Optional<NFTProduct> selectByNftId(String nftId);
 
@@ -22,5 +23,11 @@ public interface NftProductMapper {
 
     int updateByNftId(NFTProduct nftProduct);
 
-    int updateStockByProductId(ProductStock productStock);
+    int updateStockByProductId(@Param("productId") String productId, @Param("stock") int stock);
+
+    int selectStock(String productId);
+
+    int insertStock(String productId, int stock);
+
+    void minusStockByProductId(String productId);
 }

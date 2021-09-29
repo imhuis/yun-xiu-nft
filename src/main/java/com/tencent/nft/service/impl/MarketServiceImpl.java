@@ -7,13 +7,12 @@ import com.tencent.nft.common.exception.business.RecordNotFoundException;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.NFTProduct;
-import com.tencent.nft.entity.nft.SubNFT;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.vo.ProductDetailVO;
 import com.tencent.nft.entity.nft.vo.ProductVO;
 import com.tencent.nft.mapper.NftMapper;
-import com.tencent.nft.mapper.NftProductMapper;
+import com.tencent.nft.mapper.pay.ProductMapper;
 import com.tencent.nft.service.IMarketService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -26,7 +25,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +48,7 @@ public class MarketServiceImpl implements IMarketService {
     private NftMapper nftMapper;
 
     @Resource
-    private NftProductMapper productMapper;
+    private ProductMapper productMapper;
 
     @Override
     public List<NFTInfo> getMarketList(Integer status) {

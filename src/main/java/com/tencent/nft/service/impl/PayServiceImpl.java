@@ -11,7 +11,6 @@ import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.common.util.WxPayUtil;
 import com.tencent.nft.core.config.RabbitmqConfig;
 import com.tencent.nft.common.properties.WxGroupProperties;
-import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.pay.PreOrder;
 import com.tencent.nft.entity.pay.bo.OrderMessageBO;
@@ -20,7 +19,7 @@ import com.tencent.nft.entity.pay.TradeInfo;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import com.tencent.nft.entity.pay.bo.PrepayVO;
 import com.tencent.nft.entity.security.WxUser;
-import com.tencent.nft.mapper.NftProductMapper;
+import com.tencent.nft.mapper.pay.ProductMapper;
 import com.tencent.nft.mapper.WxUserMapper;
 import com.tencent.nft.mapper.pay.OrderMapper;
 import com.tencent.nft.mapper.pay.TradeMapper;
@@ -28,7 +27,6 @@ import com.tencent.nft.mapper.UserLibraryMapper;
 import com.tencent.nft.service.IPayService;
 import com.tencent.nft.service.handler.WeChatPayHandler;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +35,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.security.PrivateKey;
 import java.time.Instant;
-import java.util.List;
 
 /**
  * @author: imhuis
@@ -75,7 +71,7 @@ public class PayServiceImpl implements IPayService {
     private AmqpTemplate amqpTemplate;
 
     @Resource
-    private NftProductMapper productMapper;
+    private ProductMapper productMapper;
 
     @Resource
     private WxUserMapper wxUserMapper;
@@ -101,7 +97,10 @@ public class PayServiceImpl implements IPayService {
             throw new PayException("重复购买！");
         }
         // 已经售罄
-
+        int stock = productMapper.selectStock(dto.getNftId());
+        if (stock < 0){
+            throw new PayException("商品已售罄！");
+        }
 
         // 检查是否购买
 //        List<PreOrder> preOrderList = orderMapper.selectByNftIdAndPayer(dto.getNftId(), dto.getOpenId());

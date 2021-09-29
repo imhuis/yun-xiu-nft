@@ -24,7 +24,7 @@ import com.tencent.nft.entity.nft.vo.NFTDetailsVO;
 import com.tencent.nft.entity.nft.vo.NFTListVO;
 import com.tencent.nft.entity.nft.vo.SubNFTListVO;
 import com.tencent.nft.mapper.NftMapper;
-import com.tencent.nft.mapper.NftProductMapper;
+import com.tencent.nft.mapper.pay.ProductMapper;
 import com.tencent.nft.service.INftManagementService;
 import com.tencent.nft.service.handler.OnChainHandler;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +60,7 @@ public class NftManagementServiceImpl implements INftManagementService {
     private NftMapper nftMapper;
 
     @Resource
-    private NftProductMapper productMapper;
+    private ProductMapper productMapper;
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -282,9 +282,15 @@ public class NftManagementServiceImpl implements INftManagementService {
         updateNftStatus(superNFTInfo.getNftId(), NFTStatusEnum.APPOINTMENT);
         // 创建子nft任务
         generateSublist(superNFTInfo.getNftId(), n.getCirculation());
-        // 更新缓存
+        // 更新库存
+        updateStock(superNFTInfo.getNftId(), n.getCirculation());
 
 
+    }
+
+    @Async
+    void updateStock(String nftId, Integer circulation) {
+        productMapper.insertStock(nftId, circulation);
     }
 
     /**
