@@ -24,7 +24,7 @@
             <if test="userId != null">#{userId},</if>
             <if test="openId != null">#{openId},</if>
             <if test="phone != null">#{phone},</if>
-            <if test="nftId != null">#{nftType},</if>
+            <if test="nftId != null">#{nftId},</if>
             <if test="tradeNo != null">#{tradeNo},</if>
             #{createTime}, #{updateTime}
         </trim>
