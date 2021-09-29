@@ -29,25 +29,33 @@
     </insert>
 
     <select id="selectByTradeNo" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/>
+        select
+        <include refid="Base_Column_List"/>
         from t_pre_order
         where trade_no = #{tradeNo}
     </select>
 
-<!--    <update id="updateByTradeNo">-->
-<!--        update t_trade-->
-<!--        <set>-->
-<!--            &lt;!&ndash;            <if test="tradeNo != null and tradeNo != ''">trade_no = #{tradeNo},</if>&ndash;&gt;-->
-<!--            <if test="transactionId != null and transactionId != ''">transaction_id = #{transactionId},</if>-->
-<!--            <if test="description != null">description = #{description},</if>-->
-<!--            <if test="payer != null">payer = #{payer},</if>-->
-<!--            <if test="amount != null">amount_total= #{amount},</if>-->
-<!--            <if test="payerTotal != null">payer_total = #{payerTotal},</if>-->
-<!--            <if test="successTime != null">success_time = #{successTime},</if>-->
-<!--            <if test="tradeStatus != null">trade_status = #{tradeStatus},</if>-->
-<!--            update_time = #{updateTime}-->
-<!--        </set>-->
-<!--        WHERE trade_no = #{tradeNo}-->
-<!--    </update>-->
+    <select id="selectByNftIdAndPayer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_pre_order
+        where product_no = #{nftId} and payer = #{payer}
+    </select>
+
+    <!--    <update id="updateByTradeNo">-->
+    <!--        update t_trade-->
+    <!--        <set>-->
+    <!--            &lt;!&ndash;            <if test="tradeNo != null and tradeNo != ''">trade_no = #{tradeNo},</if>&ndash;&gt;-->
+    <!--            <if test="transactionId != null and transactionId != ''">transaction_id = #{transactionId},</if>-->
+    <!--            <if test="description != null">description = #{description},</if>-->
+    <!--            <if test="payer != null">payer = #{payer},</if>-->
+    <!--            <if test="amount != null">amount_total= #{amount},</if>-->
+    <!--            <if test="payerTotal != null">payer_total = #{payerTotal},</if>-->
+    <!--            <if test="successTime != null">success_time = #{successTime},</if>-->
+    <!--            <if test="tradeStatus != null">trade_status = #{tradeStatus},</if>-->
+    <!--            update_time = #{updateTime}-->
+    <!--        </set>-->
+    <!--        WHERE trade_no = #{tradeNo}-->
+    <!--    </update>-->
 
 </mapper>

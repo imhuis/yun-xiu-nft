@@ -5,11 +5,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tencent.nft.common.enums.pay.TradeState;
+import com.tencent.nft.common.exception.business.PayException;
 import com.tencent.nft.common.util.MoneyUtil;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.common.util.WxPayUtil;
 import com.tencent.nft.core.config.RabbitmqConfig;
 import com.tencent.nft.common.properties.WxGroupProperties;
+import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.pay.PreOrder;
 import com.tencent.nft.entity.pay.bo.OrderMessageBO;
@@ -17,7 +19,9 @@ import com.tencent.nft.entity.pay.dto.PayRequestDTO;
 import com.tencent.nft.entity.pay.TradeInfo;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import com.tencent.nft.entity.pay.bo.PrepayVO;
+import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.mapper.NftProductMapper;
+import com.tencent.nft.mapper.WxUserMapper;
 import com.tencent.nft.mapper.pay.OrderMapper;
 import com.tencent.nft.mapper.pay.TradeMapper;
 import com.tencent.nft.mapper.UserLibraryMapper;
@@ -31,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
@@ -39,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.security.PrivateKey;
 import java.time.Instant;
+import java.util.List;
 
 /**
  * @author: imhuis
@@ -72,18 +78,45 @@ public class PayServiceImpl implements IPayService {
     private NftProductMapper productMapper;
 
     @Resource
-    private UserLibraryMapper libraryMapper;
+    private WxUserMapper wxUserMapper;
+
+    @Resource
+    private UserLibraryMapper userLibraryMapper;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public PrepayVO prePay(PayRequestDTO dto) throws Exception {
         // 首先判断是否有购买资格，已经预约，或者购买买过一次的不能购买第二次
-        if (false) {
+        String s = dto.getOpenId();
+        WxUser wxUser = wxUserMapper.selectFullByOpenId(s).get();
+        // 检查是否预约
+        boolean flag = stringRedisTemplate.opsForSet().isMember("yy:" + dto.getNftId().toLowerCase(), wxUser.getPhone());
+        if (!flag){
+            throw new PayException("抱歉,您未预约该商品！");
+        }
+        boolean flag1 = stringRedisTemplate.opsForSet().isMember("gm:" + dto.getNftId().toLowerCase(), dto.getOpenId());
+        if (flag1){
+            throw new PayException("重复购买！");
+        }
+        // 已经售罄
+
+
+        // 检查是否购买
+//        List<PreOrder> preOrderList = orderMapper.selectByNftIdAndPayer(dto.getNftId(), dto.getOpenId());
+//        long count = preOrderList.stream().filter(c -> userLibraryMapper.selectByTradeNo(c.getTradeNo()) == null).count();
+
+
+
+//        if (false) {
             /**
              * 内部业务码：
              *  -1 已经购买，不可二次购买
              */
-            return new PrepayVO(-1);
-        }
+
+//            return new PrepayVO(-1);
+//        }
 
         // 内部业务流水
         final String tradeNo = UUIDUtil.generateUUID();

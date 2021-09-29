@@ -4,6 +4,7 @@ import com.tencent.nft.common.base.FeedBack;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
+import com.tencent.nft.common.exception.business.PayException;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.app.vo.CollectionVO;
 import com.tencent.nft.entity.nft.vo.MyLibraryVO;
@@ -86,7 +87,7 @@ public class AppController {
      * @return
      */
     @RequestMapping(value = "/pay", method = RequestMethod.POST)
-    public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO, BindingResult result) {
+    public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO, BindingResult result) throws Exception {
         if (result.hasFieldErrors()){
             // 参数校验失败
             return ResponseUtil.fail(ResponseCodeEnum.Validation_Error, result.getAllErrors().get(0));
@@ -95,7 +96,9 @@ public class AppController {
         try {
             PrepayVO prepayVO = payService.prePay(payRequestDTO);
             return ResponseUtil.success(prepayVO);
-        }catch (Exception e){
+        } catch (PayException e){
+            return ResponseUtil.define(7001, e.getMessage());
+        } catch (Exception e){
             return ResponseUtil.fail(ResponseCodeEnum.FAILD);
         }
     }

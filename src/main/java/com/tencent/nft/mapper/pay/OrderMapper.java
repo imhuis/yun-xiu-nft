@@ -2,6 +2,9 @@ package com.tencent.nft.mapper.pay;
 
 import com.tencent.nft.entity.pay.PreOrder;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author: imhuis
@@ -24,5 +27,7 @@ public interface OrderMapper {
      * @return
      */
     PreOrder selectByTradeNo(String tradeNo);
+
+    List<PreOrder> selectByNftIdAndPayer(@Param("nftId") String nftId, @Param("payer") String payer);
 
 }

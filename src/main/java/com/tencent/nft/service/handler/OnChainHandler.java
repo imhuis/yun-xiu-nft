@@ -2,10 +2,12 @@ package com.tencent.nft.service.handler;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.MD5;
+import com.alibaba.fastjson.JSON;
 import com.google.common.base.Strings;
 import com.rabbitmq.client.Channel;
 import com.tencent.nft.common.properties.ChainProperties;
 import com.tencent.nft.common.util.CodeUtil;
+import com.tencent.nft.common.util.OKHttpClientBuilder;
 import com.tencent.nft.entity.chain.GetAccessTokenResult;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -91,81 +93,74 @@ public class OnChainHandler {
     }
 
 
-    public String getChainAddress(String evidenceId, String evidenceInfo) {
+    public String getChainAddress(String evidenceId, String evidenceInfo) throws IOException {
         // 先从缓存获取token, 如果未登录调用 getAccessToken()
-        String accessToken = getAccessToken("read");
-        String chainAddress = null;
-        try {
-            chainAddress = onChain("0", evidenceId, "0", evidenceInfo, accessToken);
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return chainAddress;
-    }
-
-    private String onChain(String evidenceType,
-                           String evidenceId,
-                           String hashType,
-                           String evidenceInfo,
-                           String accessToken) throws InvalidKeyException, NoSuchAlgorithmException {
-
-        long currentTime = System.currentTimeMillis();
-        String noncestr = "0123456789012345678901234567890123456789";
-
-        Map<String, String> map = new HashMap();
-        map.put("evidenceType", evidenceType);
-        map.put("evidenceId", evidenceId);
-        map.put("hashType", hashType);
-        map.put("evidenceInfo", evidenceInfo);
-        map.put("appId", "");
-        map.put("noncestr", noncestr);
-        map.put("timestamp", String.valueOf(currentTime));
-        System.out.println(map);
-        String sign = CodeUtil.createSignature(map, chainProperties.getClientSecret());
-        System.out.println(sign);
-
-        RequestBody requestBody = new FormBody.Builder()
-                .add("evidenceType", evidenceType)
-                .add("evidenceId", evidenceId)
-                .add("hashType", hashType)
-                .add("evidenceInfo", evidenceInfo)
-                .add("appId", "")
-                .add("noncestr", noncestr)
-                .add("timestamp", String.valueOf(currentTime))
-                .add("sign", sign).build();
-
-        URI uri = UriComponentsBuilder.fromUriString("https://btoe.tusi.tencent-cloud.net" + "/v1/onchain/evidence").build().toUri();
-        RequestEntity<Void> requestEntity = RequestEntity
-                .post(uri)
-                .header("Authorization", "bearer " + accessToken)
-                .accept(MediaType.APPLICATION_JSON)
-                .build();
-
-        ResponseEntity<String> responseBody = restTemplate.exchange(requestEntity, String.class);
-        return responseBody.getBody();
+        return "chainAddress";
     }
 
 
-    private String getAccessToken(String scope) {
-        RequestBody requestBody = new FormBody.Builder()
-                .add("client_id", chainProperties.getClientId())
-                .add("client_secret", chainProperties.getClientSecret())
-                .add("grant_type", "client_credentials")
-                .add("scope", scope).build();
+//    private String onChain(String evidenceType,
+//                           String evidenceId,
+//                           String hashType,
+//                           String evidenceInfo,
+//                           String accessToken) throws InvalidKeyException, NoSuchAlgorithmException {
+//
+//        long currentTime = System.currentTimeMillis();
+//        String noncestr = "0123456789012345678901234567890123456789";
+//
+//        Map<String, String> map = new HashMap();
+//        map.put("evidenceType", evidenceType);
+//        map.put("evidenceId", evidenceId);
+//        map.put("hashType", hashType);
+//        map.put("evidenceInfo", evidenceInfo);
+//        map.put("appId", "6079514328");
+//        map.put("noncestr", noncestr);
+//        map.put("timestamp", String.valueOf(currentTime));
+//        System.out.println(map);
+//        String sign = CodeUtil.createSignature(map, chainProperties.getClientSecret());
+//        System.out.println(sign);
+//
+//        RequestBody requestBody = new FormBody.Builder()
+//                .add("evidenceType", evidenceType)
+//                .add("evidenceId", evidenceId)
+//                .add("hashType", hashType)
+//                .add("evidenceInfo", evidenceInfo)
+//                .add("appId", "6079514328")
+//                .add("noncestr", noncestr)
+//                .add("timestamp", String.valueOf(currentTime))
+//                .add("sign", sign).build();
+//
+//
+//        URI uri = UriComponentsBuilder.fromUriString("https://btoe.tusi.tencent-cloud.net" + "/v1/onchain/evidence").build().toUri();
+//        RequestEntity<Void> requestEntity = RequestEntity
+//                .post(uri)
+//                .header("Authorization", "bearer " + accessToken)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .build();
+//
+//        ResponseEntity<String> responseBody = restTemplate.exchange(requestEntity, String.class);
+//        return responseBody.getBody();
+//    }
 
-        URI uri = UriComponentsBuilder.fromUriString("https://btoe.tusi.tencent-cloud.net" + "/oauth/token").build().toUri();
-        RequestEntity<Void> requestEntity = RequestEntity
-                .post(uri)
-                .accept(MediaType.APPLICATION_JSON)
-                .build();
 
-        ResponseEntity<GetAccessTokenResult> result = restTemplate.exchange(requestEntity, GetAccessTokenResult.class);
-        if (result.getStatusCode().is2xxSuccessful()) {
-            return result.getBody().getAccessToken();
-        }
-        return "";
-    }
+//    private String getAccessToken(String scope) {
+//        RequestBody requestBody = new FormBody.Builder()
+//                .add("client_id", chainProperties.getClientId())
+//                .add("client_secret", chainProperties.getClientSecret())
+//                .add("grant_type", "client_credentials")
+//                .add("scope", scope).build();
+//
+//        URI uri = UriComponentsBuilder.fromUriString("https://btoe.tusi.tencent-cloud.net" + "/oauth/token").build().toUri();
+//        RequestEntity<Void> requestEntity = RequestEntity
+//                .post(uri)
+//                .accept(MediaType.APPLICATION_JSON)
+//                .build();
+//
+//        ResponseEntity<GetAccessTokenResult> result = restTemplate.exchange(requestEntity, GetAccessTokenResult.class);
+//        if (result.getStatusCode().is2xxSuccessful()) {
+//            return result.getBody().getAccessToken();
+//        }
+//        return "";
+//    }
 
 }

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @PropertySource("classpath:properties/chain.properties")
-@ConfigurationProperties(prefix = "a", ignoreUnknownFields = false)
+@ConfigurationProperties(prefix = "chain", ignoreUnknownFields = false)
 public class ChainProperties {
 
     private String clientId;

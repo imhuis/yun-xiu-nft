@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import com.tencent.nft.common.enums.NFTSaleStatusEnum;
 import com.tencent.nft.common.util.UUIDUtil;
+import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.nft.SubNFT;
 import com.tencent.nft.entity.nft.UserLibrary;
 import com.tencent.nft.entity.pay.bo.OrderMessageBO;
@@ -16,6 +17,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundSetOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +48,9 @@ public class PaySuccessMessageHandler {
     @Resource
     private NftMapper nftMapper;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
     // 监听上链消息
     @RabbitListener(queues = {"pay-notify-queue"})
     public void onChain(Message message, Channel channel) throws IOException {
@@ -62,6 +68,10 @@ public class PaySuccessMessageHandler {
             UserLibrary userLibrary = userLibraryMapper.selectByTradeNo(tradeNo);
             if (userLibrary == null){
                 createNew(messageBO);
+                BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps("gm:" + messageBO.getProductId().toLowerCase());
+                if (!bso.isMember(messageBO.getOpenId())){
+                    bso.add(messageBO.getOpenId());
+                }
             }else {
                 return;
             }

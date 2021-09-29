@@ -28,6 +28,8 @@ import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.service.INftManagementService;
 import com.tencent.nft.service.handler.OnChainHandler;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,6 +38,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +53,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class NftManagementServiceImpl implements INftManagementService {
+
+    final Logger log = LoggerFactory.getLogger(NftManagementServiceImpl.class);
 
     @Resource
     private NftMapper nftMapper;
@@ -88,7 +93,12 @@ public class NftManagementServiceImpl implements INftManagementService {
         nftInfo.setDetailPicture(dto.getDetailPicture().stream().collect(Collectors.joining(",")));
 
         // 调用上链接口 返回nft在区块链中的地址
-//        String address = onChainHandler.getChainAddress(id, id);
+        try {
+            String address = onChainHandler.getChainAddress(id, id);
+            log.info("address", address);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         nftInfo.setChainAddress(UUIDUtil.generateUUID());
 
         // 事务执行放在一起

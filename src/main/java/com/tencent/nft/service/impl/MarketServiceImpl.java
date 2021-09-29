@@ -1,5 +1,6 @@
 package com.tencent.nft.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.tencent.nft.common.constant.RedisKeyConstants;
 import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.exception.business.RecordNotFoundException;
@@ -165,7 +166,8 @@ public class MarketServiceImpl implements IMarketService {
 
     @Override
     public long getProductAmountBySubNftId(String subNftId) {
-        Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(subNftId);
+        String superId = StrUtil.sub(subNftId, 0, -4);
+        Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(superId);
         if (nftProductOptional.isEmpty()){
             return 0;
         }
