@@ -12,6 +12,7 @@ import com.tencent.nft.core.config.RabbitmqConfig;
 import com.tencent.nft.common.properties.WxGroupProperties;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.pay.PreOrder;
+import com.tencent.nft.entity.pay.bo.OrderMessageBO;
 import com.tencent.nft.entity.pay.dto.PayRequestDTO;
 import com.tencent.nft.entity.pay.TradeInfo;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
@@ -23,12 +24,15 @@ import com.tencent.nft.mapper.UserLibraryMapper;
 import com.tencent.nft.service.IPayService;
 import com.tencent.nft.service.handler.WeChatPayHandler;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,7 +77,7 @@ public class PayServiceImpl implements IPayService {
     @Override
     public PrepayVO prePay(PayRequestDTO dto) throws Exception {
         // 首先判断是否有购买资格，已经预约，或者购买买过一次的不能购买第二次
-        if (false){
+        if (false) {
             /**
              * 内部业务码：
              *  -1 已经购买，不可二次购买
@@ -188,7 +192,7 @@ public class PayServiceImpl implements IPayService {
 
         String eventType = jsonNode.get("event_type").asText();
         // 支付成功
-        if (eventType.equals("TRANSACTION.SUCCESS")){
+        if (eventType.equals("TRANSACTION.SUCCESS")) {
             JsonNode childField = jsonNode.get("resource");
             String nonce = childField.get("nonce").asText();
             String associatedData = childField.get("associated_data").asText();
@@ -206,25 +210,46 @@ public class PayServiceImpl implements IPayService {
             // 外部订单号码
             String outTradeNo = tradeDetail.get("out_trade_no").asText();
 
-            TradeInfo tradeInfo = tradeMapper.selectByTradeNo(outTradeNo);
-            if (tradeInfo.getTradeStatus() == TradeState.SUCCESS){
-                return;
+            PreOrder preOrder = orderMapper.selectByTradeNo(outTradeNo);
+            String productNo = preOrder.getProductNo();
+            OrderMessageBO orderMessageBO = new OrderMessageBO(outTradeNo, preOrder.getPayer(), productNo);
+            String message = Strings.EMPTY;
+            try {
+                message = objectMapper.writeValueAsString(orderMessageBO);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
             }
-            tradeInfo = new TradeInfo();
-            tradeInfo.setTradeNo(outTradeNo);
-            tradeInfo.setTransactionId(tradeDetail.get("transaction_id").asText());
-            // 设置价格，单位为分
-            tradeInfo.setAmount(tradeDetail.at("/amount/total").asInt());
-            tradeInfo.setPayerTotal(tradeDetail.at("/amount/payer_total").asInt());
-            // 支付人
-            tradeInfo.setPayer(tradeDetail.at("/payer/openid").asText());
-            tradeInfo.setTradeStatus(TradeState.SUCCESS);
-            tradeMapper.updateByTradeNo(tradeInfo);
 
-//            tradeMapper.insert(tradeInfo);
-            // 发送消息
+            // 系统内部流水号判断支付结果
+            TradeInfo t = tradeMapper.selectByTradeNo(outTradeNo);
+            if (t == null) {
+                t = new TradeInfo();
+                t.setTradeNo(outTradeNo);
+                t.setTransactionId(tradeDetail.get("transaction_id").asText());
+                // 设置价格，单位为分
+                t.setAmount(tradeDetail.at("/amount/total").asInt());
+                t.setPayerTotal(tradeDetail.at("/amount/payer_total").asInt());
+                // 支付人
+                t.setPayer(tradeDetail.at("/payer/openid").asText());
+                t.setTradeStatus(TradeState.SUCCESS);
+                tradeMapper.updateByTradeNo(t);
+            } else {
+                if (t.getTradeStatus() == TradeState.SUCCESS) {
+                    amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.WX_PAY_NOTIFY_QUEUE_NAME, message);
+                    return;
+                }
+                t.setTradeNo(outTradeNo);
+                t.setTransactionId(tradeDetail.get("transaction_id").asText());
+                // 设置价格，单位为分
+                t.setAmount(tradeDetail.at("/amount/total").asInt());
+                t.setPayerTotal(tradeDetail.at("/amount/payer_total").asInt());
+                // 支付人
+                t.setPayer(tradeDetail.at("/payer/openid").asText());
+                t.setTradeStatus(TradeState.SUCCESS);
+                tradeMapper.updateByTradeNo(t);
+            }
+            amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.WX_PAY_NOTIFY_QUEUE_NAME, message);
 
-            amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.ON_CHAIN_ROUTE_KEY, "用户购买成功 >> 执行后续操作");
         }
 
     }
@@ -250,24 +275,26 @@ public class PayServiceImpl implements IPayService {
     }
 
 
+    @Transactional
     @Async
-    public void createPreOrder(PayDetailBO payDetailBO){
+    public void createPreOrder(PayDetailBO payDetailBO) {
+        String outTradeNo = payDetailBO.getTradeNo();
         // 预订单默认未付款的订单
         PreOrder preOrder = new PreOrder();
-        preOrder.setTradeNo(payDetailBO.getTradeNo());
+        preOrder.setTradeNo(outTradeNo);
         preOrder.setProductNo(payDetailBO.getProductNo());
         preOrder.setPrice(payDetailBO.getTotal());
         preOrder.setPayer(payDetailBO.getOpenId());
         orderMapper.insert(preOrder);
 
         // 默认新增状态为未付款状态订单
-//        TradeInfo tradeInfo = new TradeInfo();
-//        tradeInfo.setTradeNo(payDetailBO.getTradeNo());
-//        tradeInfo.setTradeStatus(TradeState.NOTPAY);
-//        tradeInfo.setAmount(payDetailBO.getTotal());
-//        tradeInfo.setDescription(payDetailBO.getDescription());
-//        tradeInfo.setPayer(payDetailBO.getOpenId());
-//        tradeMapper.insert(tradeInfo);
+        TradeInfo tradeInfo = new TradeInfo();
+        tradeInfo.setTradeNo(outTradeNo);
+        tradeInfo.setTradeStatus(TradeState.NOTPAY);
+        tradeInfo.setAmount(payDetailBO.getTotal());
+        tradeInfo.setDescription(payDetailBO.getDescription());
+        tradeInfo.setPayer(payDetailBO.getOpenId());
+        tradeMapper.insert(tradeInfo);
     }
 
 }
