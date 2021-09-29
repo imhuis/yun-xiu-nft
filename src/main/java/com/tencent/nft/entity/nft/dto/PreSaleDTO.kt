@@ -30,7 +30,6 @@ class PreSaleDTO : Serializable {
 
     // 预约开始时间
     @NotNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     var reserveStartTime: LocalDateTime? = null
 
     // 预约结束时间
@@ -39,7 +38,6 @@ class PreSaleDTO : Serializable {
 
     // 开售开始时间
     @NotNull
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     var sellStartTime: LocalDateTime? = null
 
     // 开售结束时间

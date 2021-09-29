@@ -13,6 +13,8 @@ import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.service.IMarketService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class MarketServiceImpl implements IMarketService {
+
+    final Logger log = LoggerFactory.getLogger(MarketServiceImpl.class);
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -84,6 +88,7 @@ public class MarketServiceImpl implements IMarketService {
 
         // 根据用户token 状态该藏品对于用户的状态
         String phone = Optional.ofNullable(SecurityUtils.getCurrentUsername().get()).orElse("");
+        log.info("current user phone: {}", phone);
         // 该用户存在
         if (StringUtils.isNoneBlank(phone)){
             // 判断是否预约过

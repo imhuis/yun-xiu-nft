@@ -63,7 +63,7 @@ public class NftManagementController {
         try {
             nftDetailsVO = nftManagementService.nftDetail(nftId);
         }catch (RecordNotFoundException e){
-            return ResponseUtil.fail(ResponseCodeEnum.NFT_4001);
+            return ResponseUtil.fail(ResponseCodeEnum.NFT_4001, e.getMessage());
         }
         return ResponseUtil.success(nftDetailsVO);
     }

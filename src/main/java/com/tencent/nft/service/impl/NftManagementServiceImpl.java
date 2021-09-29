@@ -184,40 +184,48 @@ public class NftManagementServiceImpl implements INftManagementService {
     }
 
     @Override
-    public SuperNFT nftDetail(String n) {
-        String nftId = StringUtils.trim(n.toLowerCase());
+    public SuperNFT nftDetail(String s) {
+        String nftId = StringUtils.trim(s.toLowerCase());
         Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(nftId);
-        // 查询不到当前nft
         if (superNFTOptional.isEmpty()){
-            throw new RecordNotFoundException();
+            throw new RecordNotFoundException("查询不到当前数字藏品信息");
         }
         SuperNFT superNFT = superNFTOptional.get();
+        NFTStatusEnum status = superNFT.getNftStatus();
+
         NFTInfo nftInfo = nftMapper.selectNftInfoByNftId(nftId).orElse(new NFTInfo());
         NFTDetailsVO nftDetailsVO = new NFTDetailsVO();
 
-        NFTStatusEnum status = superNFT.getNftStatus();
-        if (status != NFTStatusEnum.WAITING){
-            // 待发行的nft可以查询到信息
-            BeanUtils.copyProperties(superNFT, nftInfo);
+        nftDetailsVO.setNftId(superNFT.getNftId());
+        nftDetailsVO.setNftName(superNFT.getNftName());
+        nftDetailsVO.setBrandOwner(superNFT.getBrandOwner());
+        nftDetailsVO.setIssuer(superNFT.getIssuer());
+        nftDetailsVO.setNftType(superNFT.getNftType());
+        nftDetailsVO.setNftCreateTime(superNFT.getNftCreateTime());
+        nftDetailsVO.setNftStatus(status);
+        nftDetailsVO.setCoverPicture(nftInfo.getCoverPicture());
 
+        if (status != NFTStatusEnum.WAITING){
             Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(nftId);
-            nftProductOptional.ifPresent(nftProduct -> BeanUtils.copyProperties(nftProduct, nftDetailsVO));
-            BeanUtils.copyProperties(nftInfo, nftDetailsVO);
+            nftProductOptional.ifPresent(n -> {
+                nftDetailsVO.setCirculation(n.getCirculation());
+                nftDetailsVO.setReserveStartTime(n.getReserveStartTime());
+                nftDetailsVO.setSellStartTime(n.getSellStartTime());
+                nftDetailsVO.setUnitPrice(n.getUnitPrice().doubleValue());
+            });
 
             // 预约人数
             if (status == NFTStatusEnum.APPOINTMENT){
                 nftDetailsVO.setReservation(redisTemplate.opsForSet().size("yy:" + nftId));
             }
-
             if (status == NFTStatusEnum.UP || status == NFTStatusEnum.STOCK_OUT){
                 // 计算金额
                 nftDetailsVO.setTotalAmount(200);
                 nftDetailsVO.setTotalSales(2300L);
             }
-
             return nftDetailsVO;
         }
-        return superNFTOptional.get();
+        return nftDetailsVO;
     }
 
     @Override

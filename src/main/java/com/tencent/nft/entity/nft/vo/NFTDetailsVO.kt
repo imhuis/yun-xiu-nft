@@ -18,7 +18,7 @@ class NFTDetailsVO : SubNFT(), Serializable {
 
     // 单价
     @JsonProperty("price")
-    var unitPrice: BigDecimal? = null
+    var unitPrice: Double? = null
 
     // 发行量
     @JsonProperty("fxl")
@@ -30,14 +30,14 @@ class NFTDetailsVO : SubNFT(), Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     var reserveStartTime: LocalDateTime? = null
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-    var reserveEndTime: LocalDateTime? = null
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+//    var reserveEndTime: LocalDateTime? = null
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
     var sellStartTime: LocalDateTime? = null
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
-    var sellEndTime: LocalDateTime? = null
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
+//    var sellEndTime: LocalDateTime? = null
 
     // 销售总量
     var totalAmount:Int? = null
