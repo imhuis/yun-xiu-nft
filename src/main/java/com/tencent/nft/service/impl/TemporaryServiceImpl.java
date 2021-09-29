@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.Duration;
@@ -30,9 +31,18 @@ public class TemporaryServiceImpl implements ITemporaryService {
         return temporaryMapper.insert(temporaryRecord);
     }
 
+    @Transactional
     @Override
-    public int updateTemporaryRecord(TemporaryRecord temporaryRecord) {
-        return temporaryMapper.update(temporaryRecord);
+    public void updateTemporaryRecord(TemporaryRecord temporaryRecord) {
+        String keyWord = "index-nftId";
+        temporaryRecord.setKey(keyWord);
+        temporaryMapper.update(temporaryRecord);
+
+        StringBuilder sb = new StringBuilder("temp:");
+        String redisKey = sb.append(keyWord).toString();
+        BoundValueOperations<String,String> bvo = stringRedisTemplate.boundValueOps(redisKey);
+        bvo.set(temporaryRecord.getRecord());
+        bvo.expire(Duration.ofHours(1));
     }
 
     @Override

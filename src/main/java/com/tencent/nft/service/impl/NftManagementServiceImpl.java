@@ -124,11 +124,10 @@ public class NftManagementServiceImpl implements INftManagementService {
             }
 
             // 如果为发行状态为发现中或者是售罄 查询销售总量和金额
-            if (c.getNftStatus() == NFTStatusEnum.PROCESSING || c.getNftStatus() == NFTStatusEnum.SOLDOUT){
+            if (c.getNftStatus() == NFTStatusEnum.UP || c.getNftStatus() == NFTStatusEnum.STOCK_OUT){
                 tmp.setTotalAmount(1000);
                 tmp.setTotalSales(2000L);
             }
-
             nftListVOList.add(tmp);
         });
 
@@ -157,7 +156,6 @@ public class NftManagementServiceImpl implements INftManagementService {
         String issuer = superNFT.getIssuer();
         String brandOwner = superNFT.getBrandOwner();
         NFTStatusEnum status = superNFT.getNftStatus();
-
 
         PageHelper.startPage(page, size);
         List<SubNFT> subNFTList = nftMapper.selectSubNftList(parentNftId, subNFTQueryDTO);
@@ -207,16 +205,15 @@ public class NftManagementServiceImpl implements INftManagementService {
             BeanUtils.copyProperties(nftInfo, nftDetailsVO);
 
             // 预约人数
-            if (status == NFTStatusEnum.RESERVEING){
+            if (status == NFTStatusEnum.APPOINTMENT){
                 nftDetailsVO.setReservation(redisTemplate.opsForSet().size("yy:" + nftId));
             }
 
-            if (status == NFTStatusEnum.PROCESSING || status == NFTStatusEnum.SOLDOUT){
+            if (status == NFTStatusEnum.UP || status == NFTStatusEnum.STOCK_OUT){
                 // 计算金额
                 nftDetailsVO.setTotalAmount(200);
                 nftDetailsVO.setTotalSales(2300L);
             }
-
 
             return nftDetailsVO;
         }
@@ -234,7 +231,7 @@ public class NftManagementServiceImpl implements INftManagementService {
 
     @Transactional
     @Override
-    public void setPreSale(PreSaleDTO n) {
+    public void setupPreSale(PreSaleDTO n) {
         // 查询父nft
         Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(n.getNftId());
         SuperNFT superNFTInfo;
@@ -249,13 +246,13 @@ public class NftManagementServiceImpl implements INftManagementService {
             superNFTInfo = superNFTOptional.get();
             BeanUtils.copyProperties(n, nftProduct);
             nftProduct.setNftName(superNFTInfo.getNftName());
-            nftProduct.setNftStatus(NFTStatusEnum.RESERVEING);
+            nftProduct.setNftStatus(NFTStatusEnum.APPOINTMENT);
         }
 
         // 预售创建nft详情
         productMapper.insertNftProduct(nftProduct);
         // 更新 父nft状态
-        updateNftStatus(superNFTInfo.getNftId(), NFTStatusEnum.RESERVEING);
+        updateNftStatus(superNFTInfo.getNftId(), NFTStatusEnum.APPOINTMENT);
         // 创建子nft任务
         generateSublist(superNFTInfo.getNftId(), n.getCirculation());
         // 更新缓存
@@ -272,10 +269,10 @@ public class NftManagementServiceImpl implements INftManagementService {
     public void offShelf(String nftId) {
         NFTProduct edo = new NFTProduct();
         edo.setNftId(nftId);
-        edo.setNftStatus(NFTStatusEnum.OffShelf);
+        edo.setNftStatus(NFTStatusEnum.OFFLINE);
         productMapper.updateByNftId(edo);
 
-        updateNftStatus(nftId, NFTStatusEnum.OffShelf);
+        updateNftStatus(nftId, NFTStatusEnum.OFFLINE);
     }
 
     @Transactional

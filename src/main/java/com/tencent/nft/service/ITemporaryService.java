@@ -11,7 +11,7 @@ public interface ITemporaryService {
 
     int setupTemporaryRecord(TemporaryRecord temporaryRecord);
 
-    int updateTemporaryRecord(TemporaryRecord temporaryRecord);
+    void updateTemporaryRecord(TemporaryRecord temporaryRecord);
 
     String selectByKeyWord(String temporaryRecord);
 }

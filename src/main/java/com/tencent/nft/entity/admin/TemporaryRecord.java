@@ -1,5 +1,7 @@
 package com.tencent.nft.entity.admin;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 /**
@@ -10,6 +12,7 @@ import java.io.Serializable;
 public class TemporaryRecord implements Serializable {
 
     private String key;
+    @JsonProperty("save")
     private String record;
 
     public String getKey() {

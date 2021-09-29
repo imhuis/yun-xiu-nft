@@ -12,6 +12,7 @@ import com.tencent.nft.entity.nft.vo.ProductVO;
 import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.NftProductMapper;
 import com.tencent.nft.service.IMarketService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
@@ -73,7 +74,7 @@ public class MarketServiceImpl implements IMarketService {
         productVO.setNftType(superNFT.getNftType().getCode());
 
 
-        if (productStatus == NFTStatusEnum.PROCESSING || productStatus == NFTStatusEnum.RESERVEING){
+        if (productStatus == NFTStatusEnum.UP || productStatus == NFTStatusEnum.APPOINTMENT){
             Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(productId);
             NFTProduct nftProduct = nftProductOptional.get();
             productVO.setPrice(nftProduct.getUnitPrice().doubleValue());
@@ -81,17 +82,21 @@ public class MarketServiceImpl implements IMarketService {
         }
 
 
-        BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
-        if (SecurityUtils.getCurrentUsername().isPresent()){
-            // 在数组中表示预约过
-            String phone = SecurityUtils.getCurrentUsername().get();
-            if (bso.isMember(phone) == true){
-                productVO.setPersonStatus(1);
+        // 根据用户token 状态该藏品对于用户的状态
+        String phone = Optional.ofNullable(SecurityUtils.getCurrentUsername().get()).orElse("");
+        // 该用户存在
+        if (StringUtils.isNoneBlank(phone)){
+            // 判断是否预约过
+            if (productStatus == NFTStatusEnum.APPOINTMENT){
+                BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
+                if (bso.isMember(phone) == Boolean.TRUE){
+                    productVO.setPersonStatus(1);
+                }
             }
             // 判断是否购买过
+            if (productStatus == NFTStatusEnum.UP){
 
-
-
+            }
         }
 
         return productVO;

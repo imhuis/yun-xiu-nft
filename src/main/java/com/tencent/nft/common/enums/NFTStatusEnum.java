@@ -8,10 +8,10 @@ package com.tencent.nft.common.enums;
 public enum NFTStatusEnum implements ICommonEnum {
 
     WAITING(0, "待发行"),
-    RESERVEING(11, "预售中"),
-    PROCESSING(12, "发行中"),
-    SOLDOUT(21, "已售罄"),
-    OffShelf(3, "已下架");
+    APPOINTMENT(11, "预售中"),
+    UP(12, "发行中"),
+    STOCK_OUT(21, "已售罄"),
+    OFFLINE(3, "已下架");
 
     final int code;
     final String value;
@@ -30,4 +30,5 @@ public enum NFTStatusEnum implements ICommonEnum {
     public String getValue() {
         return value;
     }
+
 }

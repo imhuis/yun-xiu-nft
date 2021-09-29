@@ -31,7 +31,7 @@ public interface INftManagementService {
 
     List<String> getPosterPic(String nftId);
 
-    void setPreSale(PreSaleDTO n);
+    void setupPreSale(PreSaleDTO n);
 
     void offShelf(String nftId);
 }

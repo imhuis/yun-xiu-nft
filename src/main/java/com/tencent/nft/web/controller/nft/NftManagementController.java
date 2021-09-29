@@ -175,7 +175,7 @@ public class NftManagementController {
 //            return ResponseUtil.fail(ResponseCodeEnum.YS_5003);
 //        }
         try {
-            nftManagementService.setPreSale(n);
+            nftManagementService.setupPreSale(n);
         }catch (RecordNotFoundException e){
             return ResponseUtil.fail(ResponseCodeEnum.NFT_4001);
         }

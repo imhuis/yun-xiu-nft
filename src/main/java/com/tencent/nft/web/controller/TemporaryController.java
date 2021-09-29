@@ -29,7 +29,7 @@ public class TemporaryController {
      */
     @PostMapping("/linshiinsert")
     public ResponseResult setupTemporaryRecord(@RequestBody TemporaryRecord temporaryRecord) {
-        temporaryService.setupTemporaryRecord(temporaryRecord);
+        temporaryService.updateTemporaryRecord(temporaryRecord);
         return ResponseUtil.success();
     }
 
