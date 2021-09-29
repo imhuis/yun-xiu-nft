@@ -1,11 +1,15 @@
 package com.tencent.nft.entity.nft;
 
+import com.tencent.nft.entity.BaseEntity;
+
+import java.io.Serializable;
+
 /**
  * @author: imhuis
  * @date: 2021/9/29
  * @description:
  */
-public class UserLibrary {
+public class UserLibrary extends BaseEntity implements Serializable {
 
     private String userId;
     private String openId;
