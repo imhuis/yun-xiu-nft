@@ -1,7 +1,5 @@
 package com.tencent.nft.service.handler;
 
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.digest.MD5;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import com.tencent.nft.common.enums.NFTSaleStatusEnum;
@@ -39,7 +37,7 @@ public class PaySuccessMessageHandler {
     private ObjectMapper objectMapper;
 
     @Resource
-    private UserLibraryMapper libraryMapper;
+    private UserLibraryMapper userLibraryMapper;
 
     @Resource
     private WxUserMapper wxUserMapper;
@@ -61,7 +59,7 @@ public class PaySuccessMessageHandler {
             OrderMessageBO messageBO = objectMapper.readValue(messageData, OrderMessageBO.class);
             String tradeNo = messageBO.getTradeNo();
 
-            UserLibrary userLibrary = libraryMapper.selectByTradeNo(tradeNo);
+            UserLibrary userLibrary = userLibraryMapper.selectByTradeNo(tradeNo);
             if (userLibrary == null){
                 createNew(messageBO);
             }else {
@@ -112,12 +110,11 @@ public class PaySuccessMessageHandler {
         userLibrary.setPhone(wxUser.getPhone());
         userLibrary.setOpenId(wxUser.getOpenId());
         userLibrary.setNftId(newSubNFT.getNftId());
-        log.info(userLibrary.toString());
 
         newSubNFT.setChainAddress(UUIDUtil.generateUUID());
         newSubNFT.setSoldTime(LocalDateTime.now());
         newSubNFT.setSaleStatus(NFTSaleStatusEnum.Sold);
-        libraryMapper.insert(userLibrary);
+        userLibraryMapper.insertUserLibrary(userLibrary);
         nftMapper.updateSubNft(newSubNFT);
 
     }

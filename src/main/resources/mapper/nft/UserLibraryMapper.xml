@@ -10,7 +10,7 @@
         id, user_id, open_id, phone, nft_id, trade_no, create_time, update_time
     </sql>
 
-    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    <insert id="insertUserLibrary" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         insert into t_user_library
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">user_id,</if>

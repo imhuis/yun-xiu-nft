@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface UserLibraryMapper {
 
-    int insert(UserLibrary userLibrary);
+    int insertUserLibrary(UserLibrary userLibrary);
 
     UserLibrary selectByTradeNo(String tradeNo);
 
