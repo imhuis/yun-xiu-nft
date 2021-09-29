@@ -19,17 +19,20 @@
         <result column="sub_id" jdbcType="VARCHAR" property="nftId"/>
         <result column="super_id" jdbcType="VARCHAR" property="superNFTId"/>
         <result column="sale_status" jdbcType="INTEGER" property="saleStatus"/>
-<!--        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>-->
+        <!--        <result column="nft_type" jdbcType="INTEGER" property="nftType" typeHandler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler"/>-->
     </resultMap>
     <sql id="SuperNFT_Column_List">
-        id, nft_id, nft_name, nft_status, nft_type, nft_file, issuer, brand_owner, introduce, chain_address,
+        id
+        , nft_id, nft_name, nft_status, nft_type, nft_file, issuer, brand_owner, introduce, chain_address,
         nft_create_time, create_time, update_time
     </sql>
     <sql id="NFTInfo_Column_List">
-        id, nft_id, nft_name, cover_pic, detail_pic
+        id
+        , nft_id, nft_name, cover_pic, detail_pic
     </sql>
     <sql id="SubNFT_Column_List">
-        id, sub_id, super_id, sale_status, chain_address, sold_time
+        id
+        , sub_id, super_id, sale_status, chain_address, sold_time
     </sql>
 
     <select id="selectSuperNFTByNftId" resultMap="SuperNFTResultMap">
@@ -92,8 +95,8 @@
     <update id="updateSuperNFT">
         update t_super_nft
         <set>
-<!--            <if test="nftId != null">nft_id = #{nftId},</if>-->
-<!--            <if test="nftName != null">nft_name = #{nftName},</if>-->
+            <!--            <if test="nftId != null">nft_id = #{nftId},</if>-->
+            <!--            <if test="nftName != null">nft_name = #{nftName},</if>-->
             <if test="nftStatus != null">nft_status = #{nftStatus},</if>
             <if test="nftType != null">nft_type = #{nftType},</if>
             <if test="nftFile != null">nft_file = #{nftFile},</if>
@@ -101,15 +104,15 @@
             <if test="brandOwner != null">brand_owner = #{brandOwner},</if>
             <if test="introduce != null">introduce = #{introduce},</if>
             <if test="chainAddress != null">chain_address = #{chainAddress},</if>
-<!--            <if test="nftCreateTime != null">nft_create_time = #{nftCreateTime},</if>-->
+            <!--            <if test="nftCreateTime != null">nft_create_time = #{nftCreateTime},</if>-->
             update_time = #{updateTime}
         </set>
         WHERE nft_id = #{nftId}
     </update>
 
     <delete id="deleteSuperNFT">
-        delete from
-        t_super_nft
+        delete
+        from t_super_nft
         where nft_id = #{nftId}
     </delete>
 
@@ -140,8 +143,8 @@
     </insert>
 
     <delete id="deleteNftINfo">
-        delete from
-        t_nft_info
+        delete
+        from t_nft_info
         where nft_id = #{nftId}
     </delete>
 
@@ -188,15 +191,12 @@
     <update id="updateSubNft">
         update t_sub_nft
         <set>
-            <if test="nftId != null">#{nftId},</if>
-            <if test="superNFTId != null">#{superNFTId},</if>
-            <if test="saleStatus != null">#{saleStatus},</if>
-            <if test="chainAddress != null">#{chainAddress},</if>
-            <if test="nftCreateTime != null">#{nftCreateTime},</if>
-            <if test="soldTime != null">#{soldTime},</if>
+            <if test="saleStatus != null">sale_status = #{saleStatus},</if>
+            <if test="chainAddress != null">chain_address = #{chainAddress},</if>
+            <if test="soldTime != null">sold_time = #{soldTime},</if>
             update_time = #{updateTime}
         </set>
-        WHERE sub_id = #{nftId}
+        where sub_id = #{nftId}
     </update>
 
     <select id="selectSubNftByNftId" resultMap="SubNFTResultMap">

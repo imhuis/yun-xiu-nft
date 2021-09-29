@@ -64,7 +64,6 @@ public class PaySuccessMessageHandler {
             UserLibrary userLibrary = libraryMapper.selectByTradeNo(tradeNo);
             if (userLibrary == null){
                 createNew(messageBO);
-
             }else {
                 return;
             }
@@ -99,7 +98,7 @@ public class PaySuccessMessageHandler {
     }
 
     @Transactional
-    void createNew(OrderMessageBO messageBO){
+    public void createNew(OrderMessageBO messageBO){
         String openId = messageBO.getOpenId();
         String tradeNo = messageBO.getTradeNo();
         String productId = messageBO.getProductId();
@@ -111,8 +110,9 @@ public class PaySuccessMessageHandler {
         userLibrary.setTradeNo(tradeNo);
         userLibrary.setUserId(wxUser.getUserId());
         userLibrary.setPhone(wxUser.getPhone());
-        userLibrary.setOpenId(openId);
+        userLibrary.setOpenId(wxUser.getOpenId());
         userLibrary.setNftId(newSubNFT.getNftId());
+        log.info(userLibrary.toString());
         libraryMapper.insert(userLibrary);
 
         newSubNFT.setChainAddress(UUIDUtil.generateUUID());

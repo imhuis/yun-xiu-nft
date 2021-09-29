@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tencent.nft.mapper.UserLibraryMapper">
-<!--    <resultMap id="BaseResultMap" type="com.tencent.nft.entity.nft.NFTInfo">-->
-<!--        <id column="id" jdbcType="BIGINT" property="id"/>-->
-<!--    </resultMap>-->
+    <resultMap id="BaseResultMap" type="com.tencent.nft.entity.nft.UserLibrary">
+    </resultMap>
 
     <sql id="Base_Column_List">
-        user_id, open_id, phone, nft_id, trade_no, create_time, update_time
+        user_id
+        , open_id, phone, nft_id, trade_no, create_time, update_time
     </sql>
-    <insert id="insert">
+
+    <insert id="insert" parameterType="com.tencent.nft.entity.nft.UserLibrary">
         insert into t_user_library
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="userId != null">user_id,</if>
@@ -28,8 +29,9 @@
         </trim>
     </insert>
 
-    <select id="selectByTradeNo">
-        select <include refid="Base_Column_List"/>
+    <select id="selectByTradeNo" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
         from t_user_library
         where trade_no = #{tradeNo}
     </select>

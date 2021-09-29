@@ -52,4 +52,15 @@ public class UserLibrary {
     public void setTradeNo(String tradeNo) {
         this.tradeNo = tradeNo;
     }
+
+    @Override
+    public String toString() {
+        return "UserLibrary{" +
+                "userId='" + userId + '\'' +
+                ", openId='" + openId + '\'' +
+                ", phone='" + phone + '\'' +
+                ", nftId='" + nftId + '\'' +
+                ", tradeNo='" + tradeNo + '\'' +
+                '}';
+    }
 }
