@@ -1,6 +1,7 @@
 package com.tencent.nft.common.base;
 
 
+import com.tencent.nft.entity.BaseEntity;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,7 +18,7 @@ import java.util.Date;
  */
 @Data
 @Accessors(chain = true)
-public class FeedBack implements Serializable {
+public class FeedBack extends BaseEntity implements Serializable {
     private Integer id; //ID主键自增
     private String name;
     private String phone;
