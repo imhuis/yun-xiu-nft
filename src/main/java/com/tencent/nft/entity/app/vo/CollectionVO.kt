@@ -18,4 +18,5 @@ class CollectionVO : Serializable {
     var price = 0.0
     var blockChainAddress: String? = null
     var owner: String? = null
+    var circulation: Int? =null
 }

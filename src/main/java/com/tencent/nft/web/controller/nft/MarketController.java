@@ -71,13 +71,24 @@ public class MarketController {
     }
 
     /**
-     * 查询指定商品预约量
+     * 查询指定商品的预约量和售出量
      * @param nftId
      * @return
      */
-    @RequestMapping("/app/public/market/{nft_id}/amount")
+    @RequestMapping("/app/public/market/{nft_id:[a-zA-Z0-9]{16}}/amount")
     public ResponseResult getReservationAmount(@PathVariable(value = "nft_id") String nftId){
         long amount = marketService.getProductAmount(nftId);
+        return ResponseUtil.success(amount);
+    }
+
+    /**
+     * 根据子编号指定商品的预约量和售出量
+     * @param subNFTId
+     * @return
+     */
+    @RequestMapping("/app/public/market/{sub_nft_id:[a-zA-Z0-9]{18,}}/amount")
+    public ResponseResult getReservationAmountByZi(@PathVariable(value = "sub_nft_id") String subNFTId){
+        long amount = marketService.getProductAmountBySubNftId(subNFTId);
         return ResponseUtil.success(amount);
     }
 

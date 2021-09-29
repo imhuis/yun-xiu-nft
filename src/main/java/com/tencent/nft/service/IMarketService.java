@@ -26,6 +26,8 @@ public interface IMarketService {
 
     long getProductAmount(String nftId);
 
+    long getProductAmountBySubNftId(String subNftId);
+
     Boolean reserveProduct(String nftId);
 
 

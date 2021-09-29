@@ -77,7 +77,7 @@ public class AppController {
      */
     @RequestMapping("/me/library/{subId}")
     public ResponseResult myLibrary(@PathVariable String subId){
-        CollectionVO collectionVO = appService.collectionDetails(subId);
+        CollectionVO collectionVO = appService.myCollectionDetail(subId);
         return ResponseUtil.success(collectionVO);
     }
 

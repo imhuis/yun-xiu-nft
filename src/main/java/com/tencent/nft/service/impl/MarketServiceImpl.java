@@ -1,5 +1,6 @@
 package com.tencent.nft.service.impl;
 
+import com.tencent.nft.common.constant.RedisKeyConstants;
 import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.exception.business.RecordNotFoundException;
 import com.tencent.nft.core.security.SecurityUtils;
@@ -163,6 +164,22 @@ public class MarketServiceImpl implements IMarketService {
     }
 
     @Override
+    public long getProductAmountBySubNftId(String subNftId) {
+        Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(subNftId);
+        if (nftProductOptional.isEmpty()){
+            return 0;
+        }
+        NFTStatusEnum statusEnum = nftProductOptional.get().getNftStatus();
+        if (statusEnum == NFTStatusEnum.APPOINTMENT){
+            return getProductReservationAmount(subNftId);
+        }
+        if (statusEnum == NFTStatusEnum.UP){
+            return getProductPurchaseAmount(subNftId);
+        }
+        return 0;
+    }
+
+    @Override
     public Boolean reserveProduct(String productId) {
         // 查询商品是否存在
         BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
@@ -185,7 +202,7 @@ public class MarketServiceImpl implements IMarketService {
 
     @Override
     public long getProductPurchaseAmount(String productId) {
-        BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReservesChar(productId));
+        BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getPurchaseChar(productId));
         return bso.size();
     }
 
@@ -195,7 +212,7 @@ public class MarketServiceImpl implements IMarketService {
      * @return
      */
     protected String getReserveChar(String productId){
-        StringBuilder sb = new StringBuilder("yy:");
+        StringBuilder sb = new StringBuilder(RedisKeyConstants.ReserveAmount);
         sb.append(productId.trim().toLowerCase());
         return sb.toString();
     }
@@ -205,8 +222,8 @@ public class MarketServiceImpl implements IMarketService {
      * @param productId
      * @return
      */
-    protected String getReservesChar(String productId){
-        StringBuilder sb = new StringBuilder("yy:");
+    protected String getPurchaseChar(String productId){
+        StringBuilder sb = new StringBuilder(RedisKeyConstants.PurchaseAmount);
         sb.append(productId.trim().toLowerCase());
         return sb.toString();
     }

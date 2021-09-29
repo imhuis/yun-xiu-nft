@@ -14,6 +14,6 @@ public interface IAppService {
 
     List<MyLibraryVO> myLibrary();
 
-    CollectionVO collectionDetails(String subId);
+    CollectionVO myCollectionDetail(String subId);
 
 }

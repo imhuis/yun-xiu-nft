@@ -66,8 +66,10 @@ public class AppServiceImpl implements IAppService {
     }
 
     @Override
-    public CollectionVO collectionDetails(String subId) {
+    public CollectionVO myCollectionDetail(String subId) {
+        // 获取当前用户
         String p = SecurityUtils.getCurrentUsername().get();
+
         SubNFT zi = nftMapper.selectSubNftByNftId(subId);
         SuperNFT superNFT = nftMapper.selectSuperNFTByNftId(zi.getSuperNFTId()).get();
         NFTProduct nftProduct = productMapper.selectByNftId(zi.getSuperNFTId()).get();
@@ -83,6 +85,7 @@ public class AppServiceImpl implements IAppService {
         collectionVO.setPrice(nftProduct.getUnitPrice().doubleValue());
         collectionVO.setBlockChainAddress(UUIDUtil.generateUUID());
         collectionVO.setOwner(Optional.ofNullable(wxUserMapper.selectByPhone(p)).get().get().getNickname());
+        collectionVO.setCirculation(nftProduct.getCirculation());
         return collectionVO;
     }
 
