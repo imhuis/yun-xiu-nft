@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * @author: imhuis
  * @date: 2021/9/29
- * @description:
+ * @description: 预订单
  */
 @Mapper
 public interface OrderMapper {
