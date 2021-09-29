@@ -5,6 +5,7 @@ import com.tencent.nft.common.exception.business.RecordNotFoundException;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.NFTProduct;
+import com.tencent.nft.entity.nft.SubNFT;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.vo.ProductDetailVO;
@@ -19,9 +20,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -71,15 +75,16 @@ public class MarketServiceImpl implements IMarketService {
             throw new RecordNotFoundException("暂无这个商品信息");
         }
         BeanUtils.copyProperties(superNFTInfo.get(), productVO);
-        // 设置商品状态
         SuperNFT superNFT = superNFTInfo.get();
         NFTStatusEnum productStatus = superNFT.getNftStatus();
         productVO.setStatus(superNFT.getNftStatus().getCode());
         productVO.setNftType(superNFT.getNftType().getCode());
         productVO.setChainAddress(superNFT.getChainAddress());
 
-
         if (productStatus == NFTStatusEnum.APPOINTMENT || productStatus == NFTStatusEnum.UP){
+            if (productStatus == NFTStatusEnum.APPOINTMENT){
+                checkProductStatus(superNFT);
+            }
             Optional<NFTProduct> nftProductOptional = productMapper.selectByNftId(productId);
             NFTProduct nftProduct = nftProductOptional.get();
             productVO.setPrice(nftProduct.getUnitPrice().doubleValue());
@@ -98,7 +103,6 @@ public class MarketServiceImpl implements IMarketService {
             // 2 - 未购买
             if (productStatus == NFTStatusEnum.APPOINTMENT){
                 BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getReserveChar(productId));
-                System.out.println(bso.isMember(phone));
                 if (bso.isMember(phone) == true){
                     productVO.setPersonStatus(1);
                 }
@@ -110,6 +114,22 @@ public class MarketServiceImpl implements IMarketService {
         }
 
         return productVO;
+    }
+
+    @Async
+    void checkProductStatus(SuperNFT superNFT) {
+        NFTProduct nftProduct = productMapper.selectByNftId(superNFT.getNftId()).get();
+        if (LocalDateTime.now().isBefore(nftProduct.getSellStartTime())){
+            return;
+        }else {
+            superNFT.setNftStatus(NFTStatusEnum.UP);
+            nftMapper.updateSuperNFT(superNFT);
+            NFTProduct np = new NFTProduct();
+            np.setNftId(superNFT.getNftId());
+            np.setNftStatus(NFTStatusEnum.UP);
+            productMapper.updateByNftId(np);
+        }
+
     }
 
     @Override
