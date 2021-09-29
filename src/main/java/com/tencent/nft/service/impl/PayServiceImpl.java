@@ -235,7 +235,7 @@ public class PayServiceImpl implements IPayService {
                 tradeMapper.updateByTradeNo(t);
             } else {
                 if (t.getTradeStatus() == TradeState.SUCCESS) {
-                    amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.WX_PAY_NOTIFY_QUEUE_NAME, message);
+                    amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.PAY_NOTIFY_ROUTE_KEY, message);
                     return;
                 }
                 t.setTradeNo(outTradeNo);
@@ -248,7 +248,7 @@ public class PayServiceImpl implements IPayService {
                 t.setTradeStatus(TradeState.SUCCESS);
                 tradeMapper.updateByTradeNo(t);
             }
-            amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.WX_PAY_NOTIFY_QUEUE_NAME, message);
+            amqpTemplate.convertAndSend(RabbitmqConfig.DEFAULT_EXCHANGE_NAME, RabbitmqConfig.PAY_NOTIFY_ROUTE_KEY, message);
 
         }
 

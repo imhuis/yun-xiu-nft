@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -34,6 +35,7 @@ import java.util.Map;
  * @date: 2021/9/28
  * @description: 消息队列上链服务
  */
+@Component
 public class OnChainHandler {
 
     Logger log = LoggerFactory.getLogger(OnChainHandler.class);
@@ -45,7 +47,7 @@ public class OnChainHandler {
     private RestTemplate restTemplate;
 
     // 监听上链消息
-    @RabbitListener(queues = {"on-chain-queue-sxl"})
+//    @RabbitListener(queues = {"on-chain-queue"})
     public void onChain(Message message, Channel channel) throws IOException {
 
         try {

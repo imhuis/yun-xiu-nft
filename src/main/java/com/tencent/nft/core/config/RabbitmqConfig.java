@@ -20,20 +20,24 @@ public class RabbitmqConfig {
      * 交换机名称
      */
     // 微信支付异步通知
-    public static final String WX_NOTIFY_QUEUE_NAME = "wx-notify-queue";
+    public static final String WX_PAY_NOTIFY_QUEUE_NAME = "wx-notify-queue";
 
     // 小程序通知，售卖通知
-    public static final String YS_NOTIFY_QUEUE_NAME = "wx-ys-message-queue";
+    public static final String WX_YS_NOTIFY_QUEUE_NAME = "wx-ys-message-queue";
 
-    // 小程序通知，支付成功
-    public static final String WX_PAY_NOTIFY_QUEUE_NAME = "wx-pay-message-queue";
+    // 支付成功，后续通知操作
+    public static final String PAY_NOTIFY_QUEUE_NAME = "pay-notify-queue";
 
     // 上链队列
     public static final String ON_CHAIN_QUEUE_NAME = "on-chain-queue";
 
     public static final String DEFAULT_EXCHANGE_NAME = "default-exchange";
 
-    public static final String WX_NOTIFY_ROUTE_KEY = "nft.topic.wxpay";
+    public static final String WX_PAY_NOTIFY_ROUTE_KEY = "nft.topic.wxpay";
+
+    public static final String WX_YS_NOTIFY_ROUTE_KEY = "nft.topic.ys";
+
+    public static final String PAY_NOTIFY_ROUTE_KEY = "nft.topic.pay";
 
     public static final String ON_CHAIN_ROUTE_KEY = "nft.topic.onchain";
 
@@ -58,17 +62,17 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue wxNotifyQueue(){
-        return new Queue(WX_NOTIFY_QUEUE_NAME);
+        return new Queue(WX_PAY_NOTIFY_QUEUE_NAME);
     }
 
     @Bean
     public Queue wxYsQueue(){
-        return new Queue(YS_NOTIFY_QUEUE_NAME);
+        return new Queue(WX_YS_NOTIFY_QUEUE_NAME);
     }
 
     @Bean
-    public Queue wxPayQueue(){
-        return new Queue(WX_PAY_NOTIFY_QUEUE_NAME);
+    public Queue payQueue(){
+        return new Queue(PAY_NOTIFY_QUEUE_NAME);
     }
 
     @Bean
@@ -81,17 +85,17 @@ public class RabbitmqConfig {
 
     @Bean
     public Binding topicBinding1(@Qualifier("wxNotifyQueue") Queue queue, @Qualifier("defaultExchange") TopicExchange topicExchange){
-        return BindingBuilder.bind(queue).to(topicExchange).with(WX_NOTIFY_ROUTE_KEY);
+        return BindingBuilder.bind(queue).to(topicExchange).with(WX_PAY_NOTIFY_ROUTE_KEY);
     }
 
     @Bean
     public Binding topicBinding2(@Qualifier("wxYsQueue") Queue queue, @Qualifier("defaultExchange") TopicExchange topicExchange){
-        return BindingBuilder.bind(queue).to(topicExchange).with(ON_CHAIN_ROUTE_KEY);
+        return BindingBuilder.bind(queue).to(topicExchange).with(WX_YS_NOTIFY_ROUTE_KEY);
     }
 
     @Bean
-    public Binding topicBinding3(@Qualifier("wxPayQueue") Queue queue, @Qualifier("defaultExchange") TopicExchange topicExchange){
-        return BindingBuilder.bind(queue).to(topicExchange).with(ON_CHAIN_ROUTE_KEY);
+    public Binding topicBinding3(@Qualifier("payQueue") Queue queue, @Qualifier("defaultExchange") TopicExchange topicExchange){
+        return BindingBuilder.bind(queue).to(topicExchange).with(PAY_NOTIFY_ROUTE_KEY);
     }
 
     @Bean
