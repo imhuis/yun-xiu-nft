@@ -18,7 +18,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * @author: imhuis
@@ -44,9 +43,17 @@ public class NftManagementController {
     public ResponseResult nftList(@RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
                                   @RequestParam(value = "per_page",required = false, defaultValue = "20") Integer size,
                                   @RequestParam(value = "nft_status",required = false) Integer nftStatus,
-                                  @RequestBody(required = false) NftListQueryDTO nftListQueryDTO){
+                                  @RequestParam(value = "nft_id",required = false) String nftId,
+                                  @RequestParam(value = "nft_name",required = false) String nftName,
+                                  @RequestParam(value = "nft_type",required = false) Integer nftType){
 
-        nftListQueryDTO = Optional.ofNullable(nftListQueryDTO).orElse(new NftListQueryDTO());
+        // @RequestBody(required = false) NftListQueryDTO nftListQueryDTO
+//        NftListQueryDTO nftListQueryDTO = Optional.ofNullable(nftListQueryDTO).orElse(new NftListQueryDTO());
+        NftListQueryDTO nftListQueryDTO = new NftListQueryDTO();
+        nftListQueryDTO.setNftStatus(nftStatus);
+        nftListQueryDTO.setNftId(nftId);
+        nftListQueryDTO.setNftName(nftName);
+        nftListQueryDTO.setNftType(nftType);
 
         PageBean nftListVOList = nftManagementService.listNFT(page, size, nftStatus, nftListQueryDTO);
         return ResponseUtil.success(nftListVOList);
@@ -84,20 +91,26 @@ public class NftManagementController {
      * 查询nft子列表
      * @param page
      * @param size
-     * @param superNFTId
-     * @param subNFTQueryDTO
+     * @param superNftId
+     * @param subNftId
+     * @param saleStatus
      * @return
      */
-    @RequestMapping(value = "/sub/{superNFT}", method = RequestMethod.GET)
+    @RequestMapping(value = "/sub/{superNFT:[a-zA-Z0-9]{16}}", method = RequestMethod.GET)
     public ResponseResult subNftList(@RequestParam(value = "page",required = false, defaultValue = "1") Integer page,
                                      @RequestParam(value = "per_page",required = false, defaultValue = "20") Integer size,
-                                     @PathVariable("superNFT") String superNFTId,
-                                     @RequestBody(required = false) SubNFTQueryDTO subNFTQueryDTO){
+                                     @PathVariable("superNFT") String superNftId,
+                                     @RequestParam(value = "id", required = false) String subNftId,
+                                     @RequestParam(value = "status", required = false) Integer saleStatus){
 
-        subNFTQueryDTO = Optional.ofNullable(subNFTQueryDTO).orElse(new SubNFTQueryDTO());
+        //@RequestBody(required = false) SubNFTQueryDTO subNFTQueryDTO
+//        subNFTQueryDTO = Optional.ofNullable(subNFTQueryDTO).orElse(new SubNFTQueryDTO());
+        SubNftQueryDTO subNFTQueryDTO = new SubNftQueryDTO();
+        subNFTQueryDTO.setId(subNftId);
+        subNFTQueryDTO.setSaleStatus(saleStatus);
 
         try {
-            PageBean nftListVOList = nftManagementService.listSubNFT(page, size, superNFTId, subNFTQueryDTO);
+            PageBean nftListVOList = nftManagementService.listSubNFT(page, size, superNftId, subNFTQueryDTO);
             return ResponseUtil.success(nftListVOList);
         }catch (RecordNotFoundException e){
             return ResponseUtil.fail(ResponseCodeEnum.NFT_4001);

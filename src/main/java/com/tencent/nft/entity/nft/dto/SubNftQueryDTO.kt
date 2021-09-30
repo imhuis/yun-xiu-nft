@@ -8,7 +8,7 @@ import java.io.Serializable
  * @date: 2021/9/12
  * @description: NFT子列表查询条件DTO
  */
-class SubNFTQueryDTO : Serializable {
+class SubNftQueryDTO : Serializable {
 
     @JsonAlias("sub_id")
     var id: String? = null

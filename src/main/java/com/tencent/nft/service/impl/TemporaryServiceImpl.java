@@ -56,6 +56,9 @@ public class TemporaryServiceImpl implements ITemporaryService {
             return bvo.get();
         }else {
             String s = temporaryMapper.selectByKeyWord(keyWord);
+            if (s == null){
+                return "";
+            }
             bvo.setIfAbsent(s, Duration.ofHours(1));
             return s;
         }

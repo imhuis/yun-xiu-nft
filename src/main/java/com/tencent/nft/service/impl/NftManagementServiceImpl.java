@@ -19,7 +19,7 @@ import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftCreateDTO;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.PreSaleDTO;
-import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
+import com.tencent.nft.entity.nft.dto.SubNftQueryDTO;
 import com.tencent.nft.entity.nft.vo.NFTDetailsVO;
 import com.tencent.nft.entity.nft.vo.NFTListVO;
 import com.tencent.nft.entity.nft.vo.SubNFTListVO;
@@ -38,7 +38,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -158,9 +157,9 @@ public class NftManagementServiceImpl implements INftManagementService {
     }
 
     @Override
-    public PageBean<List<SubNFTListVO>> listSubNFT(Integer page, Integer size, String parentNftId, SubNFTQueryDTO subNFTQueryDTO) {
+    public PageBean<List<SubNFTListVO>> listSubNFT(Integer page, Integer size, String parentNftId, SubNftQueryDTO subNFTQueryDTO) {
         if (subNFTQueryDTO == null){
-            subNFTQueryDTO = new SubNFTQueryDTO();
+            subNFTQueryDTO = new SubNftQueryDTO();
         }
         // 找不到父nft记录
         Optional<SuperNFT> superNFTOptional = nftMapper.selectSuperNFTByNftId(parentNftId);

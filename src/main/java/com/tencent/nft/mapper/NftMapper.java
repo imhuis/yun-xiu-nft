@@ -4,7 +4,7 @@ import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.SubNFT;
 import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
-import com.tencent.nft.entity.nft.dto.SubNFTQueryDTO;
+import com.tencent.nft.entity.nft.dto.SubNftQueryDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -49,7 +49,7 @@ public interface NftMapper {
      * @param subNFTQueryDTO
      * @return
      */
-    List<SubNFT> selectSubNftList(@Param("superId") String parentNftId, @Param("sqd") SubNFTQueryDTO subNFTQueryDTO);
+    List<SubNFT> selectSubNftList(@Param("superId") String parentNftId, @Param("sqd") SubNftQueryDTO subNFTQueryDTO);
 
     int insertSubNft(SubNFT subNFT);
 
