@@ -25,6 +25,8 @@ import com.tencent.nft.mapper.pay.OrderMapper;
 import com.tencent.nft.mapper.pay.TradeMapper;
 import com.tencent.nft.service.IPayService;
 import com.tencent.nft.service.handler.WeChatPayHandler;
+import com.tencent.nft.service.pay.IStockCallback;
+import com.tencent.nft.service.pay.StockService;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
@@ -87,12 +89,11 @@ public class PayServiceImpl implements IPayService {
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private StockService stockService;
 
     @Override
     public PrepayVO order(PayRequestDTO dto) throws Exception {
         // 首先判断是否有购买资格，已经预约，或者购买买过一次的不能购买第二次
-        log.info(dto.toString());
         String openId = dto.getOpenId();
         final String productId = dto.getProductId().toLowerCase().trim();
         WxUser wxUser = wxUserMapper.selectFullByOpenId(openId).get();
@@ -107,18 +108,26 @@ public class PayServiceImpl implements IPayService {
             throw new PayException("重复购买！");
         }
 
+        String redisKey = "product:stock:" + productId;
+        log.info("初始库存 {}", productMapper.selectStock(productId));
 
-        final String tradeNo = UUIDUtil.generateUUID();
+        long stock = stockService.stock(redisKey, 60 * 60, 1, () -> productMapper.selectStock(productId));
+        log.info("剩余库存 {}", stock);
+        if (stock >= 0) {
+//            final String tradeNo = UUIDUtil.generateUUID();
+//
+//            PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
+//            // 生成prepay_id
+//            String prepayId = payHandler.handler(payDetailBO);
+//            // 生产预订单。插入数据表
+//            createPreOrder(payDetailBO);
+//            return createOrder(prepayId);
+        }
 
-        PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
-        // 生成prepay_id
-        String prepayId = payHandler.handler(payDetailBO);
-        // 生产预订单。插入数据表
-        createPreOrder(payDetailBO);
-        return createOrder(prepayId);
-
-
-
+//        else {
+//            throw new PayException("");
+//        }
+        return null;
 
 
         /**

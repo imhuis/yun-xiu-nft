@@ -52,11 +52,11 @@ public class StockService {
          *
          * @params 库存key
          * @return
-         *   -3:库存未初始化
-         *   -2:库存不足
-         *   -1:不限库存
-         *   大于等于0:剩余库存（扣减之后剩余的库存）
-         *      redis缓存的库存(value)是-1表示不限库存，直接返回1
+         * 		-3:库存未初始化
+         * 		-2:库存不足
+         * 		-1:不限库存
+         * 		大于等于0:剩余库存（扣减之后剩余的库存）
+         * 	    redis缓存的库存(value)是-1表示不限库存，直接返回1
          */
         StringBuilder sb = new StringBuilder();
         sb.append("if (redis.call('exists', KEYS[1]) == 1) then");
@@ -113,8 +113,8 @@ public class StockService {
     /**
      * 加库存(还原库存)
      *
-     * @param key 库存key
-     * @param num 库存数量
+     * @param key    库存key
+     * @param num    库存数量
      * @return
      */
     public long addStock(String key, int num) {
@@ -137,7 +137,7 @@ public class StockService {
             return redisTemplate.opsForValue().increment(key, num);
         }
 
-        Assert.notNull(expire, "初始化库存失败，库存过期时间不能为null");
+        Assert.notNull(expire,"初始化库存失败，库存过期时间不能为null");
         RedisLock redisLock = new RedisLock(redisTemplate, key);
         try {
             if (redisLock.tryLock()) {
@@ -184,6 +184,7 @@ public class StockService {
         args.add(Integer.toString(num));
 
         long result = redisTemplate.execute((RedisCallback<Long>) connection -> {
+
             Object nativeConnection = connection.getNativeConnection();
             // 集群模式和单机模式虽然执行脚本的方法一样，但是没有共同的接口，所以只能分开执行
             // 集群模式
