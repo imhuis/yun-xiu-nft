@@ -93,12 +93,12 @@ public class NftManagementServiceImpl implements INftManagementService {
         nftInfo.setDetailPicture(dto.getDetailPicture().stream().collect(Collectors.joining(",")));
 
         // 调用上链接口 返回nft在区块链中的地址
-        try {
-            String address = onChainHandler.getChainAddress(id, id);
-            log.info("address", address);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            String address = onChainHandler.getChainAddress(id, id);
+//            log.info("address", address);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         nftInfo.setChainAddress(UUIDUtil.generateUUID());
 
         // 事务执行放在一起

@@ -10,6 +10,15 @@ https://modao.cc/app/43a2e887d5f2b50b76228fb633cfa73429e150ba#screen=sksi85z757y
 </dependency>
 ```
 
+```yaml
+batch:
+  job:
+    enabled: false
+  jdbc:
+    table-prefix: batch
+    initialize-schema: never
+```
+
 ## 接口设计
 
 ### 小程序数字藏品展示

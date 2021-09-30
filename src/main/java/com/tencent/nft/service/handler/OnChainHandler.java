@@ -3,12 +3,19 @@ package com.tencent.nft.service.handler;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.rabbitmq.client.Channel;
 import com.tencent.nft.common.properties.ChainProperties;
 import com.tencent.nft.common.util.CodeUtil;
 import com.tencent.nft.common.util.OKHttpClientBuilder;
+import com.tencent.nft.entity.chain.ChainAddressResult;
+import com.tencent.nft.entity.chain.CreateData;
 import com.tencent.nft.entity.chain.GetAccessTokenResult;
+import com.tencent.nft.entity.chain.OnChainResponse;
+import net.sf.json.JSONObject;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -18,10 +25,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -30,6 +37,7 @@ import java.net.URI;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -43,13 +51,13 @@ public class OnChainHandler {
     Logger log = LoggerFactory.getLogger(OnChainHandler.class);
 
     @Autowired
-    private ChainProperties chainProperties;
+    private ObjectMapper objectMapper;
 
     @Autowired
     private RestTemplate restTemplate;
 
     // 监听上链消息
-//    @RabbitListener(queues = {"on-chain-queue"})
+    @RabbitListener(queues = {"on-chain-queue"})
     public void onChain(Message message, Channel channel) throws IOException {
 
         try {
@@ -93,74 +101,83 @@ public class OnChainHandler {
     }
 
 
-    public String getChainAddress(String evidenceId, String evidenceInfo) throws IOException {
-        // 先从缓存获取token, 如果未登录调用 getAccessToken()
-        return "chainAddress";
+    /**
+     * btoe获取access_token
+     * @return
+     */
+    public String getAccessToken() {
+        String url = "https://btoe.tusi.tencent-cloud.net/oauth/token";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+        map.set("client_id", "2d6caf8f87bb40e1919a13ffb0773b7f");
+        map.set("client_secret", "r9qV4etaNIig8FPKVtDMxzfldksDai3LLq0zjS6T");
+        map.set("grant_type", "client_credentials");
+        map.set("scope", "read write");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        ResponseEntity<String> responseBody = restTemplate.postForEntity(url, request, String.class);
+
+        JSONObject jsonObject = JSONObject.fromObject(responseBody.getBody());
+        String accessToken = (String)jsonObject.get("access_token");
+        return accessToken;
     }
 
+    /**
+     * btoe获取access_token BTOE写⼊待存证的业务数据明文，业务数据明文存证写⼊后不可修改，BTOE对业务数据明文存证生成含有电⼦签章的区块链存证电⼦凭证
+     * @param createData
+     * @param accessToken
+     * @return
+     * @throws JsonProcessingException
+     */
+    public OnChainResponse createDataDeposit(CreateData createData, String accessToken) throws JsonProcessingException {
+        String url = "https://btoe.tusi.tencent-cloud.net/v1/api/normalDeposit";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", "bearer" + accessToken);
 
-//    private String onChain(String evidenceType,
-//                           String evidenceId,
-//                           String hashType,
-//                           String evidenceInfo,
-//                           String accessToken) throws InvalidKeyException, NoSuchAlgorithmException {
-//
-//        long currentTime = System.currentTimeMillis();
-//        String noncestr = "0123456789012345678901234567890123456789";
-//
-//        Map<String, String> map = new HashMap();
-//        map.put("evidenceType", evidenceType);
-//        map.put("evidenceId", evidenceId);
-//        map.put("hashType", hashType);
-//        map.put("evidenceInfo", evidenceInfo);
-//        map.put("appId", "6079514328");
-//        map.put("noncestr", noncestr);
-//        map.put("timestamp", String.valueOf(currentTime));
-//        System.out.println(map);
-//        String sign = CodeUtil.createSignature(map, chainProperties.getClientSecret());
-//        System.out.println(sign);
-//
-//        RequestBody requestBody = new FormBody.Builder()
-//                .add("evidenceType", evidenceType)
-//                .add("evidenceId", evidenceId)
-//                .add("hashType", hashType)
-//                .add("evidenceInfo", evidenceInfo)
-//                .add("appId", "6079514328")
-//                .add("noncestr", noncestr)
-//                .add("timestamp", String.valueOf(currentTime))
-//                .add("sign", sign).build();
-//
-//
-//        URI uri = UriComponentsBuilder.fromUriString("https://btoe.tusi.tencent-cloud.net" + "/v1/onchain/evidence").build().toUri();
-//        RequestEntity<Void> requestEntity = RequestEntity
-//                .post(uri)
-//                .header("Authorization", "bearer " + accessToken)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .build();
-//
-//        ResponseEntity<String> responseBody = restTemplate.exchange(requestEntity, String.class);
-//        return responseBody.getBody();
-//    }
+        Map<String,Object> map = new LinkedHashMap<>();
+        map.put("InterfaceName", "CreateDataDeposit");
+        map.put("Data", createData);
+        String requestJson = new ObjectMapper().writeValueAsString(map);
+        log.info("业务数据明文存证 {}", requestJson);
 
+        HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
 
-//    private String getAccessToken(String scope) {
-//        RequestBody requestBody = new FormBody.Builder()
-//                .add("client_id", chainProperties.getClientId())
-//                .add("client_secret", chainProperties.getClientSecret())
-//                .add("grant_type", "client_credentials")
-//                .add("scope", scope).build();
-//
-//        URI uri = UriComponentsBuilder.fromUriString("https://btoe.tusi.tencent-cloud.net" + "/oauth/token").build().toUri();
-//        RequestEntity<Void> requestEntity = RequestEntity
-//                .post(uri)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .build();
-//
-//        ResponseEntity<GetAccessTokenResult> result = restTemplate.exchange(requestEntity, GetAccessTokenResult.class);
-//        if (result.getStatusCode().is2xxSuccessful()) {
-//            return result.getBody().getAccessToken();
-//        }
-//        return "";
-//    }
+        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(url, request, String.class);
+        /** {"Response":{"RequestId":"a28c5fdc-742b-4787-992d-46f772d08215","EvidenceId":"a28c5fdc-742b-4787-992d-46f772d08215","BusinessId":null}} **/
+        JsonNode jsonNode = objectMapper.readTree(responseEntityStr.getBody());
+        String response = jsonNode.get("Response").asText();
+        OnChainResponse onChainResponse = objectMapper.readValue(response, OnChainResponse.class);
+        return onChainResponse;
+
+    }
+
+    public String getDepositInfo(String evidenceId, String accessToken) throws JsonProcessingException {
+        String url = "https://btoe.tusi.tencent-cloud.net/v1/api/action";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", "bearer" + accessToken);
+
+        Map<String,Object> map = new LinkedHashMap<>();
+        map.put("InterfaceName", "GetDepositInfo");
+        Map<String,String> params = new LinkedHashMap<>();
+        params.put("EvidenceId", evidenceId);
+        map.put("Data", params);
+        String requestJson = new ObjectMapper().writeValueAsString(map);
+
+        HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
+
+        ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(url, request, String.class);
+        /** {"Response":{"RequestId":"a28c5fdc-742b-4787-992d-46f772d08215","EvidenceId":"a28c5fdc-742b-4787-992d-46f772d08215","BusinessId":null}} **/
+        log.info(" {}", responseEntityStr.getBody());
+        JsonNode jsonNode = objectMapper.readTree(responseEntityStr.getBody());
+        String response = jsonNode.get("Response").asText();
+        ChainAddressResult onChainResponse = objectMapper.readValue(response, ChainAddressResult.class);
+        return "onChainResponse";
+
+    }
 
 }

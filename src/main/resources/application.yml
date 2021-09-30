@@ -12,12 +12,6 @@ spring:
     timeout: 7200
   jackson:
     property-naming-strategy: SNAKE_CASE
-#  batch:
-#    job:
-#      enabled: false
-#    jdbc:
-#      table-prefix: batch
-#      initialize-schema: never
 
 mybatis:
   type-aliases-package: com.tencent.nft.entity
