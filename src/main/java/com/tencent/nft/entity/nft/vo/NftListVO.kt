@@ -8,7 +8,7 @@ import java.io.Serializable
  * @date: 2021/9/1
  * @description: NFT列表展示VO
  */
-class NFTListVO : SuperNFT(), Serializable {
+class NftListVO : SuperNFT(), Serializable {
 
     // 单价
     var unitPrice: Double? = null

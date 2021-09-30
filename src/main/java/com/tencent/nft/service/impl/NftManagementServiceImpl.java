@@ -20,9 +20,9 @@ import com.tencent.nft.entity.nft.dto.NftCreateDTO;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.dto.PreSaleDTO;
 import com.tencent.nft.entity.nft.dto.SubNftQueryDTO;
-import com.tencent.nft.entity.nft.vo.NFTDetailsVO;
-import com.tencent.nft.entity.nft.vo.NFTListVO;
-import com.tencent.nft.entity.nft.vo.SubNFTListVO;
+import com.tencent.nft.entity.nft.vo.NftDetailsVO;
+import com.tencent.nft.entity.nft.vo.NftListVO;
+import com.tencent.nft.entity.nft.vo.SubNftListVO;
 import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.pay.ProductMapper;
 import com.tencent.nft.service.INftManagementService;
@@ -122,12 +122,12 @@ public class NftManagementServiceImpl implements INftManagementService {
     }
 
     @Override
-    public PageBean<List<NFTListVO>> listNFT(Integer page, Integer size, Integer nftStatus, NftListQueryDTO nftListQueryDTO) {
+    public PageBean<List<NftListVO>> listNFT(Integer page, Integer size, Integer nftStatus, NftListQueryDTO nftListQueryDTO) {
         PageHelper.startPage(page, size);
         List<SuperNFT> superNFTList = nftMapper.selectSuperNFTList(nftListQueryDTO);
-        List<NFTListVO> nftListVOList = Lists.newArrayList();
+        List<NftListVO> nftListVOList = Lists.newArrayList();
         superNFTList.stream().forEach(c -> {
-            NFTListVO tmp = new NFTListVO();
+            NftListVO tmp = new NftListVO();
             BeanUtils.copyProperties(c, tmp);
             // 如果不是待发行，则显示金额和发行量
             if (c.getNftStatus() != NFTStatusEnum.WAITING){
@@ -150,14 +150,14 @@ public class NftManagementServiceImpl implements INftManagementService {
             nftListVOList.add(tmp);
         });
 
-        PageBean<List<NFTListVO>> pageBean = new PageBean<>(new PageInfo(superNFTList));
+        PageBean<List<NftListVO>> pageBean = new PageBean<>(new PageInfo(superNFTList));
         pageBean.setData(nftListVOList);
 
         return pageBean;
     }
 
     @Override
-    public PageBean<List<SubNFTListVO>> listSubNFT(Integer page, Integer size, String parentNftId, SubNftQueryDTO subNFTQueryDTO) {
+    public PageBean<List<SubNftListVO>> listSubNFT(Integer page, Integer size, String parentNftId, SubNftQueryDTO subNFTQueryDTO) {
         if (subNFTQueryDTO == null){
             subNFTQueryDTO = new SubNftQueryDTO();
         }
@@ -176,10 +176,10 @@ public class NftManagementServiceImpl implements INftManagementService {
 
         PageHelper.startPage(page, size);
         List<SubNFT> subNFTList = nftMapper.selectSubNftList(parentNftId, subNFTQueryDTO);
-        List<SubNFTListVO> subNFTListVOList = Lists.newArrayList();
+        List<SubNftListVO> subNftListVOList = Lists.newArrayList();
 
         subNFTList.stream().forEach(subNFT -> {
-            SubNFTListVO tmp = new SubNFTListVO();
+            SubNftListVO tmp = new SubNftListVO();
             BeanUtils.copyProperties(subNFT, tmp);
             tmp.setNftName(nftName);
             tmp.setNftType(fileType);
@@ -192,11 +192,11 @@ public class NftManagementServiceImpl implements INftManagementService {
                 tmp.setUnitPrice(productInfo.getUnitPrice().doubleValue());
             }
 
-            subNFTListVOList.add(tmp);
+            subNftListVOList.add(tmp);
         });
 
-        PageBean<List<SubNFTListVO>> pageBean = new PageBean<>(new PageInfo(subNFTList));
-        pageBean.setData(subNFTListVOList);
+        PageBean<List<SubNftListVO>> pageBean = new PageBean<>(new PageInfo(subNFTList));
+        pageBean.setData(subNftListVOList);
         return pageBean;
     }
 
@@ -211,7 +211,7 @@ public class NftManagementServiceImpl implements INftManagementService {
         NFTStatusEnum status = superNFT.getNftStatus();
 
         NFTInfo nftInfo = nftMapper.selectNftInfoByNftId(nftId).orElse(new NFTInfo());
-        NFTDetailsVO nftDetailsVO = new NFTDetailsVO();
+        NftDetailsVO nftDetailsVO = new NftDetailsVO();
 
         nftDetailsVO.setNftId(superNFT.getNftId());
         nftDetailsVO.setNftName(superNFT.getNftName());

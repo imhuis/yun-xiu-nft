@@ -14,7 +14,7 @@ import java.time.LocalDateTime
  * @description: NFT详情vo
  */
 @JsonIgnoreProperties(value = ["id", "create_time", "update_time"])
-class NFTDetailsVO : SubNFT(), Serializable {
+class NftDetailsVO : SubNFT(), Serializable {
 
     // 单价
     @JsonProperty("price")

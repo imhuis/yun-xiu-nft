@@ -9,7 +9,7 @@ import java.time.LocalDateTime
  * @date: 2021/9/12
  * @description:
  */
-class SubNFTListVO : SubNFT(), Serializable {
+class SubNftListVO : SubNFT(), Serializable {
 
     var unitPrice: Double? = null
 
