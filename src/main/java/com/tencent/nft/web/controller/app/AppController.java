@@ -108,9 +108,12 @@ public class AppController {
      * 插入数据库
      */
     @PostMapping("/feedback")
-    public SysResult insert(@RequestBody(required = false) FeedBack feedBack) {
+    public ResponseResult insert(@RequestBody @Validated FeedBack feedBack, BindingResult result) {
+        if (result.hasFieldErrors()){
+            return ResponseUtil.fail(ResponseCodeEnum.Validation_Error, result.getFieldErrors().get(0));
+        }
         feedService.insert(feedBack);
-        return SysResult.success("null");
+        return ResponseUtil.success();
     }
 
 }

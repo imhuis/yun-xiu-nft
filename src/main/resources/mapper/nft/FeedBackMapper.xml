@@ -3,7 +3,7 @@
 <mapper namespace="com.tencent.nft.mapper.FeedbackMapper">
 
     <insert id="insert" parameterType="com.tencent.nft.common.base.FeedBack">
-        <!-- insert into t_feedback (name,phone,date,picture,message) value (#{name},#{phone},now(),#{picture},#{message}) -->
+        insert into t_feedback
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="name != null">c_name,</if>
             <if test="phone != null">phone,</if>
@@ -21,7 +21,6 @@
             #{createTime}, #{updateTime}
         </trim>
     </insert>
-
     <select id="getAll" parameterType="com.tencent.nft.common.base.FeedBack"
             resultType="com.tencent.nft.common.base.FeedBack">
         select * from t_feedback
@@ -36,7 +35,8 @@
     <select id="getByDate" resultType="com.tencent.nft.common.base.FeedBack">
         select *
         FROM t_feedback
-        where date between #{param1} and #{param2}
+        where date between #{param1}
+          and #{param2}
     </select>
 
     <delete id="deleteById" parameterType="com.tencent.nft.common.base.FeedBack">

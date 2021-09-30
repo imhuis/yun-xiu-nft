@@ -2,6 +2,7 @@ package com.tencent.nft.service.impl;
 
 import com.github.pagehelper.util.StringUtil;
 import com.tencent.nft.common.base.FeedBack;
+import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.mapper.FeedbackMapper;
 import com.tencent.nft.service.IFeedService;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class FeedServiceImpl implements IFeedService {
 
     @Override
     public int insert(FeedBack feedBack) {
+        feedBack.setPhone(SecurityUtils.getCurrentUsername().get());
+
         if (feedBack.getMessage() == null || feedBack.getMessage() == "") {
             return 1;
         }
