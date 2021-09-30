@@ -36,6 +36,7 @@ public class RedisConfiguration {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisProperties.getHost());
         redisStandaloneConfiguration.setPort(redisProperties.getPort());
+        redisStandaloneConfiguration.setDatabase(redisProperties.getDatabase());
         redisStandaloneConfiguration.setPassword(redisProperties.getPassword());
 
         ClusterTopologyRefreshOptions clusterTopologyRefreshOptions = ClusterTopologyRefreshOptions.builder()

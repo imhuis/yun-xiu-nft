@@ -6,6 +6,8 @@ import cn.hutool.captcha.ShearCaptcha;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.constant.SecurityConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +25,8 @@ import java.io.IOException;
  */
 @Controller
 public class LoginController {
+
+    final Logger log = LoggerFactory.getLogger(LoginController.class);
 
     @RequestMapping(value = "/public/captcha.png",method = RequestMethod.GET)
     public void imageCode(HttpServletRequest request, HttpServletResponse response) throws IOException {

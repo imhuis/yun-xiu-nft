@@ -4,6 +4,7 @@ import com.tencent.nft.common.base.PageBean;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
+import com.tencent.nft.common.exception.business.NftManageException;
 import com.tencent.nft.common.exception.business.RecordNotFoundException;
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.SuperNFT;
@@ -165,8 +166,6 @@ public class NftManagementController {
 //            return ResponseUtil.fail(ResponseCodeEnum.YS_5002);
 //        }
         LocalDateTime now = LocalDateTime.now();
-        log.info("预约开始时间 {}", n.getReserveStartTime());
-        log.info("预约开始时间 {}", n.getSellStartTime());
 //        if (n.getReserveStartTime().isBefore(now) || n.getSellStartTime().isBefore(now)){
 //            return ResponseUtil.fail(ResponseCodeEnum.YS_5004);
 //        }
@@ -177,8 +176,9 @@ public class NftManagementController {
             nftManagementService.setupPreSale(n);
         }catch (RecordNotFoundException e){
             return ResponseUtil.fail(ResponseCodeEnum.NFT_4001);
+        }catch (NftManageException e){
+            return ResponseUtil.fail(ResponseCodeEnum.NFT_4004, e.getMessage());
         }
-
         return ResponseUtil.success();
     }
 

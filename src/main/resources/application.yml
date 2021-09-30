@@ -11,13 +11,11 @@ spring:
   session:
     timeout: 7200
   jackson:
+    time-zone: Asia/Shanghai
     property-naming-strategy: SNAKE_CASE
 
 mybatis:
   type-aliases-package: com.tencent.nft.entity
-#  configuration:
-#    map-underscore-to-camel-case: true
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mapper/**/*.xml
   config-location: classpath:mybatis-config.xml
 pagehelper:
