@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -42,7 +43,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.security.PrivateKey;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.TemporalUnit;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -96,56 +99,28 @@ public class PayServiceImpl implements IPayService {
 
         // 检查是否预约
         boolean flag = stringRedisTemplate.opsForSet().isMember("yy:" + productId, wxUser.getPhone());
-        if (!flag){
+        if (!flag) {
             throw new PayException("抱歉,您未预约该商品！");
         }
         boolean flag1 = stringRedisTemplate.opsForSet().isMember("gm:" + productId, openId);
-        if (flag1){
+        if (flag1) {
             throw new PayException("重复购买！");
         }
 
-        String key = "stock:product:" + dto.getProductId();
+
         final String tradeNo = UUIDUtil.generateUUID();
 
-        // 第一步：先检查 库存是否充足
-        BoundValueOperations bvo = redisTemplate.boundValueOps("stock:" + key);
-        Integer stock = (Integer) bvo.get();
-        if (stock == null){
-            Integer count = productMapper.selectStock(productId);
-            log.info("数据库查询到库存 {}", count);
-            if (count >= 0) {
-                bvo.set(count,60 * 10 + RandomUtil.randomInt(10, 100), TimeUnit.SECONDS);
-                stock = (Integer) bvo.get();
-            }
-        }
-        if (stock < 1){
-            throw new PayException("库存不足");
-        }
-        long value = bvo.increment(-1L);
-        log.info("value:{}", value);
-        /**
-         * 库存充足
-         */
-        if (value >= 0) {
-            log.info("成功购买");
-            boolean res= productMapper.updateStocks(productId, 1);
-            if (res){
+        PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
+        // 生成prepay_id
+        String prepayId = payHandler.handler(payDetailBO);
+        // 生产预订单。插入数据表
+        createPreOrder(payDetailBO);
+        return createOrder(prepayId);
 
-                PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
-                // 生成prepay_id
-                String prepayId = payHandler.handler(payDetailBO);
 
-                // 生产预订单。插入数据表
-                createPreOrder(payDetailBO);
-                return createOrder(prepayId);
-            }
 
-        } else {
-            // 减了后小小于0 ，如两个人同时买这个商品，导致A人第一步时看到还有10个库存，但是B人买9个先处理完逻辑，
-            // 导致B人的线程10-9=1, A人的线程1-10=-9，则现在需要增加刚刚减去的库存，让别人可以买1个
-            bvo.increment(1L);
-            log.info("恢复redis库存");
-        }
+
+
         /**
          * 已经售罄
          */
@@ -164,9 +139,7 @@ public class PayServiceImpl implements IPayService {
 //        String prepayId = payHandler.handler(payDetailBO);
         // 生产预订单。插入数据表
 //        createPreOrder(payDetailBO);
-        return null;
     }
-
 
 
     PrepayVO createOrder(String prepayId) throws IOException {
