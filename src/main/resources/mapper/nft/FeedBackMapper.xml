@@ -5,9 +5,9 @@
     <insert id="insert" parameterType="com.tencent.nft.common.base.FeedBack">
         <!-- insert into t_feedback (name,phone,date,picture,message) value (#{name},#{phone},now(),#{picture},#{message}) -->
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="name != null">name,</if>
+            <if test="name != null">c_name,</if>
             <if test="phone != null">phone,</if>
-            <if test="date != null">date,</if>
+            <if test="date != null">c_date,</if>
             <if test="picture != null">picture,</if>
             <if test="message != null">message,</if>
             create_time, update_time
