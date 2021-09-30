@@ -26,3 +26,11 @@ batch:
 - 品牌方、发行方
 - 区块链地址、nft编号（子编号）
 - 哈希值
+
+## rabbit
+区别测试和生产
+账号：admin
+密码：password
+
+## redis
+密码：wHE9_>oE)2GTU9psu+3#BW#wR

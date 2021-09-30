@@ -1,6 +1,3 @@
-server:
-  servlet:
-    context-path: /dev
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource

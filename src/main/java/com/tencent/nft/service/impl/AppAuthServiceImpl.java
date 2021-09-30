@@ -121,7 +121,7 @@ public class AppAuthServiceImpl implements IAppAuthService {
         map.add("username", wxUser.getPhone());
         map.add("password", wxUser.getOtpSecret());
 
-        URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/dev/app/oauth/token").build().toUri();
+        URI uri = UriComponentsBuilder.fromUriString("http://localhost:8080/app/oauth/token").build().toUri();
         RequestEntity<MultiValueMap<String, String>> requestEntity = RequestEntity
                 .post(uri)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)

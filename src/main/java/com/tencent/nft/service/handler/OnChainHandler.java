@@ -132,7 +132,7 @@ public class OnChainHandler {
      * @return
      * @throws JsonProcessingException
      */
-    public OnChainResponse createDataDeposit(CreateData createData, String accessToken) throws JsonProcessingException {
+    public String createDataDeposit(CreateData createData, String accessToken) throws JsonProcessingException {
         String url = "https://btoe.tusi.tencent-cloud.net/v1/api/normalDeposit";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -148,10 +148,14 @@ public class OnChainHandler {
 
         ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(url, request, String.class);
         /** {"Response":{"RequestId":"a28c5fdc-742b-4787-992d-46f772d08215","EvidenceId":"a28c5fdc-742b-4787-992d-46f772d08215","BusinessId":null}} **/
-        JsonNode jsonNode = objectMapper.readTree(responseEntityStr.getBody());
-        String response = jsonNode.get("Response").asText();
-        OnChainResponse onChainResponse = objectMapper.readValue(response, OnChainResponse.class);
-        return onChainResponse;
+        String response = responseEntityStr.getBody();
+        log.info("业务数据返回 {}", response);
+        JsonNode jsonNode = objectMapper.readTree(response);
+        String a = jsonNode.get("evidenceId").asText();
+//        log.info("jsonNode.get(\"Response\").asText() {}", response);
+
+//        OnChainResponse onChainResponse = objectMapper.readValue(response, OnChainResponse.class);
+        return a;
 
     }
 
@@ -166,7 +170,7 @@ public class OnChainHandler {
         Map<String,String> params = new LinkedHashMap<>();
         params.put("EvidenceId", evidenceId);
         map.put("Data", params);
-        String requestJson = new ObjectMapper().writeValueAsString(map);
+        String requestJson = objectMapper.writeValueAsString(map);
 
         HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
 
@@ -175,8 +179,9 @@ public class OnChainHandler {
         log.info(" {}", responseEntityStr.getBody());
         JsonNode jsonNode = objectMapper.readTree(responseEntityStr.getBody());
         String response = jsonNode.get("Response").asText();
-        ChainAddressResult onChainResponse = objectMapper.readValue(response, ChainAddressResult.class);
-        return "onChainResponse";
+        return "";
+//        ChainAddressResult onChainResponse = objectMapper.readValue(response, ChainAddressResult.class);
+//        return onChainResponse.getEvidenceTxHash();
 
     }
 

@@ -99,7 +99,7 @@ public class NftManagementServiceImpl implements INftManagementService {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        nftInfo.setChainAddress(UUIDUtil.generateUUID());
+        nftInfo.setChainAddress(UUIDUtil.generateUUID() + UUIDUtil.generateUUID());
 
         // 事务执行放在一起
         nftMapper.insertSuperNFT(nftInfo);

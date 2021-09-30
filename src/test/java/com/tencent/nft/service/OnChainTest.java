@@ -21,15 +21,15 @@ public class OnChainTest {
     @Autowired
     private OnChainHandler onChainHandler;
 
-    @Test
+//    @Test
     public void test() throws JsonProcessingException {
         String token = onChainHandler.getAccessToken();
         CreateData createData = new CreateData();
         createData.setHashType(0);
         createData.setEvidenceInfo("test111");
 
-        OnChainResponse response = onChainHandler.createDataDeposit(createData, token);
-        log.info(response.getEvidenceId());
+        String response = onChainHandler.createDataDeposit(createData, token);
+        log.info(response);
 
     }
 }
