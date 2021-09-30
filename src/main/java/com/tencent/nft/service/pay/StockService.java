@@ -1,5 +1,6 @@
 package com.tencent.nft.service.pay;
 
+import com.tencent.nft.mapper.pay.ProductMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,17 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author: imhuis
- * @date: 2021/9/30
- * @description:
+ * 扣库存
+ *
+ * @author yuhao.wang
  */
 @Service
 public class StockService {
 
     Logger logger = LoggerFactory.getLogger(StockService.class);
+
+    @Autowired
+    private ProductMapper productMapper;
 
     /**
      * 不限库存
@@ -98,6 +102,8 @@ public class StockService {
                         redisTemplate.opsForValue().set(key, initStock, expire, TimeUnit.SECONDS);
                         // 调一次扣库存的操作
                         stock = stock(key, num);
+                        // 更新库存 （乐观锁）
+                        productMapper.optimisticLockUpdateStock(key, num);
                     }
                 }
             } catch (Exception e) {
@@ -113,12 +119,11 @@ public class StockService {
     /**
      * 加库存(还原库存)
      *
-     * @param key    库存key
-     * @param num    库存数量
+     * @param key 库存key
+     * @param num 库存数量
      * @return
      */
     public long addStock(String key, int num) {
-
         return addStock(key, null, num);
     }
 
@@ -137,7 +142,7 @@ public class StockService {
             return redisTemplate.opsForValue().increment(key, num);
         }
 
-        Assert.notNull(expire,"初始化库存失败，库存过期时间不能为null");
+        Assert.notNull(expire, "初始化库存失败，库存过期时间不能为null");
         RedisLock redisLock = new RedisLock(redisTemplate, key);
         try {
             if (redisLock.tryLock()) {
@@ -184,7 +189,6 @@ public class StockService {
         args.add(Integer.toString(num));
 
         long result = redisTemplate.execute((RedisCallback<Long>) connection -> {
-
             Object nativeConnection = connection.getNativeConnection();
             // 集群模式和单机模式虽然执行脚本的方法一样，但是没有共同的接口，所以只能分开执行
             // 集群模式

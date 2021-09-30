@@ -42,14 +42,14 @@ public class PayController {
             return ResponseUtil.fail(ResponseCodeEnum.Validation_Error, result.getAllErrors().get(0));
         }
         log.debug("api-/pay: requestBody: \n{}", payRequestDTO.toString());
-//        try {
+        try {
             PrepayVO prepayVO = payService.order(payRequestDTO);
             return ResponseUtil.success(prepayVO);
-//        } catch (PayException e){
-//            return ResponseUtil.define(7001, e.getMessage());
-//        } catch (Exception e){
-//            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
-//        }
+        } catch (PayException e){
+            return ResponseUtil.define(7001, e.getMessage());
+        } catch (Exception e){
+            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+        }
     }
 
 }

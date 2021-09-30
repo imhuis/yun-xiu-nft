@@ -74,7 +74,7 @@
         where product_id = #{productId}
     </update>
 
-    <update id="updateStocks">
+    <update id="optimisticLockUpdateStock">
         update t_product_stock set stock = stock - #{stock} where product_id = #{productId} and stock - #{stock} >= 0
     </update>
 
@@ -86,9 +86,5 @@
     <insert id="insertStock">
         insert into t_product_stock (product_id, stock) values (#{param1}, #{param2})
     </insert>
-
-    <update id="minusStockByProductId">
-        update t_product_stock set stock = stock - 1 where product_id = #{productId} and stock - 1 > 0
-    </update>
 
 </mapper>

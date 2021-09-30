@@ -177,23 +177,22 @@ public class RedisLock {
      */
     public boolean tryLock() {
         // 生成随机key
-//        lockValue = UUID.randomUUID().toString();
-//        // 请求锁超时时间，纳秒
-//        long timeout = timeOut * 1000000;
-//        // 系统当前时间，纳秒
-//        long nowTime = System.nanoTime();
-//        while ((System.nanoTime() - nowTime) < timeout) {
-//            if (OK.equalsIgnoreCase(this.set(lockKey, lockValue, expireTime))) {
-//                locked = true;
-//                // 上锁成功结束请求
-//                return locked;
-//            }
-//
-//            // 每次请求等待一段时间
-//            seleep(10, 50000);
-//        }
-//        return locked;
-        return true;
+        lockValue = UUID.randomUUID().toString();
+        // 请求锁超时时间，纳秒
+        long timeout = timeOut * 1000000;
+        // 系统当前时间，纳秒
+        long nowTime = System.nanoTime();
+        while ((System.nanoTime() - nowTime) < timeout) {
+            if (OK.equalsIgnoreCase(this.set(lockKey, lockValue, expireTime))) {
+                locked = true;
+                // 上锁成功结束请求
+                return locked;
+            }
+
+            // 每次请求等待一段时间
+            seleep(10, 50000);
+        }
+        return locked;
     }
 
     /**
@@ -275,16 +274,17 @@ public class RedisLock {
 
     /**
      * 获取锁状态
+     *
+     * @return
      * @Title: isLock
      * @Description: TODO
-     * @return  
      * @author yuhao.wang
      */
     public boolean isLock() {
-		
-		return locked;
-	}
-    
+
+        return locked;
+    }
+
     /**
      * 重写redisTemplate的set方法
      * <p>

@@ -25,11 +25,9 @@ public interface ProductMapper {
 
     int updateStock(@Param("productId") String productId, @Param("stock") int stock);
 
-    boolean updateStocks(@Param("productId") String productId, @Param("stock") int stock);
+    boolean optimisticLockUpdateStock(@Param("productId") String productId, @Param("stock") int stock);
 
     Integer selectStock(String productId);
 
     Integer insertStock(String productId, int stock);
-
-    void minusStockByProductId(String productId);
 }

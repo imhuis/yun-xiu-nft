@@ -25,7 +25,6 @@ import com.tencent.nft.mapper.pay.OrderMapper;
 import com.tencent.nft.mapper.pay.TradeMapper;
 import com.tencent.nft.service.IPayService;
 import com.tencent.nft.service.handler.WeChatPayHandler;
-import com.tencent.nft.service.pay.IStockCallback;
 import com.tencent.nft.service.pay.StockService;
 import com.wechat.pay.contrib.apache.httpclient.util.PemUtil;
 import org.apache.logging.log4j.util.Strings;
@@ -33,23 +32,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.redis.core.BoundValueOperations;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.security.PrivateKey;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.TemporalUnit;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author: imhuis
@@ -111,17 +104,25 @@ public class PayServiceImpl implements IPayService {
         String redisKey = "product:stock:" + productId;
         log.info("初始库存 {}", productMapper.selectStock(productId));
 
+        /**
+         * 3:库存未初始化
+         * -2:库存不足
+         * -1:不限库存
+         * 大于等于0:剩余库存（扣减之后剩余的库存）
+         */
         long stock = stockService.stock(redisKey, 60 * 60, 1, () -> productMapper.selectStock(productId));
+        if (stock == -3) {
+
+        }
         log.info("剩余库存 {}", stock);
         if (stock >= 0) {
-//            final String tradeNo = UUIDUtil.generateUUID();
-//
-//            PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
-//            // 生成prepay_id
-//            String prepayId = payHandler.handler(payDetailBO);
-//            // 生产预订单。插入数据表
-//            createPreOrder(payDetailBO);
-//            return createOrder(prepayId);
+            final String tradeNo = UUIDUtil.generateUUID();
+            PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
+            // 生成prepay_id
+            String prepayId = payHandler.handler(payDetailBO);
+            // 生产预订单。插入数据表
+            createPreOrder(payDetailBO);
+            return createOrder(prepayId);
         }
 
 //        else {

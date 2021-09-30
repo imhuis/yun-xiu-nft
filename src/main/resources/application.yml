@@ -2,7 +2,7 @@ spring:
   profiles:
     active: dev
   redis:
-    client-type: lettuce
+    client-type: jedis
   data:
     redis:
       repositories:

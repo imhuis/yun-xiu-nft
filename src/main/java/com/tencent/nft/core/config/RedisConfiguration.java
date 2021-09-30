@@ -1,5 +1,8 @@
 package com.tencent.nft.core.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lettuce.core.ClientOptions;
 import io.lettuce.core.SocketOptions;
 import io.lettuce.core.cluster.ClusterClientOptions;
@@ -16,6 +19,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.ConfigureRedisAction;
@@ -33,7 +37,7 @@ public class RedisConfiguration {
     @Autowired
     private RedisProperties redisProperties;
 
-    @Bean(destroyMethod = "destroy")
+//    @Bean(destroyMethod = "destroy")
     public LettuceConnectionFactory lettuceConnectionFactory(){
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisProperties.getHost());
@@ -78,9 +82,20 @@ public class RedisConfiguration {
         RedisTemplate redisTemplate = new RedisTemplate();
         redisTemplate.setConnectionFactory(factory);
         StringRedisSerializer serializer = new StringRedisSerializer();
+        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        ObjectMapper om = new ObjectMapper();
+        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        jackson2JsonRedisSerializer.setObjectMapper(om);
+
+        // 设置键（key）的序列化采用StringRedisSerializer。
         redisTemplate.setKeySerializer(serializer);
-//        redisTemplate.setValueSerializer(serializer);
-//        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        // 设置值（value）的序列化采用Jackson2JsonRedisSerializer。
+        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
+
+        redisTemplate.setHashKeySerializer(serializer);
+
+        redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
 
