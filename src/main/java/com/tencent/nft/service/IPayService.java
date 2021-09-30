@@ -11,12 +11,12 @@ import com.tencent.nft.entity.pay.bo.PrepayVO;
 public interface IPayService {
 
     /**
-     * 预购买，生成支付参数
+     * 下单购买，生成预支付订单参数
      * @param dto
      * @return
      * @throws Exception
      */
-    PrepayVO prePay(PayRequestDTO dto) throws Exception;
+    PrepayVO order(PayRequestDTO dto) throws Exception;
 
     /**
      * 支付通知

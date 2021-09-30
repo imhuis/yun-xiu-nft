@@ -35,21 +35,21 @@ public class PayController {
      * 预支付接口，生成预订单，注意超卖
      * @return
      */
-    @RequestMapping(value = "/pay", method = RequestMethod.POST)
+    @RequestMapping(value = "/app/pay", method = RequestMethod.POST)
     public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO, BindingResult result) throws Exception {
         if (result.hasFieldErrors()){
             // 参数校验失败
             return ResponseUtil.fail(ResponseCodeEnum.Validation_Error, result.getAllErrors().get(0));
         }
         log.debug("api-/pay: requestBody: \n{}", payRequestDTO.toString());
-        try {
-            PrepayVO prepayVO = payService.prePay(payRequestDTO);
+//        try {
+            PrepayVO prepayVO = payService.order(payRequestDTO);
             return ResponseUtil.success(prepayVO);
-        } catch (PayException e){
-            return ResponseUtil.define(7001, e.getMessage());
-        } catch (Exception e){
-            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
-        }
+//        } catch (PayException e){
+//            return ResponseUtil.define(7001, e.getMessage());
+//        } catch (Exception e){
+//            return ResponseUtil.fail(ResponseCodeEnum.FAILD);
+//        }
     }
 
 }

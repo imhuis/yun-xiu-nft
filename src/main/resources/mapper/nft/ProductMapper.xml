@@ -66,7 +66,7 @@
         where nft_id = #{nftId}
     </update>
 
-    <update id="updateStockByProductId">
+    <update id="updateStock">
         update t_product_stock
         <set>
             <if test="stock != null">stock = #{stock},</if>
@@ -74,9 +74,13 @@
         where product_id = #{productId}
     </update>
 
+    <update id="updateStocks">
+        update t_product_stock set stock = stock - #{stock} where product_id = #{productId} and stock - #{stock} >= 0
+    </update>
+
     <select id="selectStock" resultType="java.lang.Integer">
         select stock
-        from t_product_stock where product_id = #{productId};
+        from t_product_stock where product_id = #{productId}
     </select>
 
     <insert id="insertStock">

@@ -23,11 +23,13 @@ public interface ProductMapper {
 
     int updateByNftId(NFTProduct nftProduct);
 
-    int updateStockByProductId(@Param("productId") String productId, @Param("stock") int stock);
+    int updateStock(@Param("productId") String productId, @Param("stock") int stock);
 
-    int selectStock(String productId);
+    boolean updateStocks(@Param("productId") String productId, @Param("stock") int stock);
 
-    int insertStock(String productId, int stock);
+    Integer selectStock(String productId);
+
+    Integer insertStock(String productId, int stock);
 
     void minusStockByProductId(String productId);
 }
