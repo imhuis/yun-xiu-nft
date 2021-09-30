@@ -13,6 +13,7 @@ spring:
     host: sh-crs-mbkrtumz.sql.tencentcdb.com
     port: 22198
     password: wHE9_>oE)2GTU9psu+3#BW#wR
+    database: 10
   session:
     timeout: 7200
   rabbitmq:
@@ -20,7 +21,7 @@ spring:
     port: 5672
     username: admin
     password: ENC(uLxFmbGFt2+wmntsuahXKmgA1fR/T9tvWTSYJ4oAcKelJ9ZrouJ/0HaitDS9JzPq)
-    virtual-host: /nft
+    virtual-host: /nft-test
     # 开启发布者发送失败退回
     publisher-returns: true
     # 开启ACK手动确认
