@@ -15,12 +15,6 @@ open class NFTProduct : SuperNFT(), Serializable {
     @JsonProperty("fxl")
     var circulation: Int? = null
 
-    // 封面图片
-//    var coverPicture: String? = null
-
-    // 详细介绍图片
-//    var detailPicture: String? = null
-
     // 预约开始时间
     var reserveStartTime: LocalDateTime? = null
 

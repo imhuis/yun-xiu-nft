@@ -79,7 +79,7 @@ public class AppServiceImpl implements IAppService {
         collectionVO.setBrandOwner(superNFT.getBrandOwner());
         collectionVO.setCoverPic(nftInfo.getCoverPicture());
         collectionVO.setPrice(nftProduct.getUnitPrice().doubleValue());
-        collectionVO.setBlockChainAddress(UUIDUtil.generateUUID());
+        collectionVO.setBlockChainAddress(zi.getChainAddress());
         collectionVO.setOwner(Optional.ofNullable(wxUserMapper.selectByPhone(p)).get().get().getNickname());
         collectionVO.setCirculation(nftProduct.getCirculation());
         return collectionVO;

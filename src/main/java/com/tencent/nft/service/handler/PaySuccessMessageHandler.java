@@ -3,9 +3,12 @@ package com.tencent.nft.service.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import com.tencent.nft.common.enums.NFTSaleStatusEnum;
+import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.core.security.SecurityUtils;
+import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SubNFT;
+import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.UserLibrary;
 import com.tencent.nft.entity.pay.bo.OrderMessageBO;
 import com.tencent.nft.entity.security.WxUser;
@@ -54,13 +57,13 @@ public class PaySuccessMessageHandler {
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private ProductMapper productMapper;
 
     // 监听上链消息
     @RabbitListener(queues = {"pay-notify-queue"})
     public void onChain(Message message, Channel channel) throws IOException {
         String queue = message.getMessageProperties().getConsumerQueue();
-//        try {
+        try {
 
             log.info("接收来自{}队列的消息", queue);
             // 处理
@@ -81,7 +84,7 @@ public class PaySuccessMessageHandler {
                 return;
             }
 
-//        } catch (Exception e) {
+        } catch (Exception e) {
 //            long retryCount = getRetryCount(message.getMessageProperties());
 //            if (retryCount >= 3) {
 //                //重试次数超过3次,则将消息发送到失败队列等待特定消费者处理或者人工处理
@@ -100,13 +103,13 @@ public class PaySuccessMessageHandler {
 //                    log.error("消息发送到重试队列的时候，异常了:" + e2.getMessage() + ",重新发送消息");
 //                }
 //            }
-//        } finally {
+        } finally {
             /**
              * 无论消费成功还是消费失败,都要手动进行ack,因为即使消费失败了,也已经将消息重新投递到重试队列或者失败队列
              * 如果不进行ack,生产者在超时后会进行消息重发,如果消费者依然不能处理，则会存在死循环
              */
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-//        }
+        }
 
     }
 
@@ -118,6 +121,9 @@ public class PaySuccessMessageHandler {
 
         WxUser wxUser = wxUserMapper.selectFullByOpenId(openId).get();
         SubNFT newSubNFT = nftMapper.selectSubBftByStatus(productId);
+        if (newSubNFT == null){
+            log.info("{} 没有新的子nft", productId);
+        }
 
         UserLibrary userLibrary = new UserLibrary();
         userLibrary.setTradeNo(tradeNo);
@@ -132,7 +138,19 @@ public class PaySuccessMessageHandler {
         userLibraryMapper.insertUserLibrary(userLibrary);
         nftMapper.updateSubNft(newSubNFT);
 
-//        productMapper.minusStockByProductId(productId);
+        boolean isStock = productMapper.optimisticLockUpdateStock(productId, 1);
+        log.info("是否更新了库存 {}", isStock);
+
+//        if (!isStock){
+//            SuperNFT superNFT = new SuperNFT();
+//            superNFT.setNftId(productId);
+//            superNFT.setNftStatus(NFTStatusEnum.STOCK_OUT);
+//            nftMapper.updateSuperNFT(superNFT);
+//            NFTProduct nftProduct = new NFTProduct();
+//            nftProduct.setNftId(productId);
+//            nftProduct.setNftStatus(NFTStatusEnum.STOCK_OUT);
+//            productMapper.updateByNftId(nftProduct);
+//        }
     }
 
 }

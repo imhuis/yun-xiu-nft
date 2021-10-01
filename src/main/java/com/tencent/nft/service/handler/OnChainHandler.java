@@ -151,7 +151,7 @@ public class OnChainHandler {
         String response = responseEntityStr.getBody();
         log.info("业务数据返回 {}", response);
         JsonNode jsonNode = objectMapper.readTree(response);
-        String a = jsonNode.get("evidenceId").asText();
+        String a = jsonNode.at("/Response/EvidenceId").asText();
 //        log.info("jsonNode.get(\"Response\").asText() {}", response);
 
 //        OnChainResponse onChainResponse = objectMapper.readValue(response, OnChainResponse.class);
@@ -170,15 +170,17 @@ public class OnChainHandler {
         Map<String,String> params = new LinkedHashMap<>();
         params.put("EvidenceId", evidenceId);
         map.put("Data", params);
-        String requestJson = objectMapper.writeValueAsString(map);
+        String requestJson = new ObjectMapper().writeValueAsString(map);
+        log.info("请求参数 {}", requestJson);
 
         HttpEntity<String> request = new HttpEntity<>(requestJson, headers);
 
         ResponseEntity<String> responseEntityStr = restTemplate.postForEntity(url, request, String.class);
+        String response = responseEntityStr.getBody();
         /** {"Response":{"RequestId":"a28c5fdc-742b-4787-992d-46f772d08215","EvidenceId":"a28c5fdc-742b-4787-992d-46f772d08215","BusinessId":null}} **/
-        log.info(" {}", responseEntityStr.getBody());
+        log.info("请求返回 {}", response);
         JsonNode jsonNode = objectMapper.readTree(responseEntityStr.getBody());
-        String response = jsonNode.get("Response").asText();
+
         return "";
 //        ChainAddressResult onChainResponse = objectMapper.readValue(response, ChainAddressResult.class);
 //        return onChainResponse.getEvidenceTxHash();

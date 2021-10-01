@@ -1,6 +1,5 @@
 package com.tencent.nft.entity.security
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.tencent.nft.entity.BaseEntity
 import java.io.Serializable
 import java.time.LocalDateTime

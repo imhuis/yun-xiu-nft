@@ -32,11 +32,11 @@ public class PayController {
     private IPayService payService;
 
     /**
-     * 预支付接口，生成预订单，注意超卖
+     * 下单操作，预支付接口，生成预订单
      * @return
      */
     @RequestMapping(value = "/app/pay", method = RequestMethod.POST)
-    public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO, BindingResult result) throws Exception {
+    public ResponseResult payTransactions(@RequestBody @Validated PayRequestDTO payRequestDTO, BindingResult result) {
         if (result.hasFieldErrors()){
             // 参数校验失败
             return ResponseUtil.fail(ResponseCodeEnum.Validation_Error, result.getAllErrors().get(0));

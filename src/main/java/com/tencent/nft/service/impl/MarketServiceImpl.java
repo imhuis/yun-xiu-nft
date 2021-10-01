@@ -14,6 +14,7 @@ import com.tencent.nft.entity.nft.vo.ProductVO;
 import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.pay.ProductMapper;
 import com.tencent.nft.service.IMarketService;
+import com.tencent.nft.service.pay.StockService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,9 @@ public class MarketServiceImpl implements IMarketService {
 
     @Resource
     private ProductMapper productMapper;
+
+    @Autowired
+    private StockService stockService;
 
     @Override
     public List<NFTInfo> getMarketList(Integer status) {
@@ -90,6 +94,13 @@ public class MarketServiceImpl implements IMarketService {
             productVO.setPrice(nftProduct.getUnitPrice().doubleValue());
             productVO.setAmount(nftProduct.getCirculation());
             productVO.setSellStartTime(nftProduct.getSellStartTime());
+        }
+
+        // 已售罄
+        Integer stock = stockService.getStock("product:stock:" + productId.trim().toLowerCase());
+        log.info("库存数量 {}", stock);
+        if (stock == 0){
+            productVO.setStatus(21);
         }
 
 
@@ -156,7 +167,7 @@ public class MarketServiceImpl implements IMarketService {
         if (statusEnum == NFTStatusEnum.APPOINTMENT){
             return getProductReservationAmount(productId);
         }
-        if (statusEnum == NFTStatusEnum.UP){
+        if (statusEnum == NFTStatusEnum.UP || statusEnum == NFTStatusEnum.STOCK_OUT){
             return getProductPurchaseAmount(productId);
         }
         return 0;
@@ -173,7 +184,7 @@ public class MarketServiceImpl implements IMarketService {
         if (statusEnum == NFTStatusEnum.APPOINTMENT){
             return getProductReservationAmount(subNftId);
         }
-        if (statusEnum == NFTStatusEnum.UP){
+        if (statusEnum == NFTStatusEnum.UP || statusEnum == NFTStatusEnum.STOCK_OUT){
             return getProductPurchaseAmount(subNftId);
         }
         return 0;

@@ -1,9 +1,7 @@
 package com.tencent.nft.entity.pay
 
-import com.tencent.nft.common.enums.pay.TradeState
 import com.tencent.nft.entity.BaseEntity
 import java.io.Serializable
-import java.time.LocalDateTime
 
 /**
  * @author: imhuis

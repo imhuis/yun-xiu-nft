@@ -27,9 +27,6 @@ public class StockService {
 
     Logger logger = LoggerFactory.getLogger(StockService.class);
 
-    @Autowired
-    private ProductMapper productMapper;
-
     /**
      * 不限库存
      */
@@ -99,8 +96,8 @@ public class StockService {
                         redisTemplate.opsForValue().set(key, initStock, expire, TimeUnit.SECONDS);
                         // 调一次扣库存的操作
                         stock = stock(key, num);
-                        // 更新库存 （乐观锁）
-                        productMapper.optimisticLockUpdateStock(key, num);
+//                        // 更新库存 （乐观锁）
+//                        productMapper.optimisticLockUpdateStock(key, num);
                     }
                 }
             } catch (Exception e) {

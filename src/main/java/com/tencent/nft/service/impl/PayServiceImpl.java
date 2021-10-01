@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.common.enums.pay.TradeState;
 import com.tencent.nft.common.exception.business.PayException;
 import com.tencent.nft.common.util.MoneyUtil;
@@ -97,17 +98,16 @@ public class PayServiceImpl implements IPayService {
         WxUser wxUser = wxUserMapper.selectFullByOpenId(openId).get();
 
         // 检查是否预约
-        boolean flag = stringRedisTemplate.opsForSet().isMember("yy:" + productId, wxUser.getPhone());
-        if (!flag) {
+        boolean isReserveFlag = stringRedisTemplate.opsForSet().isMember("yy:" + productId, wxUser.getPhone());
+        if (!isReserveFlag) {
             throw new PayException("抱歉,您未预约该商品！");
         }
-        boolean flag1 = stringRedisTemplate.opsForSet().isMember("gm:" + productId, openId);
-        if (flag1) {
+        boolean isPurchaseFlag = stringRedisTemplate.opsForSet().isMember("gm:" + productId, openId);
+        if (isPurchaseFlag) {
             throw new PayException("重复购买！");
         }
 
         String redisKey = "product:stock:" + productId;
-        log.info("初始库存 {}", productMapper.selectStock(productId));
 
         /**
          * 3:库存未初始化
@@ -116,12 +116,21 @@ public class PayServiceImpl implements IPayService {
          * 大于等于0:剩余库存（扣减之后剩余的库存）
          */
         long stock = stockService.stock(redisKey, 60 * 60, 1, () -> productMapper.selectStock(productId));
+        log.info("下单后剩余库存 {}", stock);
         if (stock == -3L) {
-            nftMapper.updateSuperNFT(new SuperNFT());
-            productMapper.updateByNftId(new NFTProduct());
+            SuperNFT superNFT = new SuperNFT();
+            superNFT.setNftId(productId);
+            superNFT.setNftStatus(NFTStatusEnum.STOCK_OUT);
+            nftMapper.updateSuperNFT(superNFT);
+            NFTProduct nftProduct = new NFTProduct();
+            nftProduct.setNftId(productId);
+            nftProduct.setNftStatus(NFTStatusEnum.STOCK_OUT);
+            productMapper.updateByNftId(nftProduct);
         }
-        log.info("剩余库存 {}", stock);
         if (stock >= 0) {
+            /**
+             * 生成内部业务流水
+             */
             final String tradeNo = UUIDUtil.generateUUID();
             PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
             // 生成prepay_id
@@ -129,32 +138,9 @@ public class PayServiceImpl implements IPayService {
             // 生产预订单。插入数据表
             createPreOrder(payDetailBO);
             return createOrder(prepayId);
+        }else {
+            throw new PayException("已售罄！");
         }
-
-//        else {
-//            throw new PayException("");
-//        }
-        return null;
-
-
-        /**
-         * 已经售罄
-         */
-//        int stock = productMapper.selectStock(dto.getProductId());
-//        if (stock < 0){
-//            throw new PayException("商品已售罄！");
-//        }
-
-        /**
-         * 生成内部业务流水
-         */
-//        final String tradeNo = UUIDUtil.generateUUID();
-//        PayDetailBO payDetailBO = createPayDetailBO(tradeNo, dto);
-//        System.out.println(payDetailBO.getTotal());
-        // 生成prepay_id
-//        String prepayId = payHandler.handler(payDetailBO);
-        // 生产预订单。插入数据表
-//        createPreOrder(payDetailBO);
     }
 
 
