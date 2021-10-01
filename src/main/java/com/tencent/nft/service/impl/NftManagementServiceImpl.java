@@ -276,14 +276,13 @@ public class NftManagementServiceImpl implements INftManagementService {
         }
 
         // 预售创建nft详情
-        productMapper.insertNftProduct(nftProduct);
+        productMapper.insertProduct(nftProduct);
         // 更新 父nft状态
         updateNftStatus(superNFTInfo.getNftId(), NFTStatusEnum.APPOINTMENT);
         // 创建子nft任务
         generateSublist(superNFTInfo.getNftId(), n.getCirculation());
         // 更新库存
         updateStock(superNFTInfo.getNftId(), n.getCirculation());
-
 
     }
 

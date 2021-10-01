@@ -19,7 +19,7 @@
         where nft_id = #{nftId}
     </select>
 
-    <insert id="insertNftProduct" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    <insert id="insertProduct" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         insert into t_product
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="nftId != null">nft_id,</if>

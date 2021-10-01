@@ -28,9 +28,9 @@ public interface NftMapper {
      */
     List<SuperNFT> selectSuperNFTList(@Param("nftListQueryDTO") NftListQueryDTO nftListQueryDTO);
 
-    int insertSuperNFT(SuperNFT superNFT);
+    int insertSuperNFT(SuperNFT superNft);
 
-    int updateSuperNFT(SuperNFT superNFT);
+    int updateSuperNFT(SuperNFT superNft);
 
     int deleteSuperNFT(String nftId);
 

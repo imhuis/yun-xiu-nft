@@ -50,9 +50,6 @@ public class PaySuccessMessageHandler {
     @Resource
     private NftMapper nftMapper;
 
-    @Resource
-    private ProductMapper productMapper;
-
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
@@ -62,9 +59,9 @@ public class PaySuccessMessageHandler {
     // 监听上链消息
     @RabbitListener(queues = {"pay-notify-queue"})
     public void onChain(Message message, Channel channel) throws IOException {
+        String queue = message.getMessageProperties().getConsumerQueue();
+//        try {
 
-        try {
-            String queue = message.getMessageProperties().getConsumerQueue();
             log.info("接收来自{}队列的消息", queue);
             // 处理
             String messageData = new String(message.getBody());
@@ -84,7 +81,7 @@ public class PaySuccessMessageHandler {
                 return;
             }
 
-        } catch (Exception e) {
+//        } catch (Exception e) {
 //            long retryCount = getRetryCount(message.getMessageProperties());
 //            if (retryCount >= 3) {
 //                //重试次数超过3次,则将消息发送到失败队列等待特定消费者处理或者人工处理
@@ -103,13 +100,13 @@ public class PaySuccessMessageHandler {
 //                    log.error("消息发送到重试队列的时候，异常了:" + e2.getMessage() + ",重新发送消息");
 //                }
 //            }
-        } finally {
+//        } finally {
             /**
              * 无论消费成功还是消费失败,都要手动进行ack,因为即使消费失败了,也已经将消息重新投递到重试队列或者失败队列
              * 如果不进行ack,生产者在超时后会进行消息重发,如果消费者依然不能处理，则会存在死循环
              */
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-        }
+//        }
 
     }
 

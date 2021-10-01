@@ -17,7 +17,7 @@ public interface ProductMapper {
 
     Optional<NFTProduct> selectByNftId(String nftId);
 
-    int insertNftProduct(NFTProduct nftProduct);
+    int insertProduct(NFTProduct nftProduct);
 
     int deleteByNftId(String nftId);
 

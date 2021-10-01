@@ -35,9 +35,6 @@ public class StockService {
      */
     public static final long UNINITIALIZED_STOCK = -3L;
 
-    /**
-     * Redis 客户端
-     */
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 

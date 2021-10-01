@@ -12,6 +12,7 @@ import com.tencent.nft.common.util.WxPayUtil;
 import com.tencent.nft.core.config.RabbitmqConfig;
 import com.tencent.nft.common.properties.WxGroupProperties;
 import com.tencent.nft.entity.nft.NFTProduct;
+import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.pay.PreOrder;
 import com.tencent.nft.entity.pay.bo.OrderMessageBO;
 import com.tencent.nft.entity.pay.dto.PayRequestDTO;
@@ -19,6 +20,7 @@ import com.tencent.nft.entity.pay.TradeInfo;
 import com.tencent.nft.entity.pay.bo.PayDetailBO;
 import com.tencent.nft.entity.pay.bo.PrepayVO;
 import com.tencent.nft.entity.security.WxUser;
+import com.tencent.nft.mapper.NftMapper;
 import com.tencent.nft.mapper.pay.ProductMapper;
 import com.tencent.nft.mapper.WxUserMapper;
 import com.tencent.nft.mapper.pay.OrderMapper;
@@ -84,6 +86,9 @@ public class PayServiceImpl implements IPayService {
     @Autowired
     private StockService stockService;
 
+    @Autowired
+    private NftMapper nftMapper;
+
     @Override
     public PrepayVO order(PayRequestDTO dto) throws Exception {
         // 首先判断是否有购买资格，已经预约，或者购买买过一次的不能购买第二次
@@ -111,8 +116,9 @@ public class PayServiceImpl implements IPayService {
          * 大于等于0:剩余库存（扣减之后剩余的库存）
          */
         long stock = stockService.stock(redisKey, 60 * 60, 1, () -> productMapper.selectStock(productId));
-        if (stock == -3) {
-
+        if (stock == -3L) {
+            nftMapper.updateSuperNFT(new SuperNFT());
+            productMapper.updateByNftId(new NFTProduct());
         }
         log.info("剩余库存 {}", stock);
         if (stock >= 0) {
