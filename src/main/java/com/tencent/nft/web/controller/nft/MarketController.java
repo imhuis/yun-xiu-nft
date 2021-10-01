@@ -1,5 +1,6 @@
 package com.tencent.nft.web.controller.nft;
 
+import cn.hutool.core.util.StrUtil;
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
 import com.tencent.nft.common.enums.ResponseCodeEnum;
@@ -83,12 +84,14 @@ public class MarketController {
 
     /**
      * 根据子编号指定商品的预约量和售出量
-     * @param subNFTId
+     * @param subNftId
      * @return
      */
     @RequestMapping("/app/public/market/{sub_nft_id:[a-zA-Z0-9]{18,}}/amount")
-    public ResponseResult getReservationAmountByZi(@PathVariable(value = "sub_nft_id") String subNFTId){
-        long amount = marketService.getProductAmountBySubNftId(subNFTId);
+    public ResponseResult getReservationAmountByZi(@PathVariable(value = "sub_nft_id") String subNftId){
+        String superId = StrUtil.sub(subNftId, 0, -4);
+        long amount = marketService.getProductAmount(superId);
+//        long amount = marketService.getProductAmountBySubNftId(subNftId);
         return ResponseUtil.success(amount);
     }
 

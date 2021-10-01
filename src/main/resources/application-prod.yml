@@ -12,7 +12,6 @@ spring:
   redis:
     host: 172.17.0.10
     port: 6379
-    database: 0
     password: wHE9_>oE)2GTU9psu+3#BW#wR
   session:
     timeout: 7200
