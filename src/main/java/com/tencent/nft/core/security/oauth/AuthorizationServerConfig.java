@@ -75,7 +75,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .pathMapping("/oauth/token", "/app/oauth/token")
                 .tokenServices(tokenServices())
                 .tokenStore(redisTokenStore())
-//                .exceptionTranslator(oAuth2WebResponseExceptionTranslator)
+                .exceptionTranslator(oAuth2WebResponseExceptionTranslator)
         ;
     }
 
@@ -85,7 +85,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .tokenKeyAccess("permitAll()")
                 .checkTokenAccess("isAuthenticated()")
                 .allowFormAuthenticationForClients()
-//                .authenticationEntryPoint(authenticationEntryPoint)
+                .authenticationEntryPoint(authenticationEntryPoint)
         ;
     }
 

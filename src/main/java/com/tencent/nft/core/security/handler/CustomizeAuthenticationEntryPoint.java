@@ -23,9 +23,10 @@ public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoi
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
+        response.setStatus(401);
         ResponseResult responseResult = new ResponseResult();
-        responseResult.setCode(403);
-        responseResult.setSuccess(false).setMessage("no permission");
+        responseResult.setCode(401);
+        responseResult.setSuccess(false).setMessage("unauthorized");
         ResponseUtil.out(response, responseResult);
     }
 }

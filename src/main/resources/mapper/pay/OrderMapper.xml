@@ -2,7 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tencent.nft.mapper.pay.OrderMapper">
 
-    <resultMap id="BaseResultMap" type="com.tencent.nft.entity.pay.PreOrder">
+    <resultMap id="BaseResultMap" type="com.tencent.nft.entity.pay.Order">
+        <result column="trade_no" jdbcType="VARCHAR" property="tradeId"/>
+        <result column="product_no" jdbcType="VARCHAR" property="productId"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="payer_openid" jdbcType="VARCHAR" property="payerOpenId"/>
+        <result column="payer_phone" jdbcType="VARCHAR" property="payerPhone"/>
+    </resultMap>
+
+    <resultMap id="PreOrderResultMap" type="com.tencent.nft.entity.pay.PreOrder">
         <id column="id" jdbcType="BIGINT" property="id"/>
     </resultMap>
 
@@ -28,14 +36,14 @@
         </trim>
     </insert>
 
-    <select id="selectByTradeNo" resultMap="BaseResultMap">
+    <select id="selectByTradeNo" resultMap="PreOrderResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_pre_order
         where trade_no = #{tradeNo}
     </select>
 
-    <select id="selectByNftIdAndPayer" resultMap="BaseResultMap">
+    <select id="selectByNftIdAndPayer" resultMap="PreOrderResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_pre_order

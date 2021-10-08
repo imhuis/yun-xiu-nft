@@ -1,5 +1,7 @@
 package com.tencent.nft.web.controller.admin;
 
+import com.tencent.nft.common.base.ResponseResult;
+import com.tencent.nft.common.base.ResponseUtil;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -11,5 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderMgrController {
 
     // 订单列表
+    public ResponseResult orderList(){
+
+        return ResponseUtil.success();
+    }
 
 }

@@ -4,6 +4,7 @@ import com.tencent.nft.entity.app.dto.WxResolvePhoneFormDTO;
 import com.tencent.nft.entity.app.dto.WxUserProfileFormDTO;
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.service.handler.WeChatOpenIdByJsCodeLoader;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
 /**
  * @author: imhuis

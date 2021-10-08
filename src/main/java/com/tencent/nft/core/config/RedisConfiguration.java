@@ -38,7 +38,7 @@ public class RedisConfiguration {
     private RedisProperties redisProperties;
 
 //    @Bean(destroyMethod = "destroy")
-    public LettuceConnectionFactory lettuceConnectionFactory(){
+    public LettuceConnectionFactory lettuceStandaloneConnectionFactory(){
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisProperties.getHost());
         redisStandaloneConfiguration.setPort(redisProperties.getPort());
@@ -67,7 +67,6 @@ public class RedisConfiguration {
 
         return new LettuceConnectionFactory(redisStandaloneConfiguration, clientConfiguration);
     }
-
 
     public GenericObjectPoolConfig genericObjectPoolConfig(){
         GenericObjectPoolConfig genericObjectPoolConfig = new GenericObjectPoolConfig();

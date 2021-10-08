@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tencent.nft.mapper.FeedbackMapper">
+    
+    <resultMap id="BaseResultMap" type="com.tencent.nft.common.base.FeedBack">
+        <result column="c_date" jdbcType="TIMESTAMP" property="date"/>
+    </resultMap>
 
     <insert id="insert" parameterType="com.tencent.nft.common.base.FeedBack">
         insert into t_feedback
@@ -21,8 +25,7 @@
             #{createTime}, #{updateTime}
         </trim>
     </insert>
-    <select id="getAll" parameterType="com.tencent.nft.common.base.FeedBack"
-            resultType="com.tencent.nft.common.base.FeedBack">
+    <select id="getAll" parameterType="com.tencent.nft.common.base.FeedBack" resultMap="BaseResultMap">
         select * from t_feedback
         <where>
             <if test="date != null">
@@ -32,7 +35,7 @@
         order by date desc
     </select>
 
-    <select id="getByDate" resultType="com.tencent.nft.common.base.FeedBack">
+    <select id="getByDate" resultMap="BaseResultMap">
         select *
         FROM t_feedback
         where date between #{param1}

@@ -33,7 +33,6 @@ public class UserManagementController {
      * */
     @GetMapping("/selectById/{id}")
     public SysResult selectById(@PathVariable Integer id){
-        userManagerService.selectById(id);
         return SysResult.success(userManagerService.selectById(id));
     }
 

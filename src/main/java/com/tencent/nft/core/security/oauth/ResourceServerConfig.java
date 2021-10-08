@@ -1,6 +1,7 @@
 package com.tencent.nft.core.security.oauth;
 
 import com.tencent.nft.core.security.handler.CustomizeAccessDeniedHandler;
+import com.tencent.nft.core.security.handler.CustomizeAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,6 +30,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Autowired
     private CustomizeAccessDeniedHandler accessDeniedHandler;
 
+    @Autowired
+    private CustomizeAuthenticationEntryPoint oauthTokenExceptionEntryPoint;
+
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 //        super.configure(resources);
@@ -37,7 +41,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .stateless(true)
                 .tokenStore(tokenStore)
                 .tokenServices(tokenService)
-//                .authenticationEntryPoint(oauthTokenExceptionEntryPoint)
+                .authenticationEntryPoint(oauthTokenExceptionEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler)
         ;
     }

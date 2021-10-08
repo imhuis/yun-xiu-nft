@@ -59,7 +59,8 @@ public class OAuth2WebResponseExceptionTranslator implements WebResponseExceptio
 
     private ResponseEntity<OAuth2Exception> handleOAuth2Exception(OAuth2Exception e) throws IOException {
 
-        int status = e.getHttpErrorCode();
+//        int status = e.getHttpErrorCode();
+        int status = 2222;
         HttpHeaders headers = new HttpHeaders();
         headers.set("Cache-Control", "no-store");
         headers.set("Pragma", "no-cache");

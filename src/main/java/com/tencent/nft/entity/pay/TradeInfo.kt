@@ -11,6 +11,7 @@ import java.time.LocalDateTime
  * @description: 订单详情（t_trade）
  */
 class TradeInfo : BaseEntity(), Serializable {
+
     var tradeNo: String? = null
 
     // 交易状态
