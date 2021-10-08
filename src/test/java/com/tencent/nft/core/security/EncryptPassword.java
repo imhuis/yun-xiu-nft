@@ -19,5 +19,6 @@ public class EncryptPassword {
 
     @Test
     public void encryptor(){
+        System.out.println(stringEncryptor.encrypt("2kt8+10Ptsi5hRY+_hm"));
     }
 }

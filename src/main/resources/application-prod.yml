@@ -3,8 +3,8 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://172.17.0.20:3306/nft_prod?serverTimezone=Asia/Shanghai
-    username: nft_dev_user
-    password: ENC(MBNVX4J2UIixdPwfKLvzfAdHE+Y+EQfkdmH33Mq/AkUVY1YAILNQfowh1aajmMMBBZD0fRTlI9kHA5UKUuYSLQ==)
+    username: nft_prod_user
+    password: ENC(hgq80vgBAlx3P+9aW7pbK1V66bu4mPn0Db9xYCS9E17h36IwJ4+3HtHovUPWGnjv7KkhesxdWqCfb4fRZ2Qp0A==)
     hikari:
       connection-timeout: 60000
       maximum-pool-size: 20
@@ -16,7 +16,7 @@ spring:
   session:
     timeout: 7200
   rabbitmq:
-    host: 42.192.10.206
+    host: 172.17.0.5
     port: 5672
     username: admin
     password: ENC(uLxFmbGFt2+wmntsuahXKmgA1fR/T9tvWTSYJ4oAcKelJ9ZrouJ/0HaitDS9JzPq)

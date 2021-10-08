@@ -11,7 +11,9 @@ import com.tencent.nft.entity.nft.SuperNFT;
 import com.tencent.nft.entity.nft.dto.NftListQueryDTO;
 import com.tencent.nft.entity.nft.vo.ProductDetailVO;
 import com.tencent.nft.entity.nft.vo.ProductVO;
+import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.mapper.NftMapper;
+import com.tencent.nft.mapper.WxUserMapper;
 import com.tencent.nft.mapper.pay.ProductMapper;
 import com.tencent.nft.service.IMarketService;
 import com.tencent.nft.service.pay.StockService;
@@ -53,6 +55,9 @@ public class MarketServiceImpl implements IMarketService {
 
     @Autowired
     private StockService stockService;
+
+    @Resource
+    private WxUserMapper wxUserMapper;
 
     @Override
     public List<NFTInfo> getMarketList(Integer status) {
@@ -120,7 +125,11 @@ public class MarketServiceImpl implements IMarketService {
             }
             // 判断是否购买过
             if (productStatus == NFTStatusEnum.UP){
-
+                WxUser wxUser = wxUserMapper.selectFullByPhone(phone).get();
+                BoundSetOperations<String,String> bso = stringRedisTemplate.boundSetOps(getPurchaseChar(productId));
+                if (bso.isMember(wxUser.getOpenId()) == true){
+                    productVO.setPersonStatus(1);
+                }
             }
         }
 

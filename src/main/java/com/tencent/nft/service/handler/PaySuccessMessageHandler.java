@@ -132,7 +132,7 @@ public class PaySuccessMessageHandler {
         userLibrary.setOpenId(wxUser.getOpenId());
         userLibrary.setNftId(newSubNFT.getNftId());
 
-        newSubNFT.setChainAddress(UUIDUtil.generateUUID());
+        newSubNFT.setChainAddress(UUIDUtil.generateUUID()+UUIDUtil.generateUUID());
         newSubNFT.setSoldTime(LocalDateTime.now());
         newSubNFT.setSaleStatus(NFTSaleStatusEnum.Sold);
         userLibraryMapper.insertUserLibrary(userLibrary);

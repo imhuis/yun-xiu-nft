@@ -14,6 +14,5 @@ public class OptionalTest {
     public static void main(String[] args) {
         NFTInfo nftInfo = null;
         nftInfo = Optional.ofNullable(nftInfo).orElse(new NFTInfo());
-        System.out.println(nftInfo.toString());
     }
 }
