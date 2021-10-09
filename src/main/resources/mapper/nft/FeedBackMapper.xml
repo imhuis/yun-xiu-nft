@@ -4,6 +4,7 @@
     
     <resultMap id="BaseResultMap" type="com.tencent.nft.common.base.FeedBack">
         <result column="c_date" jdbcType="TIMESTAMP" property="date"/>
+        <result column="c_name" jdbcType="VARCHAR" property="name"/>
     </resultMap>
 
     <insert id="insert" parameterType="com.tencent.nft.common.base.FeedBack">
@@ -25,6 +26,7 @@
             #{createTime}, #{updateTime}
         </trim>
     </insert>
+
     <select id="getAll" parameterType="com.tencent.nft.common.base.FeedBack" resultMap="BaseResultMap">
         select * from t_feedback
         <where>
@@ -32,7 +34,7 @@
                 and date between #{param1} and #{param2}
             </if>
         </where>
-        order by date desc
+        order by c_date desc
     </select>
 
     <select id="getByDate" resultMap="BaseResultMap">
@@ -48,7 +50,7 @@
         where id = #{id}
     </delete>
 
-    <select id="getById" resultType="com.tencent.nft.common.base.FeedBack">
+    <select id="getById" parameterType="com.tencent.nft.common.base.FeedBack" resultMap="BaseResultMap">
         select *
         from t_feedback
         where id = #{id}
