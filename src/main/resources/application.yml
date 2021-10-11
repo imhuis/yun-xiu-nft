@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   redis:
     client-type: jedis
   data:

@@ -112,8 +112,8 @@ public class MarketServiceImpl implements IMarketService {
         // 根据用户token 状态该藏品对于用户的状态
         String phone = Optional.ofNullable(SecurityUtils.getCurrentUsername().get()).orElse("");
         log.info("current user phone: {}", phone);
-        // 该用户存在
-        if (StringUtils.isNoneBlank(phone)){
+        // 该用户存在 StringUtils.isNoneBlank(phone)
+        if (!StringUtils.equalsIgnoreCase("anonymousUser", phone)){
             // 判断是否预约过
             // 1 - 已经购买
             // 2 - 未购买

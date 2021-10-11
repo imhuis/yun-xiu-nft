@@ -10,6 +10,7 @@ import java.io.Serializable
 class CollectionVO : Serializable {
 
     var nftName: String? = null
+    var nftId: String? = null
     var nftFile: String? = null
     var fileType: Int? = null
     var issuer: String? = null

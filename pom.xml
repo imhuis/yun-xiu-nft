@@ -11,6 +11,8 @@
     <groupId>com.tencent</groupId>
     <artifactId>nft</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+<!--    <packaging>war</packaging>-->
+
     <name>nft-server</name>
     <description>Demo project for Spring Boot</description>
 
@@ -44,6 +46,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
+<!--            <scope>provided</scope>-->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -269,6 +272,7 @@
 <!--                <filtering>false</filtering>-->
 <!--            </resource>-->
 <!--        </resources>-->
+        <finalName>nft-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

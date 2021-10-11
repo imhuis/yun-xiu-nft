@@ -71,6 +71,7 @@ public class AppServiceImpl implements IAppService {
         NFTInfo nftInfo = nftMapper.selectNftInfoByNftId(zi.getSuperNFTId()).get();
         CollectionVO collectionVO = new CollectionVO();
 
+        collectionVO.setNftId(subId);
         collectionVO.setNftName(superNFT.getNftName());
         collectionVO.setNftFile(superNFT.getNftFile());
         collectionVO.setFileType(superNFT.getNftType().getCode());
