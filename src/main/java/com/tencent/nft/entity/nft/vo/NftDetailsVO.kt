@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.tencent.nft.entity.nft.SubNFT
 import java.io.Serializable
-import java.math.BigDecimal
 import java.time.LocalDateTime
 
 /**

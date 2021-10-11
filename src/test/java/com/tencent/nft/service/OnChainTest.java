@@ -2,7 +2,6 @@ package com.tencent.nft.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tencent.nft.entity.chain.CreateData;
-import com.tencent.nft.entity.chain.OnChainResponse;
 import com.tencent.nft.service.handler.OnChainHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

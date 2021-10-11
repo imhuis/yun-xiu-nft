@@ -2,13 +2,10 @@ package com.tencent.nft.web.controller.user;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.tencent.nft.common.base.FeedBack;
 import com.tencent.nft.entity.nft.vo.SysResult;
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.service.UserManagerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.parameters.P;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,7 +41,7 @@ public class UserManagementController {
         @RequestParam(value = "pageNum",required = false, defaultValue = "1") Integer pageNum,
         @RequestParam(value = "pageSize",required = false, defaultValue = "20") Integer pageSize,
         @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)Date date,
-        @RequestParam(value = "phone", required = false)  String phone)throws ParseException {
+        @RequestParam(value = "phone", required = false)  String phone) {
         PageHelper.startPage(pageNum,pageSize);
         List<WxUser> list = null;
         try {

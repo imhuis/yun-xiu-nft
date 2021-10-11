@@ -17,10 +17,14 @@
     <properties>
         <spring-cloud.version>2020.0.3</spring-cloud.version>
         <java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <kotlin.version>1.5.30-M1</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <maven.test.skip>true</maven.test.skip>
         <spring-statemachine.version>3.0.1</spring-statemachine.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     </properties>
     <dependencies>
         <dependency>
@@ -285,7 +289,6 @@
                         <mainClass>com.tencent.nft.NFTApplication</mainClass>
                         <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                     </container>
-
                 </configuration>
             </plugin>
             <plugin>

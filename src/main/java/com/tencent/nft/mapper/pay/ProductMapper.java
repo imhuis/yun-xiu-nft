@@ -1,7 +1,6 @@
 package com.tencent.nft.mapper.pay;
 
 import com.tencent.nft.entity.nft.NFTProduct;
-import com.tencent.nft.entity.pay.ProductStock;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

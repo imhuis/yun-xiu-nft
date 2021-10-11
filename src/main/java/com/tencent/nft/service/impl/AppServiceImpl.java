@@ -1,7 +1,6 @@
 package com.tencent.nft.service.impl;
 
 import com.google.common.collect.Lists;
-import com.tencent.nft.common.util.UUIDUtil;
 import com.tencent.nft.core.security.SecurityUtils;
 import com.tencent.nft.entity.app.vo.CollectionVO;
 import com.tencent.nft.entity.nft.NFTInfo;

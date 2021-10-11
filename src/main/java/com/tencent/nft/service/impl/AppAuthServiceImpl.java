@@ -255,8 +255,8 @@ public class AppAuthServiceImpl implements IAppAuthService {
         LOG.info("method[resolveWeChatAccountInfo] session>{}", sessionKey);
 
         // 解析encrypted data获取用户手机号（包括openid）
-        String resolveData = new String(WxResolveDataUtils.decrypt(wxResolvePhoneFormDTO.getEncryptedData(), sessionKey, wxResolvePhoneFormDTO.getIv()));
         try {
+            String resolveData = new String(WxResolveDataUtils.decrypt(wxResolvePhoneFormDTO.getEncryptedData(), sessionKey, wxResolvePhoneFormDTO.getIv()));
             /*{"phoneNumber":"11111111111","purePhoneNumber":"11111111111","countryCode":"86","watermark":{"timestamp":1554949910,"appid":"wxc418d44a80e38c7b"}}*/
             JsonNode jsonNode = objectMapper.readTree(resolveData);
             wxUser.setPhone(jsonNode.get("phoneNumber").asText());
