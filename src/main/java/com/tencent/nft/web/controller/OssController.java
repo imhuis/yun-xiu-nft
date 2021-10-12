@@ -49,9 +49,9 @@ public class OssController {
         PutObjectResult result = fileUploadUtil.upload(newName, newFile.getAbsolutePath());
         long endTime = System.currentTimeMillis();
         log.info("上传文件耗时：{}ms", endTime - startTime);
-        Object newFileName = "https://nft-1257367141.cos.ap-shanghai.myqcloud.com/" + newName ;
+        Object newFileName = "https://nft-yunxiu-1256696993.cos.ap-shanghai.myqcloud.com/" + newName;
 
-        return ResponseUtil.success(newFileName);
+        return ResponseUtil.success(result);
     }
 
     private String getSuffix(String originalFilename) {

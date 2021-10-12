@@ -24,7 +24,7 @@ public class FileUploadUtil {
         // 指定要上传的文件
         File localFile = new File(localFilePath);
         // 指定文件将要存放的存储桶
-        String bucketName = "nft-1257367141";
+        String bucketName = "nft-yunxiu-1256696993";
         // 指定文件上传到 COS 上的路径，即对象键。例如对象键为folder/picture.jpg，则表示将文件 picture.jpg 上传到 folder 路径下
         String key = path;
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, localFile);

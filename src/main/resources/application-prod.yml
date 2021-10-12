@@ -47,12 +47,5 @@ pagehelper:
   reasonable: true
   row-bounds-with-count: true
 
-alicos:
-  endpoint:
-  SecretId: AKIDMVQijTxA6l9G6fxzlFSP5VeX8SUFkxtY
-  SecretKey: PYPzIK6btue7JFuIOEm32kByUjhOnvoQ
-  region: ap-shanghai
-  appid: 1257367141
-
 oauth2:
   basic: 'Basic YzY0YTAwMDUtYWFmNi00NmEyLWE0NTItYzAwMDA3MDU0NTliOmRmOGEwYTFiLTJkYjUtNGFlOC1iNTE3LTM3M2MxNWU3MTQ4Mw=='
