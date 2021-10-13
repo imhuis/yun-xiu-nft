@@ -260,7 +260,7 @@ public class PayServiceImpl implements IPayService {
             // 外部订单号码
             String outTradeNo = tradeDetail.get("out_trade_no").asText();
 
-            PreviouslyOrder previouslyOrder = orderMapper.selectByTradeNo(outTradeNo);
+            PreviouslyOrder previouslyOrder = orderMapper.selectPreviouslyOrderByTradeNo(outTradeNo);
             String productNo = previouslyOrder.getProductNo();
             OrderMessageBO orderMessageBO = new OrderMessageBO(outTradeNo, previouslyOrder.getPayer(), productNo);
             String message = Strings.EMPTY;
@@ -335,7 +335,7 @@ public class PayServiceImpl implements IPayService {
         previouslyOrder.setProductNo(payDetailBO.getProductNo());
         previouslyOrder.setPrice(payDetailBO.getTotal());
         previouslyOrder.setPayer(payDetailBO.getOpenId());
-        orderMapper.insert(previouslyOrder);
+        orderMapper.insertPreviouslyOrder(previouslyOrder);
 
         // 默认新增状态为未付款状态订单
         TradeInfo tradeInfo = new TradeInfo();

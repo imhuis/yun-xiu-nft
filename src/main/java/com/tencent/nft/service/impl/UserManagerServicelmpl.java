@@ -1,5 +1,6 @@
 package com.tencent.nft.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.util.StringUtil;
 import com.tencent.nft.entity.security.WxUser;
 import com.tencent.nft.mapper.WxUserMapper;
@@ -23,16 +24,10 @@ public class UserManagerServicelmpl implements UserManagerService {
     }
 
     @Override
-    public List<WxUser> selectAllUser(Date create_date, String phone) throws ParseException {
-//        if(!StringUtil.isEmpty(create_date)){
-//            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//            LocalDate date = LocalDate.parse(create_date, fmt);
-//            wxUser.setCreateTime(date.atStartOfDay());
-//        }
-        if(!StringUtil.isEmpty(phone)){
-//            wxUser.setPhone(phone);
-        }
+    public List<WxUser> selectAllUser(Integer page, Integer size, Date create_date, String phone) {
 
-        return wxUserMapper.selectAllUser(phone, create_date);
+        PageHelper.startPage(page, size);
+        List<WxUser> wxUserList = wxUserMapper.selectAllUser(phone, create_date);
+        return wxUserList;
     }
 }

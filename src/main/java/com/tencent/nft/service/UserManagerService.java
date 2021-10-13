@@ -10,5 +10,5 @@ public interface UserManagerService {
 
      WxUser selectById(Integer id);
 
-     List<WxUser> selectAllUser(Date create_date, String phone) throws ParseException;
+     List<WxUser> selectAllUser(Integer page, Integer size, Date createDate, String phone);
 }

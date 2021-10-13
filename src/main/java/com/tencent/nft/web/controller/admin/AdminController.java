@@ -1,7 +1,6 @@
 package com.tencent.nft.web.controller.admin;
 
 import com.tencent.nft.entity.admin.pojo.Adminpojo;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

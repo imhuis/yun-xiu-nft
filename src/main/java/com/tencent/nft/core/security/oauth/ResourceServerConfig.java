@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 /**
  * @author: imhuis
@@ -35,7 +36,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-//        super.configure(resources);
         resources
                 .resourceId("*")
                 .stateless(true)
@@ -57,7 +57,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/app/public/**").permitAll()
                 .antMatchers("/app/**").authenticated()
 
-                // .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and()
                 .csrf()
                 .disable()

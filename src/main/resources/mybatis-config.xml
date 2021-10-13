@@ -22,13 +22,11 @@
         <!-- 解决，查询返回结果含null没有对应字段值问题 -->
         <setting name="callSettersOnNulls" value="true"/>
         <setting name="logImpl" value="STDOUT_LOGGING"/>
-        <!-- default enum type handler -->
 
     </settings>
 
     <!-- 这个属性不支持多路径 不支持通配 -->
     <typeAliases>
-
     </typeAliases>
     <typeHandlers>
         <typeHandler handler="com.tencent.nft.core.ibatis.CodeEnumTypeHandler" javaType="com.tencent.nft.common.enums.ICommonEnum" jdbcType="TINYINT"/>

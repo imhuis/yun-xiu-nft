@@ -66,7 +66,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(final AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-//        super.configure(endpoints);
         endpoints
                 .authenticationManager(new ProviderManager(authenticationProvider()))
 //                .authenticationManager(new ProviderManager(Arrays.asList(authenticationProvider)))

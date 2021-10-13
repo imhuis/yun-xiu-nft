@@ -15,10 +15,14 @@
     </resultMap>
 
     <sql id="Base_Column_List">
+        id, trade_no, product_no, nft_id, amount, payer_openid, payer_phone, sold_time, create_time, update_time
+    </sql>
+
+    <sql id="PreviouslyOrder_Column_List">
         id, trade_no, product_no, price, payer, create_time, update_time
     </sql>
 
-    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    <insert id="insertPreviouslyOrder" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
         insert into t_pre_order
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="tradeNo != null and tradeNo != ''">trade_no,</if>
@@ -36,16 +40,16 @@
         </trim>
     </insert>
 
-    <select id="selectByTradeNo" resultMap="PreOrderResultMap">
+    <select id="selectPreviouslyOrderByTradeNo" resultMap="PreOrderResultMap">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="PreviouslyOrder_Column_List"/>
         from t_pre_order
         where trade_no = #{tradeNo}
     </select>
 
-    <select id="selectByNftIdAndPayer" resultMap="PreOrderResultMap">
+    <select id="selectPreviouslyOrderByNftIdAndPayer" resultMap="PreOrderResultMap">
         select
-        <include refid="Base_Column_List"/>
+        <include refid="PreviouslyOrder_Column_List"/>
         from t_pre_order
         where product_no = #{nftId} and payer = #{payer}
     </select>
@@ -65,5 +69,28 @@
     <!--        </set>-->
     <!--        WHERE trade_no = #{tradeNo}-->
     <!--    </update>-->
+
+    <insert id="insertOrder"></insert>
+
+    <select id="selectOrder" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from t_order
+        <where>
+            <if test="orderQueryDTO.nftId != null and orderQueryDTO.nftId !=''">
+                and nft_id = #{orderQueryDTO.nftId}
+            </if>
+            <if test="orderQueryDTO.nftName != null and orderQueryDTO.nftName != ''">
+                and nft_name like concat('%',#{orderQueryDTO.nftName,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="orderQueryDTO.phone != null and orderQueryDTO.phone != ''">
+                and nft_type = #{orderQueryDTO.phone}
+            </if>
+            <if test="orderQueryDTO.date != null">
+                and sold_time = #{orderQueryDTO.date}
+            </if>
+        </where>
+    </select>
+
 
 </mapper>

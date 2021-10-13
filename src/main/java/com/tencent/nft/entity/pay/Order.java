@@ -4,6 +4,7 @@ import com.tencent.nft.entity.BaseEntity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * @author: imhuis
@@ -18,6 +19,7 @@ public class Order extends BaseEntity implements Serializable {
     private BigDecimal amount;
     private String payerOpenId;
     private String payerPhone;
+    private LocalDateTime soldTime;
 
     public String getTradeId() {
         return tradeId;
@@ -65,5 +67,13 @@ public class Order extends BaseEntity implements Serializable {
 
     public void setPayerPhone(String payerPhone) {
         this.payerPhone = payerPhone;
+    }
+
+    public LocalDateTime getSoldTime() {
+        return soldTime;
+    }
+
+    public void setSoldTime(LocalDateTime soldTime) {
+        this.soldTime = soldTime;
     }
 }

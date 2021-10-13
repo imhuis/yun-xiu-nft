@@ -47,7 +47,6 @@ public class NftManagementController {
                                   @RequestParam(value = "nft_name",required = false) String nftName,
                                   @RequestParam(value = "nft_type",required = false) Integer nftType){
 
-        // @RequestBody(required = false) NftListQueryDTO nftListQueryDTO
 //        NftListQueryDTO nftListQueryDTO = Optional.ofNullable(nftListQueryDTO).orElse(new NftListQueryDTO());
         NftListQueryDTO nftListQueryDTO = new NftListQueryDTO();
         nftListQueryDTO.setNftStatus(nftStatus);
@@ -103,7 +102,6 @@ public class NftManagementController {
                                      @RequestParam(value = "id", required = false) String subNftId,
                                      @RequestParam(value = "status", required = false) Integer saleStatus){
 
-        //@RequestBody(required = false) SubNFTQueryDTO subNFTQueryDTO
 //        subNFTQueryDTO = Optional.ofNullable(subNFTQueryDTO).orElse(new SubNFTQueryDTO());
         SubNftQueryDTO subNFTQueryDTO = new SubNftQueryDTO();
         subNFTQueryDTO.setId(subNftId);

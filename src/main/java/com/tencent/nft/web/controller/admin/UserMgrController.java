@@ -1,6 +1,5 @@
 package com.tencent.nft.web.controller.admin;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.tencent.nft.entity.nft.vo.SysResult;
 import com.tencent.nft.entity.security.WxUser;
@@ -10,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +18,7 @@ import java.util.List;
  * @description:
  */
 @RestController
+@RequestMapping("/admin")
 public class UserMgrController {
 
     @Resource
@@ -28,7 +27,7 @@ public class UserMgrController {
     /**
      * 根据id查询
      * */
-    @GetMapping("/selectById/{id}")
+    @GetMapping("/wx_user/{id}")
     public SysResult selectById(@PathVariable Integer id){
         return SysResult.success(userManagerService.selectById(id));
     }
@@ -36,20 +35,20 @@ public class UserMgrController {
     /**
      * 查询全部用户和条件查询
      * */
-    @PostMapping("/selectAllUser")
+    @GetMapping("/wx_user")
     public SysResult selectAllUser(Model model,
-        @RequestParam(value = "pageNum",required = false, defaultValue = "1") Integer pageNum,
-        @RequestParam(value = "pageSize",required = false, defaultValue = "20") Integer pageSize,
+        @RequestParam(value = "page",required = false, defaultValue = "1") Integer pageNum,
+        @RequestParam(value = "per_page",required = false, defaultValue = "20") Integer pageSize,
         @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)Date date,
-        @RequestParam(value = "phone", required = false)  String phone) {
-        PageHelper.startPage(pageNum,pageSize);
+        @RequestParam(value = "phone", required = false) String phone) {
+
         List<WxUser> list = null;
         try {
-            list = userManagerService.selectAllUser(date,phone);
-        } catch (ParseException e) {
+            list = userManagerService.selectAllUser(pageNum, pageSize, date, phone);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        PageInfo<WxUser> pageInfo = new PageInfo<WxUser>(list);
+        PageInfo<WxUser> pageInfo = new PageInfo<>(list);
         model.addAttribute("pageInfo",pageInfo);
         return SysResult.success(pageInfo);
     }

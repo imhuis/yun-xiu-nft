@@ -2,7 +2,6 @@ package com.tencent.nft.web.controller.admin;
 
 
 import com.github.pagehelper.PageHelper;
-
 import com.github.pagehelper.PageInfo;
 import com.tencent.nft.common.base.FeedBack;
 import com.tencent.nft.entity.nft.vo.SysResult;
@@ -21,6 +20,7 @@ import java.util.List;
  * @description:
  */
 @RestController
+@RequestMapping("/admin")
 public class FeedBackMgrController {
 
     @Autowired
@@ -31,7 +31,7 @@ public class FeedBackMgrController {
      * 并且进行分页
      * 每页数据15条
      */
-    @PostMapping("/admin/getAllFeedBack")
+    @PostMapping("/getAllFeedBack")
     public SysResult getAllFeedBack(Model model, @RequestParam(value = "pageNum", required = false, defaultValue = "1") Integer pageNum,
                                     @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pagesize,
                                     @RequestParam(value = "date", required = false) String date) throws ParseException {
@@ -42,7 +42,7 @@ public class FeedBackMgrController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        PageInfo<FeedBack> pageInfo = new PageInfo<FeedBack>(list);
+        PageInfo<FeedBack> pageInfo = new PageInfo<>(list);
         model.addAttribute("pageInfo", pageInfo);
         return SysResult.success(pageInfo);
     }
@@ -51,7 +51,7 @@ public class FeedBackMgrController {
     /**
      * 根据日期进行查询
      */
-    @GetMapping("/admin/getByDate/{date}")
+    @GetMapping("/getByDate/{date}")
     public SysResult getByDate(@PathVariable String date) {
         List<FeedBack> byDate = IFeedService.getByDate(date);
         return SysResult.success(byDate);
@@ -60,7 +60,7 @@ public class FeedBackMgrController {
     /**
      * 根据用户的id删除反馈记录
      */
-    @DeleteMapping("/admin/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public SysResult deleteById(@PathVariable Integer id) {
         IFeedService.deleteById(id);
         return SysResult.success();
@@ -69,7 +69,7 @@ public class FeedBackMgrController {
     /**
      * 根据id查询
      */
-    @GetMapping("/admin/getById/{id}")
+    @GetMapping("/getById/{id}")
     public SysResult getById(@PathVariable Integer id) {
         IFeedService.getById(id);
         return SysResult.success(IFeedService.getById(id));

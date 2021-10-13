@@ -2,7 +2,6 @@ package com.tencent.nft.core.security.oauth;
 
 import com.tencent.nft.common.base.ResponseResult;
 import com.tencent.nft.common.base.ResponseUtil;
-import com.tencent.nft.common.enums.ResponseCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;

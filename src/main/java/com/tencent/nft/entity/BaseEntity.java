@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 public class BaseEntity {
 
     private Long id;
+
     private LocalDateTime createTime = LocalDateTime.now();
+
     private LocalDateTime updateTime = LocalDateTime.now();
 
     public Long getId() {
