@@ -1,4 +1,4 @@
-package com.tencent.nft.web.controller;
+package com.tencent.nft.web.controller.admin;
 
 
 import com.github.pagehelper.PageHelper;
@@ -21,9 +21,7 @@ import java.util.List;
  * @description:
  */
 @RestController
-// 跨域支持
-@CrossOrigin
-public class FeedBackController {
+public class FeedBackMgrController {
 
     @Autowired
     private IFeedService IFeedService;

@@ -14,7 +14,7 @@ import com.tencent.nft.core.config.RabbitmqConfig;
 import com.tencent.nft.common.properties.WxGroupProperties;
 import com.tencent.nft.entity.nft.NFTProduct;
 import com.tencent.nft.entity.nft.SuperNFT;
-import com.tencent.nft.entity.pay.PreOrder;
+import com.tencent.nft.entity.pay.PreviouslyOrder;
 import com.tencent.nft.entity.pay.bo.OrderMessageBO;
 import com.tencent.nft.entity.pay.dto.PayRequestDTO;
 import com.tencent.nft.entity.pay.TradeInfo;
@@ -260,9 +260,9 @@ public class PayServiceImpl implements IPayService {
             // 外部订单号码
             String outTradeNo = tradeDetail.get("out_trade_no").asText();
 
-            PreOrder preOrder = orderMapper.selectByTradeNo(outTradeNo);
-            String productNo = preOrder.getProductNo();
-            OrderMessageBO orderMessageBO = new OrderMessageBO(outTradeNo, preOrder.getPayer(), productNo);
+            PreviouslyOrder previouslyOrder = orderMapper.selectByTradeNo(outTradeNo);
+            String productNo = previouslyOrder.getProductNo();
+            OrderMessageBO orderMessageBO = new OrderMessageBO(outTradeNo, previouslyOrder.getPayer(), productNo);
             String message = Strings.EMPTY;
             try {
                 message = objectMapper.writeValueAsString(orderMessageBO);
@@ -330,12 +330,12 @@ public class PayServiceImpl implements IPayService {
     public void createPreOrder(PayDetailBO payDetailBO) {
         String outTradeNo = payDetailBO.getTradeNo();
         // 预订单默认未付款的订单
-        PreOrder preOrder = new PreOrder();
-        preOrder.setTradeNo(outTradeNo);
-        preOrder.setProductNo(payDetailBO.getProductNo());
-        preOrder.setPrice(payDetailBO.getTotal());
-        preOrder.setPayer(payDetailBO.getOpenId());
-        orderMapper.insert(preOrder);
+        PreviouslyOrder previouslyOrder = new PreviouslyOrder();
+        previouslyOrder.setTradeNo(outTradeNo);
+        previouslyOrder.setProductNo(payDetailBO.getProductNo());
+        previouslyOrder.setPrice(payDetailBO.getTotal());
+        previouslyOrder.setPayer(payDetailBO.getOpenId());
+        orderMapper.insert(previouslyOrder);
 
         // 默认新增状态为未付款状态订单
         TradeInfo tradeInfo = new TradeInfo();

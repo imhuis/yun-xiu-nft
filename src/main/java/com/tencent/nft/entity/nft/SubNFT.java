@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  * @author: imhuis
  * @date: 2021/10/11
- * @description:
+ * @description: 子NFT
  */
 public class SubNFT extends SuperNFT implements Serializable {
 

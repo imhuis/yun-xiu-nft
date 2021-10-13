@@ -6,9 +6,20 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class PageResult {
-    private String query;   //用户查询的数据
-    private Integer pageNum; //页数
-    private Integer pageSize;//每页的条数
-    private Long total;   //总记录数
-    private Object rows;    //分页后的结果
+
+    // 用户查询的数据
+    private String query;
+
+    // 页数
+    private Integer pageNum;
+
+    // 每页的条数
+    private Integer pageSize;
+
+    // 总记录数
+    private Long total;
+
+    // 分页后的结果
+    private Object rows;
+
 }

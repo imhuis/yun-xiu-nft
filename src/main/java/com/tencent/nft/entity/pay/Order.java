@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * @author: imhuis
  * @date: 2021/10/8
- * @description:
+ * @description: 订单表
  */
 public class Order extends BaseEntity implements Serializable {
 

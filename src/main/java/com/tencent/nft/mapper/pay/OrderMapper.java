@@ -1,6 +1,6 @@
 package com.tencent.nft.mapper.pay;
 
-import com.tencent.nft.entity.pay.PreOrder;
+import com.tencent.nft.entity.pay.PreviouslyOrder;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,18 +16,18 @@ public interface OrderMapper {
 
     /**
      * 生成预订单
-     * @param preOrder
+     * @param previouslyOrder
      * @return
      */
-    int insert(PreOrder preOrder);
+    int insert(PreviouslyOrder previouslyOrder);
 
     /**
      * 根据业务号查询预订单
      * @param tradeNo
      * @return
      */
-    PreOrder selectByTradeNo(String tradeNo);
+    PreviouslyOrder selectByTradeNo(String tradeNo);
 
-    List<PreOrder> selectByNftIdAndPayer(@Param("nftId") String nftId, @Param("payer") String payer);
+    List<PreviouslyOrder> selectByNftIdAndPayer(@Param("nftId") String nftId, @Param("payer") String payer);
 
 }

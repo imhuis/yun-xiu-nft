@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * @author: imhuis
  * @date: 2021/9/29
- * @description:
+ * @description: 用户藏品
  */
 public class UserLibrary extends BaseEntity implements Serializable {
 

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author: imhuis
  * @date: 2021/9/17
- * @description: 小程序登录操作
+ * @description: 小程序登录
  */
 @RestController
 @RequestMapping("/app/public")

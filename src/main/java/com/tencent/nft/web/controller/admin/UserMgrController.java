@@ -1,4 +1,4 @@
-package com.tencent.nft.web.controller.user;
+package com.tencent.nft.web.controller.admin;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -20,7 +20,7 @@ import java.util.List;
  * @description:
  */
 @RestController
-public class UserManagementController {
+public class UserMgrController {
 
     @Resource
     private UserManagerService userManagerService;

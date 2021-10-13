@@ -23,9 +23,9 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/public/oss")
-public class OssController {
+public class FileController {
 
-    final Logger log = LoggerFactory.getLogger(OssController.class);
+    final Logger log = LoggerFactory.getLogger(FileController.class);
 
     @Autowired
     private FileUploadUtil fileUploadUtil;

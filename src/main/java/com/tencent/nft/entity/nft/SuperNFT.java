@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 /**
  * @author: imhuis
  * @date: 2021/10/11
- * @description:
+ * @description: 父NFT
  */
 @JsonIgnoreProperties(value = {"id", "create_time", "update_time"})
 public class SuperNFT extends BaseEntity implements Serializable {

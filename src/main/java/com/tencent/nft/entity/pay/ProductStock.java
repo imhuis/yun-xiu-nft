@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * @author: imhuis
  * @date: 2021/9/28
- * @description:
+ * @description: 商品库存表
  */
 public class ProductStock implements Serializable {
 

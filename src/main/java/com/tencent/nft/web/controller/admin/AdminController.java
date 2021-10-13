@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @description:
  */
 @RestController
-@CrossOrigin
 public class AdminController {
 
 

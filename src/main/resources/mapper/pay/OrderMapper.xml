@@ -10,7 +10,7 @@
         <result column="payer_phone" jdbcType="VARCHAR" property="payerPhone"/>
     </resultMap>
 
-    <resultMap id="PreOrderResultMap" type="com.tencent.nft.entity.pay.PreOrder">
+    <resultMap id="PreOrderResultMap" type="com.tencent.nft.entity.pay.PreviouslyOrder">
         <id column="id" jdbcType="BIGINT" property="id"/>
     </resultMap>
 
