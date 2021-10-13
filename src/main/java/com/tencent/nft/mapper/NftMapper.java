@@ -1,5 +1,7 @@
 package com.tencent.nft.mapper;
 
+import com.tencent.nft.common.enums.NFTSaleStatusEnum;
+import com.tencent.nft.common.enums.NFTStatusEnum;
 import com.tencent.nft.entity.nft.NFTInfo;
 import com.tencent.nft.entity.nft.SubNFT;
 import com.tencent.nft.entity.nft.SuperNFT;
@@ -54,6 +56,14 @@ public interface NftMapper {
     int insertSubNft(SubNFT subNFT);
 
     int updateSubNft(SubNFT subNFT);
+
+    /**
+     * 批量更新子nft状态
+     * @param nftId
+     * @param status
+     * @return
+     */
+    int updateSubNftBatch(@Param("nftId") String nftId, @Param("status") NFTSaleStatusEnum status);
 
     SubNFT selectSubNftByNftId(String subId);
 

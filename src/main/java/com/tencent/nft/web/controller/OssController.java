@@ -9,6 +9,7 @@ import com.tencent.nft.common.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +30,9 @@ public class OssController {
     @Autowired
     private FileUploadUtil fileUploadUtil;
 
+    @Value("${cos.endpoint}")
+    private String endpoint;
+
     @RequestMapping(value = "/file", method = RequestMethod.POST)
     public ResponseResult fileUpload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
 
@@ -38,8 +42,9 @@ public class OssController {
             folder.mkdirs();
         }
         long startTime = System.currentTimeMillis();
-        String oldName = file.getOriginalFilename();
-        String newName = UUIDUtil.generateUUID() + oldName.substring(oldName.lastIndexOf("."));
+
+        String fileSuffix = FileNameUtil.getSuffix(file.getOriginalFilename());
+        String newName = UUIDUtil.generateUUID() + "." + fileSuffix;
         File newFile = new File(folder, newName);
         try {
             file.transferTo(newFile);
@@ -49,12 +54,8 @@ public class OssController {
         PutObjectResult result = fileUploadUtil.upload(newName, newFile.getAbsolutePath());
         long endTime = System.currentTimeMillis();
         log.info("上传文件耗时：{}ms", endTime - startTime);
-        Object newFileName = "https://nft-yunxiu-1256696993.cos.ap-shanghai.myqcloud.com/" + newName;
-
-        return ResponseUtil.success(result);
+        String newFileName = endpoint + newName;
+        return ResponseUtil.success(newFileName);
     }
 
-    private String getSuffix(String originalFilename) {
-        return FileNameUtil.getSuffix(originalFilename);
-    }
 }

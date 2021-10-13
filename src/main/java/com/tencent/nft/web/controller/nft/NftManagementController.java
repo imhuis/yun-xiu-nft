@@ -202,10 +202,10 @@ public class NftManagementController {
      */
     @RequestMapping(value = "/off_shelf", method = RequestMethod.POST)
     public ResponseResult offShelf(@RequestParam("nft_id") String nftId){
-        try {
+//        try {
             nftManagementService.offShelf(nftId);
-        }catch (Exception e){
-        }
+//        }catch (Exception e){
+//        }
         return ResponseUtil.success();
     }
 

@@ -298,22 +298,23 @@ public class NftManagementServiceImpl implements INftManagementService {
     @Transactional
     @Override
     public void offShelf(String nftId) {
-        NFTProduct edo = new NFTProduct();
-        edo.setNftId(nftId);
-        edo.setNftStatus(NFTStatusEnum.OFFLINE);
-        productMapper.updateByNftId(edo);
+        NFTProduct np = new NFTProduct();
+        np.setNftId(nftId);
+        np.setNftStatus(NFTStatusEnum.OFFLINE);
+        productMapper.updateByNftId(np);
 
         updateNftStatus(nftId, NFTStatusEnum.OFFLINE);
     }
 
-    @Transactional
     @Async
     void updateNftStatus(String nftId, NFTStatusEnum status) {
-        // 更新 t_super_nft状态
-        SubNFT edo = new SubNFT();
-        edo.setNftId(nftId);
-        edo.setNftStatus(status);
-        nftMapper.updateSuperNFT(edo);
+        // 更新父nft状态
+        SuperNFT sn = new SuperNFT();
+        sn.setNftId(nftId);
+        sn.setNftStatus(status);
+        nftMapper.updateSuperNFT(sn);
+
+        nftMapper.updateSubNftBatch(nftId, NFTSaleStatusEnum.OFFShelf);
     }
 
     @Transactional

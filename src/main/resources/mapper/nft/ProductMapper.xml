@@ -57,8 +57,8 @@
         update t_product
         <set>
             <if test="nftStatus != null">nft_status = #{nftStatus},</if>
-            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
-            <if test="circulation != null">circulation = #{circulation},</if>
+<!--            <if test="unitPrice != null">unit_price = #{unitPrice},</if>-->
+<!--            <if test="circulation != null">circulation = #{circulation},</if>-->
             <if test="reserveStartTime != null">reserve_start_time = #{reserveStartTime},</if>
             <if test="sellStartTime != null">sell_start_time = #{sellStartTime},</if>
             update_time = #{updateTime}

@@ -200,6 +200,15 @@
         where sub_id = #{nftId}
     </update>
 
+    <update id="updateSubNftBatch">
+        update t_sub_nft
+        <set>
+            <if test="status != null">sale_status = #{status},</if>
+            update_time = now()
+        </set>
+        where super_id = #{nftId} and sale_status = ${2}
+    </update>
+
     <select id="selectSubNftByNftId" resultMap="SubNFTResultMap">
         select
         <include refid="SubNFT_Column_List"/>
