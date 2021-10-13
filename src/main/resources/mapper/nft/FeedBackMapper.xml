@@ -34,7 +34,7 @@
                 and date between #{param1} and #{param2}
             </if>
         </where>
-        order by c_date desc
+        order by create_time desc
     </select>
 
     <select id="getByDate" resultMap="BaseResultMap">
@@ -50,7 +50,7 @@
         where id = #{id}
     </delete>
 
-    <select id="getById" parameterType="com.tencent.nft.common.base.FeedBack" resultMap="BaseResultMap">
+    <select id="getById" resultMap="BaseResultMap">
         select *
         from t_feedback
         where id = #{id}
